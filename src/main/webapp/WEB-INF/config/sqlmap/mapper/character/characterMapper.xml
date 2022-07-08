@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="abd.character.characterMapper">
+<!-- 여기에 쿼리를 작성하면 된다. -->
+	<select id="selectCharacter" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			CHAR_CD
+			,CHAR_NM
+			,CLASS_CD
+		FROM CHARACTER_MT
+		WHERE 1=1
+	<if test="CHAR_CD != null">
+		AND CHAR_CD = #{CHAR_CD}
+	</if>
+	<if test="TEAM_CD != null">
+		AND TEAM_CD = #{TEAM_CD}
+	</if>
+	<if test="CLASS_CD != null">
+		AND CLASS_CD = #{CLASS_CD}
+	</if>
+	</select>
+	<select id="selectNPCharacter" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			MT.CHAR_CD 
+			,MT.CHAR_NM 
+			,MT.CLASS_CD 
+			,STT.HP 
+			,STT.ATT 
+			,STT.FREQ
+			,STT.XP
+		FROM CHARACTER_MT MT
+		JOIN CHARACTER_STT STT
+		ON MT.CHAR_CD = STT.CHAR_CD
+		WHERE 1=1
+		AND MT.CHAR_CD = #{CHAR_CD}
+	</select>	
+	<select id="selectPCharacter" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			MT.CHAR_CD
+			,MT.CLASS_CD 
+			,LVL.`LEVEL` 
+			,LVL.HP 
+			,LVL.ATT 
+			,LVL.REQD_XP 
+		FROM CHARACTER_MT MT
+		JOIN CHARACTER_LVL LVL
+		ON MT.CHAR_CD = LVL.CHAR_CD
+		WHERE 1=1
+		<if test="CHAR_CD != null">
+		AND MT.CHAR_CD = #{CHAR_CD}
+		</if>
+		<if test="CLASS_CD != null">
+		AND MT.CLASS_CD = #{CLASS_CD}
+		</if>				
+		AND LVL.`LEVEL` = #{LEVEL}
+	</select>
+	<select id="selectCharacterLine" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			TYPE
+			,LINE_TXT
+		FROM CHARACTER_LN
+		WHERE 1=1
+		AND CHAR_CD = #{CHAR_CD}
+	</select>
+	<select id="selectCharacterInMap" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			CM.CHAR_CD
+			,(SELECT FREQ FROM CHARACTER_STT WHERE CHAR_CD = CM.CHAR_CD) FREQ
+		FROM TEAM TM
+		JOIN CHARACTER_MT CM
+		ON TM.TEAM_CD = CM.TEAM_CD
+		WHERE 1 = 1
+		AND TM.MAP_CD = #{MAP_CD}
+		<if test="CLASS_CD != null">
+		AND CM.CLASS_CD = #{CLASS_CD}
+		</if>
+	</select>
+</mapper>

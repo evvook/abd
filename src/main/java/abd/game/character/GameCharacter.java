@@ -1,0 +1,96 @@
+package abd.game.character;
+
+import java.util.Map;
+
+import abd.game.character.action.Action;
+
+public abstract class GameCharacter{
+	public static final String CLASS_FIGHTER = "F";
+	public static final String CLASS_HEALER = "H";
+	
+	//기본정보
+	private String code;
+	private String name;
+	protected String classCd;
+	//클래스에 다른 행동 연관정보
+	protected Action action;
+	protected boolean alive;
+	//스테이터스 정보
+	protected Integer maxHp;
+	protected Integer currentHp;
+	protected Integer att;
+	
+	public GameCharacter(String charCd, String charNm, String classCd) {
+		// TODO Auto-generated constructor stub
+		this.code = charCd;
+		this.name = charNm;
+		this.classCd = classCd;
+		this.alive = true;
+	}
+	
+	
+	public String getCode() {
+		// TODO Auto-generated method stub
+		return code;
+	}
+	
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
+	}
+	
+
+	public boolean isAlive() {
+		return alive;
+	}
+	
+	public Integer getAtt() {
+		return att;
+	}
+	public Integer getHp() {
+		return maxHp;
+	};
+	public void setCurrentHp(int hp) {
+		if(alive && currentHp !=null) {
+			if(hp > maxHp) {
+				currentHp = maxHp;
+			}else {
+				currentHp = hp;
+			}
+		}
+	};
+	public Integer getCurrentHp() {
+		return currentHp;
+	};
+	
+	public void setAction(Action action) {
+		// TODO Auto-generated method stub
+		this.action = action;
+	}	
+	
+	public boolean equalsClass(String classCd) {
+		// TODO Auto-generated method stub
+		return this.classCd.equals(classCd);
+	}
+
+	public void increaseHp(Integer att) {
+		// TODO Auto-generated method stub
+		currentHp = currentHp + att;
+		if(currentHp > maxHp) {
+			currentHp = maxHp;
+		}
+	}
+
+	public void decreaseHp(Integer att) {
+		// TODO Auto-generated method stub
+		currentHp = currentHp - att;
+		if(currentHp < 0) {
+			currentHp = 0;
+		}
+		if(currentHp == 0) {
+			alive = false;
+		}
+	}
+
+	public abstract Map<String, String> getCharacterContext();
+}
