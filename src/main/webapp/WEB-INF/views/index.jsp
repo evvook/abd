@@ -29,9 +29,8 @@
     		position:absolute;
     		background: no-repeat;
     		background-position:center;
-    		background-image: url(resources/imgs/progress-unscreen.gif);
-    		/*filter: invert(100%) opacity(0.5);*/
-    		opacity:0.3;
+    		background-image: url(resources/imgs/progress.gif);
+    		filter: invert(100%) opacity(0.5);
 	    }
 	    input { margin: 20px 0;}
 	    button {
@@ -136,7 +135,7 @@
 				if(process){
 					var p = document.querySelector("#progress");
 					p.style.display = 'block';
-					p.style.width = "200px";
+					p.style.width = "370px";
 					p.style.height = "300px";
 				}
 			},500)
