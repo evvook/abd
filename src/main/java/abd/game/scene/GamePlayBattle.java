@@ -21,6 +21,10 @@ public class GamePlayBattle implements GamePlayElement {
 	private Encounter encounter;
 	private String encounteredChracterline;
 	
+	//선택지를 두개 가질 수 있다?
+	private GamePlaySelect battleSelect;//공격한다, 동료에게 도움요청, 후퇴한다
+	private GamePlaySelect pullBackSelect;//전투에 복귀한다, 아이템을 사용한다, 동료에게 도움을 요청, 장소에서 이탈한다
+	
 	public GamePlayBattle(Map<String, String> playInfo, GameDataLoader loader, PChacrater player) throws Exception {
 		// TODO Auto-generated constructor stub
 		this.loader = loader;

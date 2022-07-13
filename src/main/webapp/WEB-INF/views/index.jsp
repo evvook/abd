@@ -23,7 +23,16 @@
 	    }
 	    #start-screen div { margin-top: 30px; width: 400px; }
 	    #story, #message { margin-bottom: 30px; width: 400px; }
-	    #screen { display: none; }
+	    #screen { display: none; position:relative; }
+	    #progress { 
+    		display: none;
+    		position:absolute;
+    		background: no-repeat;
+    		background-position:center;
+    		background-image: url(resources/imgs/progress-unscreen.gif);
+    		/*filter: invert(100%) opacity(0.5);*/
+    		opacity:0.3;
+	    }
 	    input { margin: 20px 0;}
 	    button {
 	        background: transparent;
@@ -64,6 +73,7 @@
 	    <h5>* 대사 스포일러가 있습니다.</h5>
 	</form>
 	<div id="screen">
+		<div id="progress"></div>
 	    <div id="story">
 	        당신은 서명을 마치고 제4해저기지로 발걸음을 향했다.
 	    </div>
@@ -118,7 +128,28 @@
 		const $monsterLine = document.querySelector('#monster-line');
 		const $message = document.querySelector('#message');	
 		
+		var process = false;
+		
+		function progressOn(){
+			process = true;
+			setTimeout(function(){
+				if(process){
+					var p = document.querySelector("#progress");
+					p.style.display = 'block';
+					p.style.width = "200px";
+					p.style.height = "300px";
+				}
+			},500)
+		}
+		
+		function progressOff(){
+			var p = document.querySelector("#progress");
+			p.style.display = 'none';
+			process = false;
+		}
+		
         function ajaxRequest(inputs){
+        	progressOn()        	
         	
         	var reqJson = new Object();
     		reqJson.inputs = inputs;
@@ -133,6 +164,7 @@
     			      } else {
     			        alert('request에 뭔가 문제가 있어요.');
     			      }
+    			      progressOff();
     			}
     	    };
     	    
@@ -361,7 +393,7 @@
             	
             	this.monster = new Monster(this, monsterInfo);
                 
-            	let message = `엔지니어 가팀과 마주쳤다. `+monsterInfo.name+`인 것 같다!`;
+            	let message = `무한교 신도와 마주쳤다. `+monsterInfo.name+`인 것 같다!`;
             	this.showMessage(message);
             }
             
