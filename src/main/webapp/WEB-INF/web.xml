@@ -38,6 +38,20 @@
 		<param-value>WEB-INF/config/spring/context-*.xml</param-value>
 	</context-param>
 	
+	<!-- properties -->
+	<context-param>  
+	    <param-name>spring.profiles.active</param-name>  
+	    <param-value>local</param-value>  
+	</context-param>  
+	<context-param>  
+	    <param-name>spring.profiles.default</param-name>  
+	    <param-value>local</param-value>  
+	</context-param>
+	<context-param>  
+	    <param-name>spring.liveBeansView.mbeanDomain</param-name>  
+	    <param-value>local</param-value>  
+	</context-param>	
+	
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

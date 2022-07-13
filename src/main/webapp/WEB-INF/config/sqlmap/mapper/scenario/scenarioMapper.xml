@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="abd.scenario.scenarioMapper">
+<!-- 여기에 쿼리를 작성하면 된다. -->
+	<select id="selectStartScene" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			 SCENE_CD
+			,SCENE_NM
+		FROM SCENE_GAME SG
+		ORDER BY SCENE_CD
+		ASC LIMIT 1
+	</select>
+	<select id="selectEvents" parameterType="hashmap" resultType="hashmap">
+		SELECT 
+			 EVENT_CD
+			,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ 
+			,E_TYPE 
+		FROM EVENT_SCENE ES 
+		WHERE SCENE_CD = #{SCENE_CD}
+		ORDER BY EVENT_SEQ 
+	</select>
+	<select id="selectScripts" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			 SCRIPT_CD 
+			,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ 
+			,SCRIPT_TXT 
+		FROM SCRIPT_EVENT SE 
+		WHERE EVENT_CD = #{EVENT_CD}
+		AND EVENT_SEQ = #{EVENT_SEQ}
+		ORDER BY SCRIPT_SEQ 
+	</select>
+	<select id="selectPlay" parameterType="hashmap" resultType="hashmap">
+		SELECT 
+			 PLAY_CD 
+			,P_TYPE 
+		FROM PLAY_EVENT PE 
+		WHERE EVENT_CD = #{EVENT_CD}
+		AND EVENT_SEQ = #{EVENT_SEQ}
+	</select>
+	<select id="selectSelection" parameterType="hashmap" resultType="hashmap">
+
+		SELECT
+			 SELECT_CD 
+			,SELECT_HEAD 
+			,CAST(NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+		FROM SELECT_PLAY SP 
+		WHERE PLAY_CD = #{PLAY_CD}
+
+	</select>
+	<select id="selectOptions" parameterType="hashmap" resultType="hashmap">
+
+		SELECT
+			 CAST(OPTION_SEQ AS CHAR) OPTION_SEQ 
+			,OPTION_TXT
+		FROM OPTION_SELECT OS
+		WHERE SELECT_CD = #{SELECT_CD}
+		ORDER BY OPTION_SEQ 
+
+	</select>
+	<select id="selectSelectionResult" parameterType="hashmap" resultType="hashmap">
+
+		SELECT
+			  RESULT_OCCURRED
+			 ,RO_DESC 
+		FROM OPTION_SELECT OS
+		WHERE SELECT_CD = #{SELECT_CD}
+		AND OPTION_SEQ = #{OPTION_SEQ}
+
+	</select>
+	<select id="selectBattle" parameterType="hashmap" resultType="hashmap">
+
+		SELECT 
+			 BATTLE_CD 
+			,MAP_CD 
+		FROM BATTLE_PLAY BP
+		WHERE PLAY_CD = #{PLAY_CD}
+
+	</select>
+</mapper>

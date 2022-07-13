@@ -20,39 +20,31 @@
 	</if>
 	</select>
 	<select id="selectNPCharacter" parameterType="hashmap" resultType="hashmap">
-		SELECT
-			MT.CHAR_CD 
-			,MT.CHAR_NM 
-			,MT.CLASS_CD 
-			,STT.HP 
-			,STT.ATT 
-			,STT.FREQ
-			,STT.XP
-		FROM CHARACTER_MT MT
-		JOIN CHARACTER_STT STT
-		ON MT.CHAR_CD = STT.CHAR_CD
-		WHERE 1=1
-		AND MT.CHAR_CD = #{CHAR_CD}
+		SELECT 
+			 CMT.CHAR_CD
+			,CMT.CHAR_NM 
+			,CMT.CLASS_CD 
+			,CL.HP
+			,CL.ATT 
+			,CL.XP 
+			,CL.FREQ 
+		FROM CHARACTER_MT CMT 
+		JOIN CHARACTER_MAP CMP
+		ON CMT.CHAR_CD = CMP.CHAR_CD
+		JOIN CHARACTER_LVL CL 
+		ON CMT.LVL = CL.`LEVEL`
+		WHERE CMT.CHAR_CD = #{CHAR_CD}
 	</select>	
 	<select id="selectPCharacter" parameterType="hashmap" resultType="hashmap">
 		SELECT
-			MT.CHAR_CD
-			,MT.CLASS_CD 
+			 'P' CLASS_CD 
 			,LVL.`LEVEL` 
 			,LVL.HP 
 			,LVL.ATT 
 			,LVL.REQD_XP 
-		FROM CHARACTER_MT MT
-		JOIN CHARACTER_LVL LVL
-		ON MT.CHAR_CD = LVL.CHAR_CD
+		FROM CHARACTER_LVL LVL
 		WHERE 1=1
-		<if test="CHAR_CD != null">
-		AND MT.CHAR_CD = #{CHAR_CD}
-		</if>
-		<if test="CLASS_CD != null">
-		AND MT.CLASS_CD = #{CLASS_CD}
-		</if>				
-		AND LVL.`LEVEL` = #{LEVEL}
+		AND CONVERT(LVL.`LEVEL`,INTEGER) = #{LEVEL}
 	</select>
 	<select id="selectCharacterLine" parameterType="hashmap" resultType="hashmap">
 		SELECT
@@ -63,16 +55,14 @@
 		AND CHAR_CD = #{CHAR_CD}
 	</select>
 	<select id="selectCharacterInMap" parameterType="hashmap" resultType="hashmap">
-		SELECT
-			CM.CHAR_CD
-			,(SELECT FREQ FROM CHARACTER_STT WHERE CHAR_CD = CM.CHAR_CD) FREQ
-		FROM TEAM TM
-		JOIN CHARACTER_MT CM
-		ON TM.TEAM_CD = CM.TEAM_CD
-		WHERE 1 = 1
-		AND TM.MAP_CD = #{MAP_CD}
-		<if test="CLASS_CD != null">
-		AND CM.CLASS_CD = #{CLASS_CD}
-		</if>
+		SELECT 
+			CMT.CHAR_CD 
+			,CL.FREQ 
+		FROM CHARACTER_MT CMT 
+		JOIN CHARACTER_MAP CMP
+		ON CMT.CHAR_CD = CMP.CHAR_CD
+		JOIN CHARACTER_LVL CL 
+		ON CMT.LVL = CL.`LEVEL`
+		WHERE CMP.MAP_CD = #{MAP_CD}
 	</select>
 </mapper>

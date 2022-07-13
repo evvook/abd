@@ -16,17 +16,22 @@ public class Encounter {
 	private List<CountTurnObserver> pickedCharacters;
 	private NPCharacter character;
 	
-//	private CharacterInMapService charInMapService;
-	
 	public Encounter() {
 		pickedCharacterPool = new HashMap<String, NPCharacter>();
 		pickedCharacters = new ArrayList<CountTurnObserver>();
 		
-//		ApplicationContext ac = new AnnotationConfigApplicationContext(CharacterSerivceConf.class);
-//		charInMapService = ac.getBean(CharacterInMapService.class);
 	}
 	
 	public void encounterChracter(List<Map<String, String>> characterList, GameDataLoader loader) throws Exception {
+		pickRandomChracter(characterList, loader);
+		character.setEncounter(true);
+	}
+	
+	public void encounterChracter(String mapCode, GameDataLoader loader) throws Exception {
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("MAP_CD", mapCode);
+		
+		List<Map<String,String>> characterList = loader.getCharactersInMap(paramMap);
 		pickRandomChracter(characterList, loader);
 		character.setEncounter(true);
 	}
@@ -40,11 +45,6 @@ public class Encounter {
 		String code = null;
 		//랜덤으로 캐릭터 뽑는 내용
 		//뽑힌 캐릭터 코드로 캐릭터를 찾거나 생성한다.
-		//1. 현재 맵 코드로 캐릭터 코드 및 빈도수 조회
-//		Map<String,String> paramMap = new HashMap<String,String>();
-//		paramMap.put("MAP_CD", "M01");
-//		Query query = DatabaseManager.getSelectQuery("SelectCharInMapQuery");
-//		List<Map<String,String>> charCodeList = query.execute(param);
 		
 		//2. 캐릭터 코드 리스트를 반복하며 풀 생성(빈도수에 맞게 추가로 코드 add)
 		List<String> charPool = new ArrayList<String>();
@@ -76,11 +76,6 @@ public class Encounter {
 		if(pickedCharacterPool.containsKey(code)) {
 			character = pickedCharacterPool.get(code);
 		}else {
-//			ApplicationContext ac = new AnnotationConfigApplicationContext(GameCharacterBuilerConf.class);
-//			GameCharacterBuilder gcb = ac.getBean(GameCharacterBuilder.class);
-//			character = gcb.getNPCharacterInstance(code);
-//			pickedCharacterPool.put(code, character);
-//			pickedCharacters.add(character);
 			Map<String,String> paramMap = new HashMap<String, String>();
 			paramMap.put("CHAR_CD", code);
 			List<Map<String,String>> npcList = loader.getNPCharacterInfo(paramMap);
@@ -100,13 +95,6 @@ public class Encounter {
 	public NPCharacter encounterHealer(List<Map<String, String>> healerList, GameDataLoader loader) throws Exception {
 		// TODO Auto-generated method stub
 		//힐러 중 랜덤으로 뽑아서 셋팅
-//		Map<String,String> paramMap = new HashMap<String,String>();
-//		paramMap.put("MAP_CD", "M01");
-//		paramMap.put("CLASS_CD", "H");
-		
-//		Query query = DatabaseManager.getSelectQuery("SelectCharInMapQuery");
-//		List<Map<String,String>> charCodeList = query.execute(param);
-//		List<Map<String,String>> charCodeList = null;//charInMapService.selectCharacterInMap(paramMap);
 		
 		//2. 캐릭터 코드 리스트를 반복하며 풀 생성(빈도수에 맞게 추가로 코드 add)
 		List<String> charPool = new ArrayList<String>();
@@ -120,9 +108,6 @@ public class Encounter {
 		int idx = (int) (Math.random() * charPool.size());
 		//4. 인덱스에 해당하는 캐릭터 생성
 		String code = charPool.get(idx);
-//		ApplicationContext ac = new AnnotationConfigApplicationContext(GameCharacterBuilerConf.class);
-//		GameCharacterBuilder gcb = ac.getBean(GameCharacterBuilder.class);
-//		return gcb.getNPCharacterInstance(code);
 		Map<String,String> paramMap = new HashMap<String, String>();
 		paramMap.put("CHAR_CD", code);
 		List<Map<String,String>> npcList = loader.getNPCharacterInfo(paramMap);

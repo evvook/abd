@@ -34,7 +34,7 @@ public class GamePlayController {
 	public Map<String,Object> play(@RequestBody Map<String,Object> param, HttpServletRequest request) throws Exception{
 		logger.info("db");
 		@SuppressWarnings("unchecked")
-		Map<String,String> paramMap = (Map<String,String>)param.get("inputs");
+		Map<String,Object> paramMap = (Map<String,Object>)param.get("inputs");
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		
 		//세션별로 구분하기위해 세션id를 받아서 게임 정보와 함께 컨테이너에 보관한다.

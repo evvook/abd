@@ -75,8 +75,9 @@
 	        <span id="hero-att"></span>
 	    </div>
 	    <form id="game-menu" style="display: none;">
-	        <div id="menu-1">1.모험</div>
-	        <div id="menu-2">2.카페에 쉬러가기(체력 회복)</div>
+<!-- 	        <div id="menu-1">1.모험</div>
+	        <div id="menu-2">2.카페에 쉬러가기(체력 회복)</div> -->
+	        <div id="menu-9">9.다음</div>
 	        <div id="menu-3">3.종료</div>
 	        <input id="menu-input" />
 	        <button id="menu-button">입력</button>
@@ -136,7 +137,7 @@
     	    };
     	    
     	    /* Post 방식으로 요청 */
-    	    httpRequest.open('POST', '/abd/gamePlay', true);//경로 잡아줌
+    	    httpRequest.open('POST', '/gamePlay', true);//경로 잡아줌
     	    /* Response Type을 Json으로 사전 정의 */
     	    httpRequest.responseType = "json";
     	    /* 요청 Header에 컨텐츠 타입은 Json으로 사전 정의 */
@@ -148,27 +149,70 @@
         function afterwork(result){
         	if(result.status == "start"){
 	        	game.createHero(result.player);
-        	}else if(result.status == "adventure"){
-        		//상대 캐릭터 설정
-        		game.createMonster(result.npc)
+	        	if(result.script){
+		        	game.showMessage(result.script)
+	        	}
+        	}else if(result.status == "script"){
+		        game.showMessage(result.script)
+		        	
+        	}else if(result.status == "select"){
+        		
+		        game.showMessage(result.select.selectHead)
+		        
+        		var div = document.querySelector("#message");
+        		var select = document.createElement("select");
+        		select.id = "playSelect"
+        		select["selectCode"] = result.selectCode;
+        		
+        		for(var idx in result.select.selectOptions){
+        			var option = document.createElement("option")
+        			var o = result.select.selectOptions[idx]
+        			for(var i in o){
+        				option.value = i;
+        				option.text = o[i];
+        			}
+        			select.add(option);
+        		}
+        		div.append(select);
+		        	
+        	}else if(result.status == "selecting"){
+        		console.log("selecting")
+		        	
+        	}
+        	/*else if(result.status == "initBattle"){
+        		var s = document.querySelector("#playSelect");
+        		if(s){
+	        		s.remove();
+        		}
+        		game.showMessage(" ");
+        		
+        		//다음 이벤트인 배틀 진행할 수 있게 호출함
+        		ajaxRequest({status:'onGoing',action:'event'});
+		        	
+        	}*/
+        	else if(result.status == "startBattle"){
         		//모험 화면 업데이트
         		game.clearInputs();
         		game.changeScreen('battle');
+        		
+        		game.setHeroStatus(result.battle.player);
 	        	game.updateHeroStat();
+	        	game.createMonster(result.battle.npc);
         		game.updateMonsterStat();
+        		
         	}else if(result.status == "battle"){
         		//캐릭터 상태 적용
         		game.showMessage(game.hero.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다.");
         		
-        		game.setHeroStatus(result.player);
-        		game.setMonsterStatus(result.npc);
+        		game.setHeroStatus(result.battle.player);
+        		game.setMonsterStatus(result.battle.npc);
         		//캐릭터 상태 화면 반영
 	        	game.updateHeroStat();
         		game.updateMonsterStat();
         	}else if(result.status == "win"){
         		game.showMessage(game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다");
         		
-        		game.setHeroStatus(result.player);
+        		game.setHeroStatus(result.battle.player);
         		game.clearMonster();
         		
         		game.updateHeroStat();
@@ -179,7 +223,7 @@
         		
         	}else if(result.status == "defeat"){
         		//사망
-        		game.setHeroStatus(result.player);
+        		game.setHeroStatus(result.battle.player);
         		game.updateHeroStat();
         		
         		game.clearMonster();
@@ -260,6 +304,16 @@
                 } else if (input === '2') { //휴식
                     ajaxRequest({status:"onGoing",action:"rest"});
                 
+                } else if (input === '9') { //다음
+                	var inputs = {status:"onGoing",action:"event"};
+                	if(document.querySelector("#playSelect")){
+	                	var selected = {};
+                		selected["SELECT_CD"] = document.querySelector("#playSelect").selectCode;
+                		selected["OPTION_SEQ"] = document.querySelector("#playSelect").value;
+                		inputs["inputData"] = {selected:selected}
+                	}
+                    ajaxRequest(inputs);
+                
                 } else if (input === '3') { //종료
                     this.showMessage(' ');
                     this.quit();
@@ -270,7 +324,7 @@
                 event.preventDefault();
                 const input = event.target['battle-input'].value;
                 if(input === '1') {
-                	ajaxRequest({status:"onGoing",action:"battle"});
+                	ajaxRequest({status:"onGoing",action:"event",inputData:{command:'battle'}});
                 }
                 else if (input === '2') {
                 	ajaxRequest({status:"onGoing",action:"runAway"});

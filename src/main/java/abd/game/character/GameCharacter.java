@@ -20,6 +20,11 @@ public abstract class GameCharacter{
 	protected Integer currentHp;
 	protected Integer att;
 	
+	//무장여부
+	protected boolean armed = false;
+	//무장할 경우 증가하는 추가 공격치
+	protected Integer extraAtt = 0;
+	
 	public GameCharacter(String charCd, String charNm, String classCd) {
 		// TODO Auto-generated constructor stub
 		this.code = charCd;

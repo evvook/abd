@@ -1,4 +1,4 @@
-package abd.character.dao;
+package abd.dao.character;
 
 import java.util.HashMap;
 import java.util.List;
