@@ -1,5 +1,6 @@
 package abd.game.scene;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import abd.game.GameDataLoader;
+import abd.game.GameManager;
 
 public class GamePlaySelect implements GamePlayElement{
 	private String selectCode;
 	private Integer numOfSelect;
 	private String selectHead;
 	private List<Map<String,String>> options;
+	private Map<Map<String,String>,String> optionsDetail;
 	
 	public GamePlaySelect(Map<String, String> playInfo, GameDataLoader loader) throws Exception {
 		// TODO Auto-generated constructor stub
@@ -24,6 +27,8 @@ public class GamePlaySelect implements GamePlayElement{
 		selectHead = selectInfo.get("SELECT_HEAD");
 		
 		options = new ArrayList<Map<String,String>>();
+		optionsDetail = new HashMap<Map<String,String>, String>();
+		
 		List<Map<String,String>> optionList = loader.getOptionsOfSelect(selectInfo);
 		Iterator<Map<String,String>> mi = optionList.iterator();
 		while(mi.hasNext()) {
@@ -31,6 +36,9 @@ public class GamePlaySelect implements GamePlayElement{
 			Map<String,String> optionMap = new HashMap<String, String>();
 			optionMap.put(optionInfo.get("OPTION_SEQ"), optionInfo.get("OPTION_TXT"));
 			options.add(optionMap);
+			Map<String,String> key = new HashMap<String, String>();
+			key.put(selectCode, optionInfo.get("OPTION_SEQ"));
+			optionsDetail.put(key, optionInfo.get("RESULT_OCCURRED"));
 		}
 	}
 
@@ -52,9 +60,48 @@ public class GamePlaySelect implements GamePlayElement{
 	}
 
 	@Override
-	public void play(Map<String, Object> commandInfo) {
+	public Map<String, Object> playSelect(Map<String, String> selectedInfo, GameManager manager) throws Exception {
 		// TODO Auto-generated method stub
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		//Map<String,String> selected =(Map<String,String>)input.get("selected");
 		
-	}
+		//{selected={SELECT_CD=SL001, OPTION_SEQ=1}}
+		Map<String,String> key = new HashMap<String, String>();
+		if(selectCode.equals(selectedInfo.get("SELECT_CD"))) {
+			String optionSeq = selectedInfo.get("OPTION_SEQ");
+			key.put(selectCode, optionSeq);
+		}
+		
+		String resultOccurred = optionsDetail.get(key);
+		String[] methodInfo = resultOccurred.split("#");
+		String methodName = resultOccurred.split("#")[0];
+		
+		if(methodName != null && !"".equals(methodName)) {
+			Object instance = manager;
+			Class<?> clazz = instance.getClass();
 
+			Method method = null;
+			Map<String,Object> resultContext = null;
+			
+			if(methodInfo.length > 1) {
+				if(methodInfo.length == 2) {
+					String methodParam = methodInfo[1];
+					method = clazz.getDeclaredMethod(methodName,String.class);
+					resultContext = (Map<String,Object>)method.invoke(instance,methodParam);
+				}else if(methodInfo.length == 3) {
+					String methodParam1 = methodInfo[1];
+					String methodParam2 = methodInfo[2];
+					method = clazz.getDeclaredMethod(methodName,String.class,String.class);
+					resultContext = (Map<String,Object>)method.invoke(instance,methodParam1,methodParam2);
+				}
+			}else {
+				method = clazz.getDeclaredMethod(methodName);
+				resultContext = (Map<String,Object>)method.invoke(instance);
+			}
+			
+			if(resultContext != null)
+				resultMap.putAll(resultContext);
+		}
+		return resultMap;
+	}
 }

@@ -9,6 +9,8 @@ import abd.game.character.GameCharacterBuilder;
 import abd.game.character.NPCharacter;
 import abd.game.character.PChacrater;
 import abd.game.scene.GameEvent;
+import abd.game.scene.GamePlayBattle;
+import abd.game.scene.GamePlayElement;
 import abd.game.scene.GameScene;
 
 public class GameManager implements GameInterface{
@@ -19,7 +21,11 @@ public class GameManager implements GameInterface{
 	private GameEvent currentEvent;
 	private Map<String,Object> eventContext;
 	
+	//데이터 로드를 위한 객체(서비스)
 	private GameDataLoader loader;
+	
+	//전투 상황을 통제하기 위한 배틀 객체
+	private GamePlayBattle pBtl;
 	
 	public GameManager() {
 		eventContext = new HashMap<String, Object>();
@@ -173,7 +179,7 @@ public class GameManager implements GameInterface{
 	}
 	
 	@Override
-	public void goEvent() {
+	public void goEvent() throws Exception {
 		if(currentEvent.isDone()) {
 			currentEvent = currentScene.getEvent();
 			eventContext = currentEvent.happened();
@@ -197,21 +203,55 @@ public class GameManager implements GameInterface{
 		return player;
 	}
 	
+	
+	
+	
+	
 	//리플렉션으로 실행하는 셀렉트 선택의 결과 메서드들
-	public Map<String,Object> goNextEvent() {
+	public Map<String,Object> goNextEvent() throws Exception {
 		currentEvent.hasDone();
 		currentEvent = currentScene.getEvent();
 		return currentEvent.happened();
 	}
 	
-	public Map<String,Object> playerLevelUp() throws Exception {
+	public void playerLevelUp() throws Exception {
 		//player.levelUp();
 		Map<String,String> paramMap = new HashMap<String,String>();
 		paramMap.put("LEVEL", String.valueOf(player.getLevel()+1));
 		List<Map<String,String>> lvlDataList = loader.getPChacterInfo(paramMap);
 		Map<String,String> lvlData = lvlDataList.get(0);
 		player.setLvlStatus(lvlData);
-		
-		return new HashMap<String, Object>();
+	}
+	
+	public Map<String,Object> goSpecificEvent(String eventCode, String eventSeq) throws Exception {
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
+		return currentEvent.happened();
+	}
+
+	public void setBattle(GamePlayBattle pEl) {
+		// TODO Auto-generated method stub
+		this.pBtl = pEl;
+	}
+	
+	public Map<String,Object> playBattle(String command) throws Exception {
+		Map<String,Object> resultMap = pBtl.play(command);
+		return resultMap;
+	}
+	
+	public Map<String,Object> cancelBattleSelect() throws Exception{
+		Map<String,Object> resultMap = pBtl.cancelSelect();
+		return resultMap;
+	}
+	
+	public Map<String,Object> goBattle() throws Exception{
+		Map<String,Object> resultMap = pBtl.goBattle();
+		return resultMap;
+	}
+	
+	public Map<String,Object> awayBattle(String eventCode, String eventSeq) throws Exception {
+		pBtl.takeActionToEachother("runAway");
+		pBtl.initBattle();
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
+		return currentEvent.happened();
 	}
 }

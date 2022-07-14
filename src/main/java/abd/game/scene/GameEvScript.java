@@ -10,7 +10,8 @@ import abd.game.GameDataLoader;
 import abd.game.character.PChacrater;
 
 public class GameEvScript extends GameEvent {
-	private Queue<String> scripts;
+	private LinkedList<String> scripts;
+	private int idxOfScript = 0;
 
 	public GameEvScript(Map<String, String> eventInfo, GameDataLoader loader, PChacrater player) throws Exception {
 		super(eventInfo, loader, player);
@@ -29,9 +30,10 @@ public class GameEvScript extends GameEvent {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("status", "script");
-		resultMap.put("script", scripts.poll());
-		if(scripts.isEmpty()) {
-			//스크립트가 전부 소진되면 이벤트 종료
+		String currentScript = scripts.get(idxOfScript++);
+		resultMap.put("script", currentScript);
+		if(currentScript.equals(scripts.getLast())) {
+			//마지막 스크립트가 실행되면
 			hasDone();
 		}
 		return resultMap;
@@ -43,4 +45,9 @@ public class GameEvScript extends GameEvent {
 		return null;
 	}
 
+	public void doneBack() {
+		// TODO Auto-generated method stub
+		super.doneBack();
+		idxOfScript = 0;
+	}
 }

@@ -11,6 +11,8 @@ public abstract class GameEvent {
 	private boolean done;
 	private PChacrater player;
 	
+	private GameEvent nextEvent;
+	
 	public GameEvent(Map<String, String> eventInfo, GameDataLoader loader,PChacrater player) {
 		// TODO Auto-generated constructor stub
 		eventCode = eventInfo.get("EVENT_CD");
@@ -19,6 +21,14 @@ public abstract class GameEvent {
 		done = false;
 		
 		this.player = player;
+	}
+	
+	public void setNextEvent(GameEvent nextEvent) {
+		this.nextEvent = nextEvent;
+	}
+	
+	public GameEvent getNextEvent() {
+		return nextEvent;
 	}
 
 	public String getEventCode() {
@@ -33,7 +43,7 @@ public abstract class GameEvent {
 		return player;
 	}
 	
-	public abstract Map<String,Object> happened();
+	public abstract Map<String,Object> happened() throws Exception;
 	
 	public abstract Map<String, Object> happened(Map<String, Object> input) throws Exception;
 	
@@ -43,6 +53,11 @@ public abstract class GameEvent {
 	
 	public void hasDone() {
 		done = true;
+	}
+
+	public void doneBack() {
+		// TODO Auto-generated method stub
+		done = false;
 	}
 
 }

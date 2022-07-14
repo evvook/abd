@@ -13,6 +13,7 @@ public class GameEvPlay extends GameEvent {
 	private String playCode;
 	private String playType;
 	private GamePlayElement pEl;
+	GamePlayBattle pBtl;
 	
 	private GameDataLoader loader;
 	private GameManager manager;
@@ -34,12 +35,14 @@ public class GameEvPlay extends GameEvent {
 			pEl = new GamePlaySelect(playInfo,loader);
 			
 		}else if("B".equals(playType)){
-			pEl = new GamePlayBattle(playInfo,loader,manager.getPlayer());
+			pBtl = new GamePlayBattle(playInfo,loader,manager.getPlayer());
+			manager.setBattle(pBtl);
+			pEl = pBtl;
 		}
 	}
 
 	@Override
-	public Map<String, Object> happened() {
+	public Map<String, Object> happened() throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		if("S".equals(playType)) {
@@ -49,39 +52,39 @@ public class GameEvPlay extends GameEvent {
 			resultMap.put("select", pEl.getElContext());
 		}else if("B".equals(playType)) {
 			//적을 모두 쓰러트리면 이벤트 종료
-			resultMap.put("status", "startBattle");
-			resultMap.put("battleCode", pEl.getCode());
 			resultMap.put("battle", pEl.getElContext());
+			resultMap.put("battleCode", pEl.getCode());
+			//스테이터스 설정
+			String battleStatus = (String)pEl.getElContext().get("status");
+			if("endBattle".equals(battleStatus)) {
+				resultMap.put("status", battleStatus);
+			}else {
+				resultMap.put("status", "startBattle");
+			}
 		}
 		return resultMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> happened(Map<String, Object> input) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		if("S".equals(playType)) {
-			@SuppressWarnings("unchecked")
-			Map<String,String> selectedInfo = (Map<String,String>) input.get("selected");
 			
-			List<Map<String,String>> resultList = loader.getSeletionResult(selectedInfo);
-			Map<String,String> result = resultList.get(0);
-			//가져온 데이터로 객체 실행(리플렉션 사용?)
-			//다듬을 필요 있음
-			String methodName = result.get("RESULT_OCCURRED");
-			if(methodName != null && !"".equals(methodName)) {
-				Object instance = manager;
-				Class<?> clazz = instance.getClass();
-				Method method = clazz.getDeclaredMethod(methodName);
-				Map<String,Object> resultContext = (Map<String,Object>)method.invoke(instance);
-				resultMap.putAll(resultContext);
-			}
+			Map<String,String> selectInfo = (Map<String,String>)input.get("selected");
+			Map<String,Object> selectContext = pEl.playSelect(selectInfo,manager);
+			resultMap.putAll(selectContext);
+			
 		}else if("B".equals(playType)) {
-			pEl.play(input);
 			
-			resultMap.put("status", "battle");
-			resultMap.put("battleCode", pEl.getCode());
-			resultMap.put("battle", pEl.getElContext());
+			Map<String,String> selectInfo = (Map<String,String>)input.get("selected");
+			Map<String,Object> battleContext = pEl.playSelect(selectInfo,manager);
+			resultMap.putAll(battleContext);
+			
+			if("battleEnd".equals(battleContext.get("status"))) {
+				hasDone();
+			}
 		}
 		return resultMap;
 	}

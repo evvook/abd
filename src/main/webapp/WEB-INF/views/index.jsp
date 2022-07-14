@@ -76,30 +76,7 @@
 	    <div id="story">
 	        당신은 서명을 마치고 제4해저기지로 발걸음을 향했다.
 	    </div>
-	    <div id="hero-stat">
-	        <span id="hero-name"></span>
-	        <span id="hero-level"></span>
-	        <span id="hero-hp"></span>
-	        <span id="hero-xp"></span>
-	        <span id="hero-att"></span>
-	    </div>
-	    <form id="game-menu" style="display: none;">
-<!-- 	        <div id="menu-1">1.모험</div>
-	        <div id="menu-2">2.카페에 쉬러가기(체력 회복)</div> -->
-	        <div id="menu-9">9.다음</div>
-	        <div id="menu-3">3.종료</div>
-	        <input id="menu-input" />
-	        <button id="menu-button">입력</button>
-	    </form>
-	    <form id="battle-menu" style="display: none;">
-	        <div id="battle-1">1.대결</div>
-	        <!-- <div id="battle-2">2.금이씨와 얘기하기(체력 +20)</div> -->
-	        <div id="battle-3">2.도망</div>
-	        <input id="battle-input" />
-	        <button id="battle-button">입력</button>
-	    </form>
-	    <div id="message"></div>
-	    <div id="monster-stat">
+	    	    <div id="monster-stat">
 	        <div id="monster-img" style="margin:5px;">
 	            <img src="resources/imgs/sin.jpg">
 	        </div>
@@ -108,6 +85,30 @@
 	        <span id="monster-name"></span>
 	        <span id="monster-hp"></span>
 	        <span id="monster-att"></span>
+	    </div>
+	    <div id="message"></div>
+	    <form id="game-menu" style="display: none;">
+<!-- 	        <div id="menu-1">1.모험</div>
+	        <div id="menu-2">2.카페에 쉬러가기(체력 회복)</div> -->
+<!-- 	        <div id="menu-9">9.다음</div>
+	        <div id="menu-3">3.종료</div> -->
+	        <!-- <input id="menu-input" /> -->
+	        <button id="menu-button">다음</button>
+	    </form>
+	    <form id="battle-menu" style="display: none;">
+	        <!-- <div id="battle-1">1.대결</div> -->
+	        <!-- <div id="battle-2">2.금이씨와 얘기하기(체력 +20)</div> -->
+	        <!-- <div id="battle-3">2.도망</div> -->
+	        <!-- <div id="battle-9">9.선택</div>
+	        <input id="battle-input" /> -->
+	        <button id="battle-button">선택</button>
+	    </form>
+	    	    <div id="hero-stat">
+	        <span id="hero-name"></span>
+	        <span id="hero-level"></span>
+	        <span id="hero-hp"></span>
+	        <span id="hero-xp"></span>
+	        <span id="hero-att"></span>
 	    </div>
 	</div>
 	<script type="text/javascript" charset="UTF-8">
@@ -184,13 +185,26 @@
 		        	game.showMessage(result.script)
 	        	}
         	}else if(result.status == "script"){
+        		//game.clearInputs();
+                game.changeScreen('game');
+                game.clearMonster();
+                game.updateMonsterStat();
+        		
 		        game.showMessage(result.script)
 		        	
         	}else if(result.status == "select"){
-        		
-		        game.showMessage(result.select.selectHead)
+        		//game.clearInputs();
+                game.changeScreen('game');
+                game.clearMonster();
+                game.updateMonsterStat();
+		        game.showMessage(' ')
 		        
         		var div = document.querySelector("#message");
+		        var head = document.createElement("div");
+		        head.id = "selectHead";
+				head.innerText = result.select.selectHead
+				div.append(head);
+		        
         		var select = document.createElement("select");
         		select.id = "playSelect"
         		select["selectCode"] = result.selectCode;
@@ -231,30 +245,150 @@
 	        	game.createMonster(result.battle.npc);
         		game.updateMonsterStat();
         		
+        		game.showMessage(' ');
+        		
+        		//공통화
+        		createBattleSelect("battle", result.battle);
+        		
         	}else if(result.status == "battle"){
+				game.changeScreen('battle');
+        		game.setHeroStatus(result.player);
+	        	game.updateHeroStat();
+	        	game.createMonster(result.npc);
+        		game.updateMonsterStat();
         		//캐릭터 상태 적용
         		game.showMessage(game.hero.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다.");
         		
-        		game.setHeroStatus(result.battle.player);
-        		game.setMonsterStatus(result.battle.npc);
+        		createBattleSelect(result.status, result);
+        		
+        		/*var div = document.querySelector("#message");
+				var head = document.createElement("div");
+				head.id = "battleSelectHead";
+				head.innerText = result.select.selectHead;
+				div.append(head);
+				
+        		var select = document.createElement("select");
+        		select.id = "battleSelect"
+        		select["selectCode"] = result.selectCode;
+        		
+        		for(var idx in result.select.selectOptions){
+        			var option = document.createElement("option")
+        			var o = result.select.selectOptions[idx]
+        			for(var i in o){
+        				option.value = i;
+        				option.text = o[i];
+        			}
+        			select.add(option);
+        		}
+        		div.append(select);*/
+        		
+        		game.setHeroStatus(result.player);
+        		game.setMonsterStatus(result.npc);
         		//캐릭터 상태 화면 반영
 	        	game.updateHeroStat();
         		game.updateMonsterStat();
-        	}else if(result.status == "win"){
+        		
+        	}else if(result.status == "battleHelp"){
+        		game.changeScreen('battle');
+        		
+        		game.showMessage(' ');
+        		
+        		createBattleSelect(result.status, result);
+        		/*var div = document.querySelector("#message");
+				var head = document.createElement("div");
+				head.id = "battleHelpSelectHead";
+				head.innerText = result.select.selectHead;
+				div.append(head);
+				
+        		var select = document.createElement("select");
+        		select.id = "battleHelpSelect"
+        		select["selectCode"] = result.selectCode;
+        		
+        		for(var idx in result.select.selectOptions){
+        			var option = document.createElement("option")
+        			var o = result.select.selectOptions[idx]
+        			for(var i in o){
+        				option.value = i;
+        				option.text = o[i];
+        			}
+        			select.add(option);
+        		}
+        		div.append(select);*/
+        		
+        	}else if(result.status == "pullBack"){
+        		game.changeScreen('battle');
+        		game.clearMonster();
+                game.updateMonsterStat();
+        		
+        		game.showMessage(' ');
+        		
+        		createBattleSelect(result.status, result);
+        		
+        		/*var div = document.querySelector("#message");
+				var head = document.createElement("div");
+				head.id = "pullBackSelectHead";
+				head.innerText = result.select.selectHead;
+				div.append(head);
+				
+        		var select = document.createElement("select");
+        		select.id = "pullBackSelect"
+        		select["selectCode"] = result.selectCode;
+        		
+        		for(var idx in result.select.selectOptions){
+        			var option = document.createElement("option")
+        			var o = result.select.selectOptions[idx]
+        			for(var i in o){
+        				option.value = i;
+        				option.text = o[i];
+        			}
+        			select.add(option);
+        		}
+        		div.append(select);*/
+        		
+        	}else if(result.status == "pullBackHelp"){
+        		game.changeScreen('battle');
+        		
+        		game.showMessage(' ');
+        		
+        		createBattleSelect(result.status, result);
+        		
+        		/*var div = document.querySelector("#message");
+				var head = document.createElement("div");
+				head.id = "pullBackHelpSelectHead";
+				head.innerText = result.select.selectHead;
+				div.append(head);
+				
+        		var select = document.createElement("select");
+        		select.id = "pullBackHelpSelect"
+        		select["selectCode"] = result.selectCode;
+        		
+        		for(var idx in result.select.selectOptions){
+        			var option = document.createElement("option")
+        			var o = result.select.selectOptions[idx]
+        			for(var i in o){
+        				option.value = i;
+        				option.text = o[i];
+        			}
+        			select.add(option);
+        		}
+        		div.append(select);*/
+        		
+        	}else if(result.status == "endBattle"){
+        		alert("전투 종료. 다음 이벤트로 진행 필요");
+        	}
+        	else if(result.status == "win"){
         		game.showMessage(game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다");
         		
-        		game.setHeroStatus(result.battle.player);
+        		game.setHeroStatus(result.player);
         		game.clearMonster();
         		
         		game.updateHeroStat();
         		game.updateMonsterStat();
         		
-        		//중앙동으로 이동
-        		game.changeScreen('game');
-        		
+        		ajaxRequest({status:"onGoing",action:"event"});
         	}else if(result.status == "defeat"){
         		//사망
-        		game.setHeroStatus(result.battle.player);
+        		game.setHeroStatus(result.player);
         		game.updateHeroStat();
         		
         		game.clearMonster();
@@ -287,6 +421,31 @@
                 game.clearMonster();
                 game.updateMonsterStat();
         	}
+        }
+        
+        function createBattleSelect(id, battle){
+        	id = id+"Select";
+        	
+        	var div = document.querySelector("#message");
+			var head = document.createElement("div");
+			head.id = id+"Head";
+			head.innerText = battle.select.selectHead;
+			div.append(head);
+			
+    		var select = document.createElement("select");
+    		select.id = id;
+    		select["selectCode"] = battle.selectCode;
+    		
+    		for(var idx in battle.select.selectOptions){
+    			var option = document.createElement("option")
+    			var o = battle.select.selectOptions[idx]
+    			for(var i in o){
+    				option.value = i;
+    				option.text = o[i];
+    			}
+    			select.add(option);
+    		}
+    		div.append(select);
         }
 		
         class Game {
@@ -328,7 +487,7 @@
 	        
 	        onGameMenuInput = (event) => {
                 event.preventDefault();
-                const input = event.target['menu-input'].value;
+                /*const input = event.target['menu-input'].value;
                 if(input === '1') {
                     ajaxRequest({status:"onGoing",action:"adventure"});
                     
@@ -348,19 +507,74 @@
                 } else if (input === '3') { //종료
                     this.showMessage(' ');
                     this.quit();
-                }
+                }*/
+                var inputs = {status:"onGoing",action:"event"};
+            	if(document.querySelector("#playSelect")){
+                	var selected = {};
+            		selected["SELECT_CD"] = document.querySelector("#playSelect").selectCode;
+            		selected["OPTION_SEQ"] = document.querySelector("#playSelect").value;
+            		inputs["inputData"] = {selected:selected}
+            	}
+                ajaxRequest(inputs);
             }
 	        
             onBattleMenuInput = (event) => {
                 event.preventDefault();
-                const input = event.target['battle-input'].value;
+                /*const input = event.target['battle-input'].value;
                 if(input === '1') {
-                	ajaxRequest({status:"onGoing",action:"event",inputData:{command:'battle'}});
+                	//ajaxRequest({status:"onGoing",action:"event",inputData:{command:'battle'}});
+                }
+                else if(input === '9'){
+                	var inputs = {status:"onGoing",action:"event"};
+                	if(document.querySelector("#battleSelect")){
+	                	var selected = {};
+                		selected["SELECT_CD"] = document.querySelector("#battleSelect").selectCode;
+                		selected["OPTION_SEQ"] = document.querySelector("#battleSelect").value;
+                		inputs["inputData"] = {selected:selected}
+                	}else if(document.querySelector("#battleHelpSelect")){
+	                	var selected = {};
+                		selected["SELECT_CD"] = document.querySelector("#battleHelpSelect").selectCode;
+                		selected["OPTION_SEQ"] = document.querySelector("#battleHelpSelect").value;
+                		inputs["inputData"] = {selected:selected}
+                	}else if(document.querySelector("#pullBackSelect")){
+	                	var selected = {};
+                		selected["SELECT_CD"] = document.querySelector("#pullBackSelect").selectCode;
+                		selected["OPTION_SEQ"] = document.querySelector("#pullBackSelect").value;
+                		inputs["inputData"] = {selected:selected}
+                	}else if(document.querySelector("#pullBackHelpSelect")){
+	                	var selected = {};
+                		selected["SELECT_CD"] = document.querySelector("#pullBackHelpSelect").selectCode;
+                		selected["OPTION_SEQ"] = document.querySelector("#pullBackHelpSelect").value;
+                		inputs["inputData"] = {selected:selected}
+                	}
+                    ajaxRequest(inputs);
                 }
                 else if (input === '2') {
-                	ajaxRequest({status:"onGoing",action:"runAway"});
-                }
-                
+                	//ajaxRequest({status:"onGoing",action:"runAway"});
+                }*/
+                var inputs = {status:"onGoing",action:"event"};
+            	if(document.querySelector("#battleSelect")){
+                	var selected = {};
+            		selected["SELECT_CD"] = document.querySelector("#battleSelect").selectCode;
+            		selected["OPTION_SEQ"] = document.querySelector("#battleSelect").value;
+            		inputs["inputData"] = {selected:selected}
+            	}else if(document.querySelector("#battleHelpSelect")){
+                	var selected = {};
+            		selected["SELECT_CD"] = document.querySelector("#battleHelpSelect").selectCode;
+            		selected["OPTION_SEQ"] = document.querySelector("#battleHelpSelect").value;
+            		inputs["inputData"] = {selected:selected}
+            	}else if(document.querySelector("#pullBackSelect")){
+                	var selected = {};
+            		selected["SELECT_CD"] = document.querySelector("#pullBackSelect").selectCode;
+            		selected["OPTION_SEQ"] = document.querySelector("#pullBackSelect").value;
+            		inputs["inputData"] = {selected:selected}
+            	}else if(document.querySelector("#pullBackHelpSelect")){
+                	var selected = {};
+            		selected["SELECT_CD"] = document.querySelector("#pullBackHelpSelect").selectCode;
+            		selected["OPTION_SEQ"] = document.querySelector("#pullBackHelpSelect").value;
+            		inputs["inputData"] = {selected:selected}
+            	}
+                ajaxRequest(inputs);
             }
             
             createHero(heroInfo) {

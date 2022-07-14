@@ -137,9 +137,9 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 			//캐릭터가 죽은 경우 10턴 뒤에 부활함
 			if(!isAlive() && turnCount >= 10) {
 				//부활하는 캐릭터는 빈도수 초기화 및 턴 카운트 초기화
-				revive();
-				currentFreq = maxFreq;
-				turnCount = 0;
+				//revive();
+				//currentFreq = maxFreq;
+				//turnCount = 0;
 			}else {
 				//살아있는 캐릭터의 경우
 				if(turnCount%3 == 0) {

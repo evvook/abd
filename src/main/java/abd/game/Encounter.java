@@ -15,11 +15,12 @@ public class Encounter {
 	private Map<String,NPCharacter> pickedCharacterPool;
 	private List<CountTurnObserver> pickedCharacters;
 	private NPCharacter character;
+	private boolean poolEmpty;
 	
 	public Encounter() {
 		pickedCharacterPool = new HashMap<String, NPCharacter>();
 		pickedCharacters = new ArrayList<CountTurnObserver>();
-		
+		poolEmpty = false;
 	}
 	
 	public void encounterChracter(List<Map<String, String>> characterList, GameDataLoader loader) throws Exception {
@@ -69,20 +70,24 @@ public class Encounter {
 		}
 		//3. 리스트 크기에서 랜덤하게 인덱스 뽑음
 		System.out.println("pool :"+charPool);
-		int idx = (int) (Math.random() * charPool.size());
-		//4. 인덱스에 해당하는 캐릭터 생성
-		code = charPool.get(idx);
-		
-		if(pickedCharacterPool.containsKey(code)) {
-			character = pickedCharacterPool.get(code);
+		if(charPool.size() > 0) {
+			int idx = (int) (Math.random() * charPool.size());
+			//4. 인덱스에 해당하는 캐릭터 생성
+			code = charPool.get(idx);
+			
+			if(pickedCharacterPool.containsKey(code)) {
+				character = pickedCharacterPool.get(code);
+			}else {
+				Map<String,String> paramMap = new HashMap<String, String>();
+				paramMap.put("CHAR_CD", code);
+				List<Map<String,String>> npcList = loader.getNPCharacterInfo(paramMap);
+				List<Map<String,String>> characterLines = loader.getCharacterLine(paramMap);
+				character = GameCharacterBuilder.getNPCharacterInstance(npcList.get(0), characterLines);
+				pickedCharacterPool.put(code, character);
+				pickedCharacters.add(character);
+			}
 		}else {
-			Map<String,String> paramMap = new HashMap<String, String>();
-			paramMap.put("CHAR_CD", code);
-			List<Map<String,String>> npcList = loader.getNPCharacterInfo(paramMap);
-			List<Map<String,String>> characterLines = loader.getCharacterLine(paramMap);
-			character = GameCharacterBuilder.getNPCharacterInstance(npcList.get(0), characterLines);
-			pickedCharacterPool.put(code, character);
-			pickedCharacters.add(character);
+			poolEmpty = true;
 		}
 	}
 
@@ -121,5 +126,10 @@ public class Encounter {
 		while(oi.hasNext()){
 			oi.next().notified();
 		}
+	}
+
+	public boolean isPoolEmpty() {
+		// TODO Auto-generated method stub
+		return poolEmpty;
 	}
 }
