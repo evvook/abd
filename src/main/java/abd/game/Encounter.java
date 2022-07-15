@@ -81,7 +81,7 @@ public class Encounter {
 				Map<String,String> paramMap = new HashMap<String, String>();
 				paramMap.put("CHAR_CD", code);
 				List<Map<String,String>> npcList = loader.getNPCharacterInfo(paramMap);
-				List<Map<String,String>> characterLines = loader.getCharacterLine(paramMap);
+				List<Map<String,String>> characterLines = null;//loader.getCharacterLine(paramMap);
 				character = GameCharacterBuilder.getNPCharacterInstance(npcList.get(0), characterLines);
 				pickedCharacterPool.put(code, character);
 				pickedCharacters.add(character);

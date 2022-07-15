@@ -65,4 +65,11 @@ public class CharacterDAO {
 		}
 		return sqlSessionTemplate.selectList(Namespace+".selectCharacterInMap",paramMap);
 	}
+
+	public List<Map<String, String>> selectCompCharacters() throws Exception{
+		// TODO Auto-generated method stub
+		Map<String,String> paramMap = new HashMap<String, String>();
+		
+		return sqlSessionTemplate.selectList(Namespace+".selectCompCharacters",paramMap);
+	}
 }

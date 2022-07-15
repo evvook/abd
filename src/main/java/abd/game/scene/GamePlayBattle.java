@@ -1,6 +1,5 @@
 package abd.game.scene;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +7,9 @@ import java.util.Map;
 import abd.game.Encounter;
 import abd.game.GameDataLoader;
 import abd.game.GameManager;
-import abd.game.character.GameCharacter;
+import abd.game.character.CompCharacter;
 import abd.game.character.NPCharacter;
-import abd.game.character.PChacrater;
+import abd.game.character.PCharacter;
 
 public class GamePlayBattle implements GamePlayElement {
 	private String battleCode;
@@ -18,25 +17,26 @@ public class GamePlayBattle implements GamePlayElement {
 	
 	private GameDataLoader loader;
 	
-	private PChacrater player;
+	private PCharacter player;
+	private CompCharacter company;
+	
 	private NPCharacter encounteredChracter;
 	private Encounter encounter;
 	private String encounteredChracterline;
 	
-	//선택지를 두개 가질 수 있다?
+	//전투 에서 선택 가능한 선택지
 	private GamePlaySelect battleSelect;
 	private GamePlaySelect battleHelpSelect;
 	private GamePlaySelect pullBackSelect;
 	private GamePlaySelect pullBackHelpSelect;
 	
+	//현재 상태
 	private GamePlaySelect currentSelect;
 	private String currentStatus;
 	private GamePlaySelect beforeSelect;
 	private String beforeStatus;
 	
-	private boolean battle;
-	
-	public GamePlayBattle(Map<String, String> playInfo, GameDataLoader loader, PChacrater player) throws Exception {
+	public GamePlayBattle(Map<String, String> playInfo, GameDataLoader loader, PCharacter player) throws Exception {
 		// TODO Auto-generated constructor stub
 		this.loader = loader;
 		this.player = player;
@@ -73,6 +73,11 @@ public class GamePlayBattle implements GamePlayElement {
 		Map<String, Object> context = new HashMap<String, Object>();
 		Map<String, String> pCharContext = player.getCharacterContext();
 		context.put("player", pCharContext);
+		if(company != null) {
+			context.put("company", company.getCharacterContext());
+			//정보만 담고 비워준다.
+			company = null;
+		}
 		if(encounteredChracter != null) {
 			Map<String, String> npCharContext = encounteredChracter.getCharacterContext();
 			if(!encounteredChracter.isAlive()) {
@@ -148,6 +153,7 @@ public class GamePlayBattle implements GamePlayElement {
 	private void countTurn() {
 		// TODO Auto-generated method stub
 		encounter.countTurn();
+		player.countTurn();
 	}
 
 	@Override
@@ -186,6 +192,7 @@ public class GamePlayBattle implements GamePlayElement {
 			currentSelect = battleSelect;
 			currentStatus ="battle";
 			battleContext.put("status", currentStatus);
+			battleContext.put("statusDetail",currentStatus);
 			battleContext.put("battleCode", getCode());
 		}else if("battleHelp".equals(command)) {
 			//화면이 전환되면서 선택지가 뜬다.
@@ -193,6 +200,7 @@ public class GamePlayBattle implements GamePlayElement {
 			currentSelect = battleHelpSelect;
 			currentStatus ="battleHelp";
 			battleContext.put("status", currentStatus);
+			battleContext.put("statusDetail", currentStatus);
 			battleContext.put("battleCode", getCode());
 		}else if("pullBack".equals(command)) {
 			//화면이 전환되면서 선택지가 뜬다.
@@ -200,6 +208,7 @@ public class GamePlayBattle implements GamePlayElement {
 			currentSelect = pullBackSelect;
 			currentStatus ="pullBack";
 			battleContext.put("status", currentStatus);
+			battleContext.put("statusDetail", currentStatus);
 			battleContext.put("battleCode", getCode());
 		}else if("pullBackHelp".equals(command)) {
 			//화면이 전환되면서 선택지가 뜬다.
@@ -207,6 +216,7 @@ public class GamePlayBattle implements GamePlayElement {
 			currentSelect = pullBackHelpSelect;
 			currentStatus ="pullBackHelp";
 			battleContext.put("status", currentStatus);
+			battleContext.put("statusDetail", currentStatus);
 			battleContext.put("battleCode", getCode());
 		}
 		battleContext.putAll(getElContext());
@@ -219,6 +229,7 @@ public class GamePlayBattle implements GamePlayElement {
 		currentSelect = beforeSelect;
 		currentStatus = beforeStatus;
 		battleContext.put("status", currentStatus);
+		battleContext.put("statusDetail", "selectCancel");
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
@@ -226,8 +237,15 @@ public class GamePlayBattle implements GamePlayElement {
 
 	public Map<String, Object> goBattle() throws Exception {
 		// TODO Auto-generated method stub
+		initBattle();
+		Map<String,Object> battleContext = getBattle();
+		battleContext.put("statusDetail", "goBattle");
+		return battleContext;
+	}
+	
+	public Map<String, Object> getBattle() throws Exception {
+		// TODO Auto-generated method stub
 		Map<String,Object> battleContext = new HashMap<String, Object>();
-		currentSelect = battleSelect;
 		battleContext.put("status", currentStatus);
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
@@ -242,5 +260,41 @@ public class GamePlayBattle implements GamePlayElement {
 		currentStatus = "battle";
 		//조우 초기화
 		setEncounterdChracter(loader);
+	}
+
+	public Map<String, Object> callForHelp(String characterCode) throws Exception {
+		// TODO Auto-generated method stub
+		company = player.getCompany(characterCode);
+		company.act(encounteredChracter);
+		
+		//후처리
+		Map<String,Object> battleContext = new HashMap<String, Object>();
+		currentSelect = beforeSelect;
+		currentStatus = beforeStatus;
+		battleContext.put("status", currentStatus);
+		battleContext.put("statusDetail", "battleWithCompany");
+		battleContext.put("battleCode", getCode());
+		battleContext.putAll(getElContext());
+		return battleContext;
+	}
+
+	public Map<String, Object> getHelp(String characterCode, String ability) throws Exception {
+		// TODO Auto-generated method stub
+		company = player.getCompany(characterCode);
+		if("SA1".equals(ability)) {
+			company.reactSpAbl1(player);
+		}else if("SA2".equals(ability)) {
+			company.reactSpAbl2(player);
+		}
+		
+		//후처리
+		Map<String,Object> battleContext = new HashMap<String, Object>();
+		currentSelect = beforeSelect;
+		currentStatus = beforeStatus;
+		battleContext.put("status", currentStatus);
+		battleContext.put("statusDetail", "getHelpFromCompany");
+		battleContext.put("battleCode", getCode());
+		battleContext.putAll(getElContext());
+		return battleContext;
 	}
 }

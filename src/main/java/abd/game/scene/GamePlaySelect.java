@@ -34,7 +34,9 @@ public class GamePlaySelect implements GamePlayElement{
 		while(mi.hasNext()) {
 			Map<String,String> optionInfo = mi.next();
 			Map<String,String> optionMap = new HashMap<String, String>();
-			optionMap.put(optionInfo.get("OPTION_SEQ"), optionInfo.get("OPTION_TXT"));
+			//optionMap.put(optionInfo.get("OPTION_SEQ"), optionInfo.get("OPTION_TXT"));
+			optionMap.put("value", optionInfo.get("OPTION_SEQ"));
+			optionMap.put("name", optionInfo.get("OPTION_TXT"));
 			options.add(optionMap);
 			Map<String,String> key = new HashMap<String, String>();
 			key.put(selectCode, optionInfo.get("OPTION_SEQ"));
@@ -47,8 +49,8 @@ public class GamePlaySelect implements GamePlayElement{
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("selectHead",selectHead);
-		resultMap.put("selectOptions",options);
 		resultMap.put("numOfSelect",numOfSelect);
+		resultMap.put("selectOptions",options);
 		
 		return resultMap;
 	}
@@ -59,6 +61,7 @@ public class GamePlaySelect implements GamePlayElement{
 		return selectCode;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, Object> playSelect(Map<String, String> selectedInfo, GameManager manager) throws Exception {
 		// TODO Auto-generated method stub

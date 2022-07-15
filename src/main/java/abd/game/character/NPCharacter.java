@@ -21,9 +21,9 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 	public NPCharacter(String charCd, String charNm, String classCd) {
 		// TODO Auto-generated constructor stub
 		super(charCd, charNm, classCd);
-		this.lines = new HashMap<String, List<String>>();
 		this.turnCount = 0;
 		
+		this.lines = new HashMap<String, List<String>>();
 		List<String> eLines = new ArrayList<String>();
 		List<String> aLines = new ArrayList<String>();
 		List<String> dLines = new ArrayList<String>();
@@ -90,14 +90,16 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 	@Override
 	public void setLines(List<Map<String, String>> lines) {
 		// TODO Auto-generated method stub
-		for(Map<String,String> map : lines) {
-			List<String> lineList = this.lines.get(map.get("TYPE"));
-			lineList.add(map.get("LINE_TXT"));
-		}
-
-		List<String> eList = this.lines.get("E");
-		if(eList.size()>0) {
-			this.line = eList.get(0);
+		if(lines != null) {
+			for(Map<String,String> map : lines) {
+				List<String> lineList = this.lines.get(map.get("TYPE"));
+				lineList.add(map.get("LINE_TXT"));
+			}
+			
+			List<String> eList = this.lines.get("E");
+			if(eList.size()>0) {
+				this.line = eList.get(0);
+			}
 		}
 	}
 
@@ -172,5 +174,4 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 		
 		return npcContext;
 	}
-
 }

@@ -109,4 +109,10 @@ public class PlayServiceImpl implements PlayService, GameDataLoader{
 		return scenarioDAO.selectBattle(paramMap);
 	}
 
+	@Override
+	public List<Map<String, String>> getCompCharacter() throws Exception {
+		// TODO Auto-generated method stub
+		return characterDAO.selectCompCharacters();
+	}
+
 }

@@ -27,4 +27,6 @@ public interface GameDataLoader {
 	public List<Map<String, String>> getSeletionResult(Map<String, String> selectedInfo) throws Exception;
 
 	public List<Map<String, String>> getBattleOfPlay(Map<String, String> playInfo) throws Exception;
+
+	public List<Map<String, String>> getCompCharacter() throws Exception;
 }

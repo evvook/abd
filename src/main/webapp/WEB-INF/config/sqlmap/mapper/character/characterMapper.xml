@@ -65,4 +65,22 @@
 		ON CMT.LVL = CL.`LEVEL`
 		WHERE CMP.MAP_CD = #{MAP_CD}
 	</select>
+	<select id="selectCompCharacters" parameterType="hashmap" resultType="hashmap">
+		SELECT
+			 CM.CHAR_CD
+			,CM.CHAR_NM
+			,CM.CLASS_CD
+			,CC.MP
+			,CC.MIN_REPL_TERM
+			,CC.MAX_REPL_TERM 
+			,CC.SP_ABL1
+			,CC.SP_ABL2
+			,CL.HP 
+			,CL.ATT
+			FROM CHARACTER_MT CM 
+		JOIN CHARACTER_CMP CC 
+		ON CM.CHAR_CD = CC.CHAR_CD 
+		JOIN CHARACTER_LVL CL 
+		ON CL.`LEVEL` = CM.LVL		
+	</select>
 </mapper>

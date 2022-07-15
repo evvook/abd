@@ -4,16 +4,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import abd.game.GameDataLoader;
-import abd.game.character.PChacrater;
+import abd.game.character.PCharacter;
 
 public class GameEvScript extends GameEvent {
 	private LinkedList<String> scripts;
 	private int idxOfScript = 0;
 
-	public GameEvScript(Map<String, String> eventInfo, GameDataLoader loader, PChacrater player) throws Exception {
+	public GameEvScript(Map<String, String> eventInfo, GameDataLoader loader, PCharacter player) throws Exception {
 		super(eventInfo, loader, player);
 		// TODO Auto-generated constructor stub
 		List<Map<String,String>> scriptList = loader.getScriptsOfEvent(eventInfo);

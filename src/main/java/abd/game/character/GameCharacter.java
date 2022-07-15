@@ -6,7 +6,7 @@ import abd.game.character.action.Action;
 
 public abstract class GameCharacter{
 	public static final String CLASS_FIGHTER = "F";
-	public static final String CLASS_HEALER = "H";
+	public static final String CLASS_SPECAIL = "S";
 	
 	//기본정보
 	private String code;
@@ -18,6 +18,8 @@ public abstract class GameCharacter{
 	//스테이터스 정보
 	protected Integer maxHp;
 	protected Integer currentHp;
+	protected Integer maxMp;
+	protected Integer currentMp;
 	protected Integer att;
 	
 	//무장여부
@@ -54,7 +56,12 @@ public abstract class GameCharacter{
 	}
 	public Integer getHp() {
 		return maxHp;
-	};
+	}
+	
+	public Integer getMp() {
+		return maxMp;
+	}
+	
 	public void setCurrentHp(int hp) {
 		if(alive && currentHp !=null) {
 			if(hp > maxHp) {
@@ -63,10 +70,16 @@ public abstract class GameCharacter{
 				currentHp = hp;
 			}
 		}
-	};
+	}
+	
 	public Integer getCurrentHp() {
 		return currentHp;
-	};
+	}
+	
+	public Integer getCurrentMp() {
+		// TODO Auto-generated method stub
+		return currentMp;
+	}
 	
 	public void setAction(Action action) {
 		// TODO Auto-generated method stub
@@ -94,6 +107,25 @@ public abstract class GameCharacter{
 		}
 		if(currentHp == 0) {
 			alive = false;
+		}
+	}
+	
+	public void increaseMp(Integer att) {
+		// TODO Auto-generated method stub
+		currentMp = currentMp + att;
+		if(currentMp > maxMp) {
+			currentMp = maxMp;
+		}
+	}
+	
+	public void decreaseMp(Integer att) {
+		// TODO Auto-generated method stub
+		currentMp = currentMp - att;
+		if(currentMp < 0) {
+			currentMp = 0;
+		}
+		if(currentMp == 0) {
+			//명중 감소, 회피 감소
 		}
 	}
 

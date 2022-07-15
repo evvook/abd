@@ -3,17 +3,17 @@ package abd.game.scene;
 import java.util.Map;
 
 import abd.game.GameDataLoader;
-import abd.game.character.PChacrater;
+import abd.game.character.PCharacter;
 
 public abstract class GameEvent {
 	private String eventCode;
 	private String eventSeq;
 	private boolean done;
-	private PChacrater player;
+	private PCharacter player;
 	
 	private GameEvent nextEvent;
 	
-	public GameEvent(Map<String, String> eventInfo, GameDataLoader loader,PChacrater player) {
+	public GameEvent(Map<String, String> eventInfo, GameDataLoader loader,PCharacter player) {
 		// TODO Auto-generated constructor stub
 		eventCode = eventInfo.get("EVENT_CD");
 		eventSeq = eventInfo.get("EVENT_SEQ");
@@ -39,7 +39,7 @@ public abstract class GameEvent {
 		return eventSeq;
 	}
 	
-	protected PChacrater getPlayer() {
+	protected PCharacter getPlayer() {
 		return player;
 	}
 	

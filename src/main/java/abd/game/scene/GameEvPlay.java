@@ -1,13 +1,11 @@
 package abd.game.scene;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import abd.game.GameDataLoader;
 import abd.game.GameManager;
-import abd.game.character.PChacrater;
 
 public class GameEvPlay extends GameEvent {
 	private String playCode;
