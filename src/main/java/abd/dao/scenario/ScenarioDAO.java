@@ -102,4 +102,15 @@ public class ScenarioDAO {
 		}
 		return sqlSessionTemplate.selectList(Namespace+".selectBattle",paramMap);
 	}
+
+	public List<Map<String, String>> selectJustHpnOfEvent(Map<String, String> paramMap) {
+		// TODO Auto-generated method stub
+		Map<String,String> paramMapCopy = new HashMap<String, String>();
+		paramMapCopy.putAll(paramMap);
+		
+		for(String key:paramMapCopy.keySet()) {
+			paramMap.remove(key,"");
+		}
+		return sqlSessionTemplate.selectList(Namespace+".selectJustHpnOfEvent",paramMap);
+	}
 }

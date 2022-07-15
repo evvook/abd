@@ -11,25 +11,30 @@ public abstract class GameEvent {
 	private boolean done;
 	private PCharacter player;
 	
-	private GameEvent nextEvent;
+	private GameScene thisScene;
 	
-	public GameEvent(Map<String, String> eventInfo, GameDataLoader loader,PCharacter player) {
+	public GameEvent(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, PCharacter player) {
 		// TODO Auto-generated constructor stub
 		eventCode = eventInfo.get("EVENT_CD");
 		eventSeq = eventInfo.get("EVENT_SEQ");
+		thisScene = scene;
 		
 		done = false;
 		
 		this.player = player;
 	}
 	
-	public void setNextEvent(GameEvent nextEvent) {
-		this.nextEvent = nextEvent;
+	protected GameScene getScene() {
+		return thisScene;
 	}
 	
-	public GameEvent getNextEvent() {
-		return nextEvent;
-	}
+//	public void setNextEvent(GameEvent nextEvent) {
+//		this.nextEvent = nextEvent;
+//	}
+//	
+//	public GameEvent getNextEvent() {
+//		return nextEvent;
+//	}
 
 	public String getEventCode() {
 		return eventCode;

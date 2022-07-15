@@ -115,4 +115,10 @@ public class PlayServiceImpl implements PlayService, GameDataLoader{
 		return characterDAO.selectCompCharacters();
 	}
 
+	@Override
+	public List<Map<String, String>> getJustHpnOfEvent(Map<String, String> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return scenarioDAO.selectJustHpnOfEvent(paramMap);
+	}
+
 }

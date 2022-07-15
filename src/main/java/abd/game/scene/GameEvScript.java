@@ -12,8 +12,8 @@ public class GameEvScript extends GameEvent {
 	private LinkedList<String> scripts;
 	private int idxOfScript = 0;
 
-	public GameEvScript(Map<String, String> eventInfo, GameDataLoader loader, PCharacter player) throws Exception {
-		super(eventInfo, loader, player);
+	public GameEvScript(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, PCharacter player) throws Exception {
+		super(eventInfo, loader, scene, player);
 		// TODO Auto-generated constructor stub
 		List<Map<String,String>> scriptList = loader.getScriptsOfEvent(eventInfo);
 		
@@ -34,6 +34,8 @@ public class GameEvScript extends GameEvent {
 		if(currentScript.equals(scripts.getLast())) {
 			//마지막 스크립트가 실행되면
 			hasDone();
+			GameScene scene = getScene();
+			scene.eventDone(getEventCode(),getEventSeq());
 		}
 		return resultMap;
 	}

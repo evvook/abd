@@ -192,6 +192,17 @@
         		
 		        game.showMessage(result.script)
 		        	
+        	}else if(result.status == "justHappened"){
+        		//game.clearInputs();
+                game.changeScreen('game');
+                game.clearMonster();
+                game.updateMonsterStat();
+        		
+		        game.showMessage(result.resultTxt)
+		        //if(result.statusDetail == "goNextEvent"){
+		        //	ajaxRequest({status:"onGoing",action:"event"});
+		        //}
+		        	
         	}else if(result.status == "select"){
         		//game.clearInputs();
                 game.changeScreen('game');

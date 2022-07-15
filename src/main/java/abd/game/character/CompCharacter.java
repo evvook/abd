@@ -86,7 +86,7 @@ public class CompCharacter extends GameCharacter {
 			++termCnt;
 		}else {
 			pcContext.put("active", "inactive");
-			pcContext.put("line", "당신의 요청을 거절했습니다.");
+			pcContext.put("line", "당신을 도울 수 있는 상황이 아닙니다.");
 		}
 		
 		return pcContext;
@@ -175,9 +175,14 @@ public class CompCharacter extends GameCharacter {
 	public void countTurn() {
 		// TODO Auto-generated method stub
 		++termCnt;
-		if(currentReplTerm >= termCnt) {
+		if(currentReplTerm <= termCnt) {
 			setActive();
 			termCnt = 0;
 		}
+	}
+
+	public void increaseReliabl(Integer reliabl) {
+		// TODO Auto-generated method stub
+		
 	}
 }

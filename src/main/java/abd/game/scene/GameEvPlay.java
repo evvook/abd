@@ -16,8 +16,8 @@ public class GameEvPlay extends GameEvent {
 	private GameDataLoader loader;
 	private GameManager manager;
 
-	public GameEvPlay(Map<String, String> eventInfo, GameDataLoader loader, GameManager manager) throws Exception {
-		super(eventInfo, loader, manager.getPlayer());
+	public GameEvPlay(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, GameManager manager) throws Exception {
+		super(eventInfo, loader, scene, manager.getPlayer());
 		// TODO Auto-generated constructor stub
 		this.loader = loader;
 		this.manager = manager;

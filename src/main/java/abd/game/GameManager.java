@@ -1,12 +1,12 @@
 package abd.game;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import abd.game.character.CompCharacter;
 import abd.game.character.GameCharacterBuilder;
-import abd.game.character.NPCharacter;
 import abd.game.character.PCharacter;
 import abd.game.scene.GameEvent;
 import abd.game.scene.GamePlayBattle;
@@ -15,6 +15,7 @@ import abd.game.scene.GameScene;
 public class GameManager implements GameInterface{
 	private PCharacter player;
 	//씬
+	private LinkedList<Map<String,String>> sceneInfoList;
 	private GameScene currentScene;
 	//이벤트
 	private GameEvent currentEvent;
@@ -26,8 +27,12 @@ public class GameManager implements GameInterface{
 	//전투 상황을 통제하기 위한 배틀 객체
 	private GamePlayBattle pBtl;
 	
+	//테스트용
+	int dayCnt=1;
+	
 	public GameManager() {
 		eventContext = new HashMap<String, Object>();
+		sceneInfoList = new LinkedList<Map<String,String>>();
 	}
 	
 	@Override
@@ -47,9 +52,8 @@ public class GameManager implements GameInterface{
 	@Override
 	public void startSceneLoad(GameDataLoader loader) throws Exception {
 		// TODO Auto-generated method stub
-		List<Map<String,String>> startSceneInfoList = loader.getStartSceneInfo(new HashMap<String, String>());
-		currentScene = new GameScene(startSceneInfoList.get(0),loader,this);
-		
+		sceneInfoList.addAll(loader.getStartSceneInfo(new HashMap<String, String>()));
+		currentScene = new GameScene(sceneInfoList.peekFirst(),loader,this);
 		currentEvent = currentScene.getEvent();
 	}
 
@@ -69,20 +73,32 @@ public class GameManager implements GameInterface{
 	@Override
 	public void goEvent() throws Exception {
 		if(currentEvent.isDone()) {
-			currentEvent = currentScene.getEvent();
+			currentEvent = currentScene.getNextEvent();
 			eventContext = currentEvent.happened();
 		}else {
 			eventContext = currentEvent.happened();
+		}
+		
+		if(currentScene.isDone()) {
+			//다음 씬으로 이동
+			currentScene = new GameScene(sceneInfoList.get(1),loader,this);
+			currentEvent = currentScene.getEvent();
 		}
 	}
 	
 	@Override
 	public void goEvent(Map<String,Object> input) throws Exception {
 		if(currentEvent.isDone()) {
-			currentEvent = currentScene.getEvent();
+			currentEvent = currentScene.getNextEvent();
 			eventContext = currentEvent.happened(input);
 		}else {
 			eventContext = currentEvent.happened(input);
+		}
+		
+		if(currentScene.isDone()) {
+			//다음 씬으로 이동
+			currentScene = new GameScene(sceneInfoList.get(1),loader,this);
+			currentEvent = currentScene.getEvent();
 		}
 	}
 
@@ -104,7 +120,7 @@ public class GameManager implements GameInterface{
 	//이벤트를 종료하고 다음 이벤트를 실행한다.
 	public Map<String,Object> goNextEvent() throws Exception {
 		currentEvent.hasDone();
-		currentEvent = currentScene.getEvent();
+		currentEvent = currentScene.getNextEvent();
 		return currentEvent.happened();
 	}
 	
@@ -165,5 +181,53 @@ public class GameManager implements GameInterface{
 		resultMap.putAll(pBtl.getBattle());
 		resultMap.putAll(player.useItem(item));
 		return resultMap;
+	}
+	
+	public Map<String,Object> dayEnd(){
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		player.decreaseMp(player.getCurrentMp()-10);
+		resultMap.putAll(player.getCharacterContext());
+		
+		++dayCnt;
+		return resultMap;
+	}
+	
+	public Map<String,Object> dayEnd(String eventCode, String eventSeq) throws Exception{
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		player.decreaseMp(player.getCurrentMp()-10);
+		resultMap.putAll(player.getCharacterContext());
+		
+		++dayCnt;
+		if(dayCnt >= 4) {
+			//특정 조건이면 가로채서 다음씬을 시작시킴
+			currentScene.hasDone();
+		}
+		
+		//특정 이벤트 설정
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
+		return resultMap;
+	}
+	
+	public void meet(String eventCode,String eventSeq, String characterCode, String reliabl) throws Exception {
+		meet(eventCode, eventSeq, characterCode, reliabl, null);
+	}
+	
+	public void meet(String eventCode,String eventSeq, String characterCode, String reliabl, String mp) throws Exception {
+		String[] compCodes = characterCode.split(",");
+		for(String compCode:compCodes) {
+			CompCharacter comp = player.getCompany(compCode);
+			comp.increaseReliabl(Integer.valueOf(reliabl));
+			if(mp != null) {
+				player.increaseMp(Integer.valueOf(mp));
+			}
+		}
+		//특정 이벤트 설정
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
+	}
+	
+	public void mentalCare(String eventCode, String eventSeq) throws Exception {
+		//특정 이벤트 설정
+		player.increaseMp(10);
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 	}
 }

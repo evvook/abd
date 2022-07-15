@@ -29,4 +29,6 @@ public interface GameDataLoader {
 	public List<Map<String, String>> getBattleOfPlay(Map<String, String> playInfo) throws Exception;
 
 	public List<Map<String, String>> getCompCharacter() throws Exception;
+
+	public List<Map<String, String>> getJustHpnOfEvent(Map<String, String> eventInfo) throws Exception;
 }

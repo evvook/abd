@@ -8,7 +8,7 @@
 			,SCENE_NM
 		FROM SCENE_GAME SG
 		ORDER BY SCENE_CD
-		ASC LIMIT 1
+		#ASC LIMIT 1
 	</select>
 	<select id="selectEvents" parameterType="hashmap" resultType="hashmap">
 		SELECT 
@@ -17,7 +17,7 @@
 			,E_TYPE 
 		FROM EVENT_SCENE ES 
 		WHERE SCENE_CD = #{SCENE_CD}
-		ORDER BY EVENT_SEQ 
+		ORDER BY EVENT_CD, EVENT_SEQ 
 	</select>
 	<select id="selectScripts" parameterType="hashmap" resultType="hashmap">
 		SELECT
@@ -76,5 +76,16 @@
 		FROM BATTLE_PLAY BP
 		WHERE PLAY_CD = #{PLAY_CD}
 
+	</select>
+	<select id="selectJustHpnOfEvent" parameterType="hashmap" resultType="hashmap">
+
+		SELECT 
+			 JH_CD 
+			,RESULT_TXT
+			,RESULT_OCCURRED 
+		FROM JUSTHPN_EVENT JE 
+		WHERE EVENT_CD = #{EVENT_CD}
+		AND EVENT_SEQ = #{EVENT_SEQ}
+		
 	</select>
 </mapper>
