@@ -39,34 +39,8 @@ public class Game {
 					gameInterface.goEvent();
 				}
 				gameContext= gameInterface.getGameContext();
-				//gameContext.put("status", "script");
+				gameContext.put("status", "onGoing");
 			}
-//			if("adventure".equals(order)) {
-//				//모험
-//				gameInterface.goAdventure(loader);
-//				gameContext= gameInterface.getGameContext();
-//				gameContext.put("status", "adventure");
-//				
-//			}else if("rest".equals(order)){
-//				//휴식
-//				gameInterface.talkWithHealer(loader);
-//				gameContext= gameInterface.getGameContext();
-//				//gameContext.put("status", "rest");
-//				
-//			}else if("battle".equals(order)){
-//				//대결
-//				gameInterface.takeActionToEachother(order);
-//				gameContext= gameInterface.getGameContext();
-//				
-//			}else if("runAway".equals(order)){
-//				//도망
-//				gameInterface.takeActionToEachother(order);
-//				gameContext= gameInterface.getGameContext();
-//				gameContext.put("status", "runAway");
-//			}else {
-//				gameContext = new HashMap<String, Object>();
-//				gameContext.put("status", "err");
-//			}
 			
 		}else if("clear".equals(status)){
 			GameContainer.remove(this);

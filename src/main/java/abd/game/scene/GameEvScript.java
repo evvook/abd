@@ -28,14 +28,20 @@ public class GameEvScript extends GameEvent {
 	public Map<String, Object> happened() {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("status", "script");
+		//이벤트 스크립트인 걸 명시해준다.
+		resultMap.put("event", "script");
 		String currentScript = scripts.get(idxOfScript++);
+		
+		//플레이어 이름이나 직업이 포함된 스크립트가 있는 경우 리플레이스 해준다.
+		currentScript = currentScript.replace("%name%", getPlayer().getName());
+		if(getPlayer().getJob() !=null) {
+			currentScript = currentScript.replace("%job%", getPlayer().getJob());
+		}
+		
 		resultMap.put("script", currentScript);
 		if(currentScript.equals(scripts.getLast())) {
 			//마지막 스크립트가 실행되면
 			hasDone();
-			GameScene scene = getScene();
-			scene.eventDone(getEventCode(),getEventSeq());
 		}
 		return resultMap;
 	}

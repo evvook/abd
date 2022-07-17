@@ -14,7 +14,7 @@ public class HealMp implements SpecialAction {
 	@Override
 	public void react(GameCharacter other) {
 		// TODO Auto-generated method stub
-		other.increaseMp(other.getCurrentMp()+sCharacter.getSpAbl2());
+		other.increaseMp(sCharacter.getSpAbl2());
 	}
 
 }

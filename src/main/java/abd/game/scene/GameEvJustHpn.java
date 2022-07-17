@@ -34,7 +34,8 @@ public class GameEvJustHpn extends GameEvent {
 	public Map<String, Object> happened() throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("status", "justHappened");
+		//이벤트 JH인 걸 명시해준다.
+		resultMap.put("event", "justHappened");
 		resultMap.put("resultTxt", resultTxt);
 		resultMap.put("jhCode", jhCode);
 		

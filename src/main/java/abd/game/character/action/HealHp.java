@@ -14,7 +14,7 @@ public class HealHp implements SpecialAction {
 	@Override
 	public void react(GameCharacter other) {
 		// TODO Auto-generated method stub
-		other.increaseHp(other.getCurrentHp()+sCharacter.getSpAbl1());
+		other.increaseHp(sCharacter.getSpAbl1());
 	}
 
 }

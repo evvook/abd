@@ -149,7 +149,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		if("candy".equals(item)) {
 			setCurrentHp(getCurrentHp()+20);
-			resultMap.put("statusDetail", "usedItem");
+			resultMap.put("selectOption", "usedItem");
 			resultMap.put("player", getCharacterContext());
 		}
 		return resultMap;
@@ -190,7 +190,17 @@ public class PCharacter extends GameCharacter implements Playerable{
 			}
 		}
 	}
+
+	@Override
+	public void setJob(String job) {
+		// TODO Auto-generated method stub
+		this.job = job;
+	}
 	
+	@Override
+	public String getJob() {
+		return job;
+	}
 //	public List<String> getCalledCompCharCd(){
 //		Set<String> characterCodeSet = calledCompany.keySet();
 //		return Arrays.asList(characterCodeSet.toArray(new String[characterCodeSet.size()])); 

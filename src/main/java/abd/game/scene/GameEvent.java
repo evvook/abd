@@ -58,6 +58,8 @@ public abstract class GameEvent {
 	
 	public void hasDone() {
 		done = true;
+		GameScene scene = getScene();
+		scene.eventDone(getEventCode(),getEventSeq());
 	}
 
 	public void doneBack() {

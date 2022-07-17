@@ -9,7 +9,7 @@ public interface GamePlayElement {
 
 	public String getCode();
 
-	Map<String, Object> playSelect(Map<String, String> selectedInfo, GameManager manager) throws Exception;
+	Map<String, Object> play(Map<String, Object> input, GameManager manager) throws Exception;
 
 	//public void play(Map<String, Object> commandInfo) throws Exception;
 }

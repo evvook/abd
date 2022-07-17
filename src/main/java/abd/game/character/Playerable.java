@@ -13,4 +13,8 @@ public interface Playerable {
 	public void setLvlStatus(String level, String hp, String att, String requiredXp);
 	
 	public void levelUp() throws Exception;
+
+	public void setJob(String job);
+
+	public String getJob();
 }

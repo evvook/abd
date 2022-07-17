@@ -32,9 +32,14 @@ public class GamePlayBattle implements GamePlayElement {
 	
 	//현재 상태
 	private GamePlaySelect currentSelect;
-	private String currentStatus;
+//	private String currentStatus;
 	private GamePlaySelect beforeSelect;
-	private String beforeStatus;
+	//private String beforeStatus;
+	
+	private String currentSelectName;
+	private String beforeSelectName;
+	
+	private boolean onGoing;
 	
 	public GamePlayBattle(Map<String, String> playInfo, GameDataLoader loader, PCharacter player) throws Exception {
 		// TODO Auto-generated constructor stub
@@ -85,28 +90,39 @@ public class GamePlayBattle implements GamePlayElement {
 				//다음 상대 셋팅
 				if(encounter.isPoolEmpty()) {
 					//다음 이벤트로 이동할 수 있는 무언가 필요
-					context.put("status", "endBattle");
+					context.put("process", "endBattle");
 					
 				}else {
-					context.put("status", "win");
+					context.put("battleResult", "win");
+					context.put("depeatedNpc", npCharContext);
 					setEncounterdChracter(loader);
-					context.put("npc", npCharContext);
+					context.put("npc", encounteredChracter.getCharacterContext());
 				}
 				
 			}else if(!player.isAlive()){
 				//지거나
-				context.put("status", "defeat");
+				context.put("battleResult", "defeat");
 				//사망 씬으로 이동할 수 있는 무언가 필요
-				
 			}else {
-				//진행중
-				context.put("status", "battle");
 				context.put("npc", npCharContext);
+			}
+			
+			//전투상태에 따라 데이터 설정
+			if(onGoing){
+				//진행중
+				context.put("process", "onGoing");
+			}else {
+				context.put("process", "start");
+				
+				currentSelectName = "commonBattle";
+				context.put("selectName", currentSelectName);
+				context.put("selectNext", currentSelectName);
+				onGoing = true;
 			}
 		}
 		if(encounteredChracterline != null) {
-			context.put("line", encounteredChracterline);
-			context.put("status", "goAway");
+			//context.put("line", encounteredChracterline);
+			//context.put("status", "goAway");
 			encounteredChracterline = null;
 		}
 		//전투 선택지 설정
@@ -156,69 +172,113 @@ public class GamePlayBattle implements GamePlayElement {
 		player.countTurn();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> playSelect(Map<String, String> selectedInfo, GameManager manager) throws Exception {
+	public Map<String, Object> play(Map<String, Object> input, GameManager manager) throws Exception {
 		Map<String,Object> resultMap = new HashMap<String, Object>();
+		Map<String,String> selectInfo =(Map<String,String>)input.get("selected");
 		
 		Map<String,Object> selectContext = null;
-		if("BSL01".equals(selectedInfo.get("SELECT_CD"))) {
-			selectContext = battleSelect.playSelect(selectedInfo,manager);
+		if("BSL01".equals(selectInfo.get("SELECT_CD"))) {
+			//일반전투선택
+			//선택지명 기본셋팅
+			currentSelectName = "commonBattle";
+			resultMap.put("selectName", currentSelectName);
+			resultMap.put("selectNext", currentSelectName);
+			selectContext = battleSelect.play(input,manager);
+			//전투선택 결과 설정
+			resultMap.putAll(selectContext);
 			
-		}else if("BSL02".equals(selectedInfo.get("SELECT_CD"))) {
-			selectContext = battleHelpSelect.playSelect(selectedInfo,manager);
+		}else if("BSL02".equals(selectInfo.get("SELECT_CD"))) {
+			//도움요청선택
+			//선택지명 기본셋팅
+			currentSelectName = "battleHelp";
+			resultMap.put("selectName", currentSelectName);
+			resultMap.put("selectNext", currentSelectName);
+			selectContext = battleHelpSelect.play(input,manager);
+			//전투선택 결과 설정
+			resultMap.putAll(selectContext);
 			
-		}else if("BSL03".equals(selectedInfo.get("SELECT_CD"))) {
-			selectContext = pullBackSelect.playSelect(selectedInfo,manager);
+		}else if("BSL03".equals(selectInfo.get("SELECT_CD"))) {
+			//재정비선택
+			//선택지명 기본셋팅
+			currentSelectName = "pullBack";
+			resultMap.put("selectName", currentSelectName);
+			resultMap.put("selectNext", currentSelectName);
+			selectContext = pullBackSelect.play(input,manager);
+			//전투선택 결과 설정
+			resultMap.putAll(selectContext);
 			
-		}else if("BSL04".equals(selectedInfo.get("SELECT_CD"))) {
-			selectContext = pullBackHelpSelect.playSelect(selectedInfo,manager);
+		}else if("BSL04".equals(selectInfo.get("SELECT_CD"))) {
+			//도움받기선택
+			//선택지명 기본셋팅
+			currentSelectName = "pullBackHelp";
+			resultMap.put("selectName", currentSelectName);
+			resultMap.put("selectNext", currentSelectName);
+			selectContext = pullBackHelpSelect.play(input,manager);
+			//전투선택 결과 설정
+			resultMap.putAll(selectContext);
 			
 		}
-		resultMap.putAll(selectContext);
 		
 		return resultMap;
 	}
 	
+	//gameManager에서 호출함
+	//특정 선택지 설정
 	public Map<String, Object> play(String command) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> battleContext = new HashMap<String, Object>();
 		beforeSelect = currentSelect;
-		beforeStatus = currentStatus;
+//		beforeStatus = currentStatus;
+		beforeSelectName = currentSelectName;
 		
 		if("battle".equals(command)) {
 			//전투진행
 			takeActionToEachother(command);
 			//화면으로 전달할 정보 설정
 			currentSelect = battleSelect;
-			currentStatus ="battle";
-			battleContext.put("status", currentStatus);
-			battleContext.put("statusDetail",currentStatus);
+//			currentStatus ="battle";
+			currentSelectName = "commonBattle";
+			battleContext.put("selectName", currentSelectName);
+			battleContext.put("selectNext", currentSelectName);
+//			battleContext.put("selectResult","fight");
 			battleContext.put("battleCode", getCode());
 		}else if("battleHelp".equals(command)) {
 			//화면이 전환되면서 선택지가 뜬다.
 			//화면으로 전달할 정보 설정
 			currentSelect = battleHelpSelect;
-			currentStatus ="battleHelp";
-			battleContext.put("status", currentStatus);
-			battleContext.put("statusDetail", currentStatus);
+//			currentStatus ="battleHelp";
+			currentSelectName = "battleHelp";
+			//선택지명 설정
+			battleContext.put("selectName", currentSelectName);
+			battleContext.put("selectNext", currentSelectName);
+//			battleContext.put("statusDetail", currentStatus);
 			battleContext.put("battleCode", getCode());
 		}else if("pullBack".equals(command)) {
 			//화면이 전환되면서 선택지가 뜬다.
 			//화면으로 전달할 정보 설정
 			currentSelect = pullBackSelect;
-			currentStatus ="pullBack";
-			battleContext.put("status", currentStatus);
-			battleContext.put("statusDetail", currentStatus);
+//			currentStatus ="pullBack";
+			currentSelectName = "pullBack";
+			//선택지명 설정
+			battleContext.put("selectName", currentSelectName);
+			battleContext.put("selectNext", currentSelectName);
+//			battleContext.put("statusDetail", currentStatus);
 			battleContext.put("battleCode", getCode());
 		}else if("pullBackHelp".equals(command)) {
 			//화면이 전환되면서 선택지가 뜬다.
 			//화면으로 전달할 정보 설정
 			currentSelect = pullBackHelpSelect;
-			currentStatus ="pullBackHelp";
-			battleContext.put("status", currentStatus);
-			battleContext.put("statusDetail", currentStatus);
+//			currentStatus ="pullBackHelp";
+			currentSelectName = "pullBackHelp";
+			//선택지명 설정
+			battleContext.put("selectName", currentSelectName);
+			battleContext.put("selectNext", currentSelectName);
+//			battleContext.put("statusDetail", currentStatus);
 			battleContext.put("battleCode", getCode());
 		}
+		//여기서 스테이터스가 다 덮어씌워짐. 수정할 필요 있을까?
 		battleContext.putAll(getElContext());
 		
 		return battleContext;
@@ -227,9 +287,13 @@ public class GamePlayBattle implements GamePlayElement {
 	public Map<String, Object> cancelSelect() throws Exception{
 		Map<String,Object> battleContext = new HashMap<String, Object>();
 		currentSelect = beforeSelect;
-		currentStatus = beforeStatus;
-		battleContext.put("status", currentStatus);
-		battleContext.put("statusDetail", "selectCancel");
+		currentSelectName = beforeSelectName;
+		
+//		currentStatus = beforeStatus;
+//		battleContext.put("battleSelect", currentStatus);
+//		battleContext.put("statusDetail", "selectCancel");
+		battleContext.put("selectOption", "cancelSelect");
+		battleContext.put("selectNext", currentSelectName);
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
@@ -246,7 +310,7 @@ public class GamePlayBattle implements GamePlayElement {
 	public Map<String, Object> getBattle() throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> battleContext = new HashMap<String, Object>();
-		battleContext.put("status", currentStatus);
+//		battleContext.put("status", currentStatus);
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
@@ -257,9 +321,11 @@ public class GamePlayBattle implements GamePlayElement {
 		//전투 선택지 초기화
 		currentSelect = battleSelect;
 		//
-		currentStatus = "battle";
+//		currentStatus = "battle";
 		//조우 초기화
 		setEncounterdChracter(loader);
+		
+		onGoing = false;
 	}
 
 	public Map<String, Object> callForHelp(String characterCode) throws Exception {
@@ -267,12 +333,16 @@ public class GamePlayBattle implements GamePlayElement {
 		company = player.getCompany(characterCode);
 		company.act(encounteredChracter);
 		
+		//일반배틀선택 선택지 보여줌
+		currentSelect = beforeSelect;
+//		currentStatus = beforeStatus;
+		currentSelectName = beforeSelectName;
+		//동료의 싸움 결과 보여줌
+		
 		//후처리
 		Map<String,Object> battleContext = new HashMap<String, Object>();
-		currentSelect = beforeSelect;
-		currentStatus = beforeStatus;
-		battleContext.put("status", currentStatus);
-		battleContext.put("statusDetail", "battleWithCompany");
+		battleContext.put("selectOption", "battleWithCompany");
+		battleContext.put("selectNext", currentSelectName);
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
@@ -290,9 +360,13 @@ public class GamePlayBattle implements GamePlayElement {
 		//후처리
 		Map<String,Object> battleContext = new HashMap<String, Object>();
 		currentSelect = beforeSelect;
-		currentStatus = beforeStatus;
-		battleContext.put("status", currentStatus);
-		battleContext.put("statusDetail", "getHelpFromCompany");
+//		currentStatus = beforeStatus;
+		currentSelectName = beforeSelectName;
+		
+//		battleContext.put("status", currentStatus);
+//		battleContext.put("battleDetail", "getHelpFromCompany");
+		battleContext.put("selectOption", "getHelpFromCompany");
+		battleContext.put("selectNext", currentSelectName);
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
