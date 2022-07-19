@@ -52,7 +52,6 @@ public class GameCharStatController {
 		}
 		service.setGame(game);
 		resultMap = service.getStat();
-		resultMap.put("gameToken", key);
 		
 		return resultMap;
 	}
