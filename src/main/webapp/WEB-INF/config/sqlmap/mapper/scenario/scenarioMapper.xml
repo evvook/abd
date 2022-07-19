@@ -7,7 +7,6 @@
 			 SCENE_CD
 			,SCENE_NM
 		FROM SCENE_GAME SG
-		where scene_cd = 'S901'
 		ORDER BY SCENE_CD
 		#ASC LIMIT 1
 	</select>
