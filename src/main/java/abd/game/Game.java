@@ -28,7 +28,7 @@ public class Game {
 			gameInterface.startSceneLoad(loader);
 			gameInterface.goEvent();
 			gameContext= gameInterface.getGameContext();
-			gameContext.put("status", "start");
+			gameContext.put("status", "onGoing");
 			
 		}else if("onGoing".equals(status)) {
 			if("event".equals(action)) {

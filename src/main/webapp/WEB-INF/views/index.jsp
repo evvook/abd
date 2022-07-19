@@ -185,11 +185,7 @@
 	        	game.createHero(result.player);
 	        	
 	        	ajaxRequest({status:"start"});
-        	}else if(result.status == "start"){
-	        	if(result.script){
-		        	game.showMessage(result.script)
-	        	}
-        	}else if(result.status == "onGoing"){
+        	}else if(result.status == "start" || result.status == "onGoing"){
         		
 	        	if(result.event == "script"){
 	        		//game.clearInputs();
