@@ -18,24 +18,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import abd.game.Game;
 import abd.game.GameContainer;
-import abd.service.PlayService;
+import abd.service.CharStatService;
 
 
 @Controller
-public class GamePlayController {
+public class GameCharStatController {
 
 	@Resource
-	private PlayService service;
+	private CharStatService service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(GamePlayController.class);
+	private static final Logger logger = LoggerFactory.getLogger(GameCharStatController.class);
 	
 	@CrossOrigin
 	@ResponseBody
-	@RequestMapping(value="/gamePlay", method= {RequestMethod.POST,RequestMethod.OPTIONS})
+	@RequestMapping(value="/gameCharStat", method= {RequestMethod.POST,RequestMethod.OPTIONS})
 	public Map<String,Object> play(@RequestBody Map<String,Object> param, HttpServletRequest request) throws Exception{
-		logger.info("play");
-		@SuppressWarnings("unchecked")
-		Map<String,Object> paramMap = (Map<String,Object>)param.get("inputs");
+		logger.info("characterStatus");
+//		@SuppressWarnings("unchecked")
+//		Map<String,Object> paramMap = (Map<String,Object>)param.get("inputs");
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		
 		//세션별로 구분하기위해 세션id를 받아서 게임 정보와 함께 컨테이너에 보관한다.
@@ -43,23 +43,13 @@ public class GamePlayController {
 		String key = session.getId();
 
 		Game game = null;
-		if("clear".equals(paramMap.get("status"))) {
-			//초기화시 컨테이너에서 게임 제거
-			if(GameContainer.isExists(key)) {
-				game = GameContainer.getGame(key);
-				GameContainer.remove(game);
-			}
+		if(GameContainer.isExists(key)) {
+			game = GameContainer.getGame(key);
 		}else {
-			//그 외의 경우 게임 생성 또는 가져와서 진행
-			if(GameContainer.isExists(key)) {
-				game = GameContainer.getGame(key);
-			}else {
-				//setup에서 생성했어야 하는데 존재하지 않음
-				throw new Exception("게임이 존재하지 않습니다.");
-			}
-			service.setGame(game);
-			resultMap = service.play(paramMap);
+			throw new Exception("게임이 존재하지 않습니다.");
 		}
+		service.setGame(game);
+		resultMap = service.getStat();
 		
 		return resultMap;
 	}

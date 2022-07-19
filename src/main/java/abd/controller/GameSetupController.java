@@ -18,22 +18,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import abd.game.Game;
 import abd.game.GameContainer;
-import abd.service.PlayService;
+import abd.game.GameManager;
+import abd.service.SetupService;
 
 
 @Controller
-public class GamePlayController {
+public class GameSetupController {
 
 	@Resource
-	private PlayService service;
+	private SetupService service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(GamePlayController.class);
+	private static final Logger logger = LoggerFactory.getLogger(GameSetupController.class);
 	
 	@CrossOrigin
 	@ResponseBody
-	@RequestMapping(value="/gamePlay", method= {RequestMethod.POST,RequestMethod.OPTIONS})
+	@RequestMapping(value="/gameSetup", method= {RequestMethod.POST,RequestMethod.OPTIONS})
 	public Map<String,Object> play(@RequestBody Map<String,Object> param, HttpServletRequest request) throws Exception{
-		logger.info("play");
+		logger.info("setup");
 		@SuppressWarnings("unchecked")
 		Map<String,Object> paramMap = (Map<String,Object>)param.get("inputs");
 		Map<String,Object> resultMap = new HashMap<String, Object>();
@@ -50,15 +51,17 @@ public class GamePlayController {
 				GameContainer.remove(game);
 			}
 		}else {
-			//그 외의 경우 게임 생성 또는 가져와서 진행
 			if(GameContainer.isExists(key)) {
+				//게임이 이미 존재하면 삭제함
 				game = GameContainer.getGame(key);
-			}else {
-				//setup에서 생성했어야 하는데 존재하지 않음
-				throw new Exception("게임이 존재하지 않습니다.");
+				GameContainer.remove(game);
 			}
+			//setup에서는 항상 새로운 게임 설정
+			game = new Game(new GameManager());
+			GameContainer.putGame(key, game);
+			
 			service.setGame(game);
-			resultMap = service.play(paramMap);
+			resultMap = service.setup(paramMap);
 		}
 		
 		return resultMap;

@@ -14,6 +14,7 @@ import abd.game.scene.GameScene;
 
 public class GameManager implements GameInterface{
 	private PCharacter player;
+	private Map<String,Map<String,String>> lvlData;
 	//씬
 	private LinkedList<Map<String,String>> sceneInfoList;
 	private GameScene currentScene;
@@ -33,16 +34,21 @@ public class GameManager implements GameInterface{
 	public GameManager() {
 		eventContext = new HashMap<String, Object>();
 		sceneInfoList = new LinkedList<Map<String,String>>();
+		lvlData = new HashMap<String, Map<String,String>>();
 	}
 	
 	@Override
-	public void createPlayerCharacter(GameDataLoader loader, String name) throws Exception {
+	public void createPlayerCharacter(GameSetupLoader loader, String name) throws Exception {
 		// TODO Auto-generated method stub
-		this.loader = loader;
+		//this.loader = loader;
 		
 		Map<String,String> paramMap = new HashMap<String, String>();
-		paramMap.put("LEVEL", "1");
-		Map<String,String> characterInfo = loader.getPChacterInfo(paramMap).get(0);
+		//paramMap.put("LEVEL", "1");
+		List<Map<String,String>> lvlDataList = loader.getPCharacterLevelInfo(paramMap);
+		for(Map<String,String>lvlDataInfo:lvlDataList) {
+			lvlData.put(lvlDataInfo.get("LEVEL"), lvlDataInfo);
+		}
+		Map<String,String> characterInfo = lvlData.get("1");
 		
 		player = GameCharacterBuilder.getPCharacterInstance(characterInfo, name);
 		player.createCompanyCharacters(loader);
@@ -50,9 +56,16 @@ public class GameManager implements GameInterface{
 	}
 	
 	@Override
+	public void setupScenesInfo(GameSetupLoader loader) throws Exception {
+		// TODO Auto-generated method stub
+		List<Map<String,String>> sceneInfos = loader.getGameSceneInfo();
+		sceneInfoList.addAll(sceneInfos);
+	}
+	
+	@Override
 	public void startSceneLoad(GameDataLoader loader) throws Exception {
 		// TODO Auto-generated method stub
-		sceneInfoList.addAll(loader.getStartSceneInfo(new HashMap<String, String>()));
+		this.loader = loader;
 		currentScene = new GameScene(sceneInfoList.pollFirst(),loader,this);
 		currentEvent = currentScene.getEvent();
 	}
@@ -62,7 +75,10 @@ public class GameManager implements GameInterface{
 		// TODO Auto-generated method stub
 		Map<String, Object> context = new HashMap<String, Object>();
 		Map<String, String> pCharContext = player.getCharacterContext();
-		context.put("player", pCharContext);
+		if(currentEvent == null || !"B".equals(currentEvent.getchildType())){
+			//이벤트가 존재하지 않거나 이벤트트의 하위타입이 전투가 아니면 플레이어 정보를 넣어준다.
+			context.put("player", pCharContext);
+		}
 		context.putAll(eventContext);
 		
 		return context;
@@ -114,6 +130,13 @@ public class GameManager implements GameInterface{
 		this.pBtl = pBtl;
 	}
 	
+	@Override
+	public Map<String, Object> getCharStat() {
+		// TODO Auto-generated method stub
+		Map<String,Object> charaterStatus = new HashMap<String, Object>();
+		charaterStatus.put("charaterStatus", player.getCompContext());
+		return charaterStatus;
+	}
 	
 	///////////////////////////////////////////////////////////
 	//이하, 리플렉션으로 실행하는 셀렉트 선택의 결과 메서드들
@@ -128,12 +151,8 @@ public class GameManager implements GameInterface{
 	
 	//레벨업한다(테스트용)
 	public void playerLevelUp() throws Exception {
-		//player.levelUp();
-		Map<String,String> paramMap = new HashMap<String,String>();
-		paramMap.put("LEVEL", String.valueOf(player.getLevel()+1));
-		List<Map<String,String>> lvlDataList = loader.getPChacterInfo(paramMap);
-		Map<String,String> lvlData = lvlDataList.get(0);
-		player.setLvlStatus(lvlData);
+		Map<String,String> lvlDataInfo = lvlData.get(String.valueOf(player.getLevel()+1));
+		player.setLvlStatus(lvlDataInfo);
 	}
 	
 	//특정 이벤트 시퀀스로 이동한다.
@@ -200,7 +219,7 @@ public class GameManager implements GameInterface{
 	public Map<String,Object> dayEnd(){
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		player.decreaseMp(player.getCurrentMp()-10);
-		resultMap.putAll(player.getCharacterContext());
+		//resultMap.putAll(player.getCharacterContext());
 		
 		++dayCnt;
 		return resultMap;
@@ -209,7 +228,7 @@ public class GameManager implements GameInterface{
 	public Map<String,Object> dayEnd(String eventCode, String eventSeq) throws Exception{
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		player.decreaseMp(player.getCurrentMp()-10);
-		resultMap.putAll(player.getCharacterContext());
+		//resultMap.putAll(player.getCharacterContext());
 		
 		++dayCnt;
 		if(dayCnt >= 4) {

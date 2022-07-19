@@ -13,13 +13,13 @@ public class GameEvPlay extends GameEvent {
 	private GamePlayElement pEl;
 	GamePlayBattle pBtl;
 	
-	private GameDataLoader loader;
+//	private GameDataLoader loader;
 	private GameManager manager;
 
 	public GameEvPlay(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, GameManager manager) throws Exception {
 		super(eventInfo, loader, scene, manager.getPlayer());
 		// TODO Auto-generated constructor stub
-		this.loader = loader;
+//		this.loader = loader;
 		this.manager = manager;
 		
 		//플레이는 하나씩만 존재
@@ -28,6 +28,7 @@ public class GameEvPlay extends GameEvent {
 		
 		playCode = playInfo.get("PLAY_CD");
 		playType = playInfo.get("P_TYPE");
+		setChildType(playType);
 		
 		if("S".equals(playType)) {
 			pEl = new GamePlaySelect(playInfo,loader);
@@ -40,6 +41,10 @@ public class GameEvPlay extends GameEvent {
 			manager.setBattle(pBtl);
 			pEl = pBtl;
 		}
+	}
+	
+	public String getPlayType() {
+		return playType;
 	}
 
 	@Override
@@ -70,15 +75,6 @@ public class GameEvPlay extends GameEvent {
 			resultMap.put("battle", pEl.getElContext());
 			resultMap.put("battleCode", pEl.getCode());
 			
-			//고려 필요
-			//스테이터스 설정
-//			String battleStatus = (String)pEl.getElContext().get("status");
-//			if("endBattle".equals(battleStatus)) {
-//				resultMap.put("status", battleStatus);
-//				hasDone();
-//			}else {
-//				resultMap.put("status", "startBattle");
-//			}
 		}
 		return resultMap;
 	}
@@ -95,10 +91,8 @@ public class GameEvPlay extends GameEvent {
 		
 		if("S".equals(playType)) {
 			//셀렉트 결과는 이벤트 등이 될 수 있으므로 그냥 통째로 받는다.
-			//resultMap.put("play", "select");
 			playContext = pEl.play(input,manager);
 			resultMap.putAll(playContext);
-			//playContext.putAll();
 			
 		}else if("I".equals(playType)) {
 			//입력임을 명시해준다.
@@ -119,7 +113,6 @@ public class GameEvPlay extends GameEvent {
 			resultMap.put("battle", playContext);
 			
 		}
-		//resultMap.putAll(playContext);
 		return resultMap;
 	}
 }

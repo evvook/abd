@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="abd.scenario.scenarioMapper">
 <!-- 여기에 쿼리를 작성하면 된다. -->
-	<select id="selectStartScene" parameterType="hashmap" resultType="hashmap">
+	<select id="selectScenes" parameterType="hashmap" resultType="hashmap">
 		SELECT
 			 SCENE_CD
 			,SCENE_NM
 		FROM SCENE_GAME SG
-		#where scene_cd = 'S901'
+		where scene_cd = 'S901'
 		ORDER BY SCENE_CD
 		#ASC LIMIT 1
 	</select>
@@ -41,11 +41,16 @@
 	<select id="selectSelection" parameterType="hashmap" resultType="hashmap">
 
 		SELECT
-			 SELECT_CD 
-			,SELECT_HEAD 
-			,CAST(NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+			 SP.SELECT_CD 
+			,SP.SELECT_HEAD 
+			,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+			,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ 
+			,OS.OPTION_TXT
+			,OS.RESULT_OCCURRED
 		FROM SELECT_PLAY SP 
-		WHERE PLAY_CD = #{PLAY_CD}
+		JOIN OPTION_SELECT OS
+		ON SP.SELECT_CD  = OS.SELECT_CD 
+		WHERE SP.PLAY_CD = #{PLAY_CD}
 
 	</select>
 	<select id="selectOptions" parameterType="hashmap" resultType="hashmap">
@@ -72,10 +77,14 @@
 	<select id="selectBattle" parameterType="hashmap" resultType="hashmap">
 
 		SELECT 
-			 BATTLE_CD 
-			,MAP_CD 
+			 BP.BATTLE_CD 
+			,BP.MAP_CD 
+			,SP.PLAY_CD 
+			,SP.SELECT_ALIAS 
 		FROM BATTLE_PLAY BP
-		WHERE PLAY_CD = #{PLAY_CD}
+		JOIN SELECT_PLAY SP
+		ON SP.SELECT_CD IN (BP.SELECT1,BP.SELECT2,BP.SELECT3,BP.SELECT4)
+		WHERE BP.PLAY_CD = #{PLAY_CD}
 
 	</select>
 	<select id="selectJustHpnOfEvent" parameterType="hashmap" resultType="hashmap">

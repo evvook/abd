@@ -38,13 +38,12 @@
 	<select id="selectPCharacter" parameterType="hashmap" resultType="hashmap">
 		SELECT
 			 'P' CLASS_CD 
-			,LVL.`LEVEL` 
+			,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` 
 			,LVL.HP 
 			,LVL.ATT 
 			,LVL.REQD_XP 
 		FROM CHARACTER_LVL LVL
 		WHERE 1=1
-		AND CONVERT(LVL.`LEVEL`,INTEGER) = #{LEVEL}
 	</select>
 	<select id="selectCharacterLine" parameterType="hashmap" resultType="hashmap">
 		SELECT
@@ -77,10 +76,15 @@
 			,CC.SP_ABL2
 			,CL.HP 
 			,CL.ATT
-			FROM CHARACTER_MT CM 
+			,CN.LINE_TXT
+			,CN.TYPE
+		FROM CHARACTER_MT CM 
 		JOIN CHARACTER_CMP CC 
 		ON CM.CHAR_CD = CC.CHAR_CD 
 		JOIN CHARACTER_LVL CL 
 		ON CL.`LEVEL` = CM.LVL		
+		JOIN CHARACTER_LN CN
+		ON CM.CHAR_CD  = CN.CHAR_CD
+		AND CN.`TYPE` = 'A'
 	</select>
 </mapper>

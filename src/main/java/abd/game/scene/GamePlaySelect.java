@@ -29,7 +29,7 @@ public class GamePlaySelect implements GamePlayElement{
 		options = new ArrayList<Map<String,String>>();
 		optionsDetail = new HashMap<Map<String,String>, String>();
 		
-		List<Map<String,String>> optionList = loader.getOptionsOfSelect(selectInfo);
+		List<Map<String,String>> optionList = selectList;//loader.getOptionsOfSelect(selectInfo);
 		Iterator<Map<String,String>> mi = optionList.iterator();
 		while(mi.hasNext()) {
 			Map<String,String> optionInfo = mi.next();

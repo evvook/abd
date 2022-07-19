@@ -1,13 +1,12 @@
 package abd.game.character;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import abd.game.GameDataLoader;
 import abd.game.GameManager;
+import abd.game.GameSetupLoader;
 
 public class PCharacter extends GameCharacter implements Playerable{
 	private String job;
@@ -162,7 +161,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		return company.get(characterCode);
 	}
 
-	public void createCompanyCharacters(GameDataLoader loader) throws Exception {
+	public void createCompanyCharacters(GameSetupLoader loader) throws Exception {
 		// TODO Auto-generated method stub
 		company = new HashMap<String, CompCharacter>();
 		
@@ -171,10 +170,21 @@ public class PCharacter extends GameCharacter implements Playerable{
 		
 		for(Map<String,String> companyInfo:companyList) {
 			String caracterCode = companyInfo.get("CHAR_CD");
-			List<Map<String,String>> characterLines = loader.getCharacterLine(companyInfo);
+			//List<Map<String,String>> characterLines = loader.getCharacterLine(companyInfo);
+			List<Map<String,String>> characterLines = new ArrayList<Map<String,String>>();
+			characterLines.add(companyInfo);
 			CompCharacter companyCharacter = GameCharacterBuilder.getCompCharacterInstance(companyInfo,characterLines);
 			company.put(caracterCode, companyCharacter);
 		}
+	}
+	
+	public List<Map<String,String>> getCompContext(){
+		List<Map<String,String>> compContext = new ArrayList<Map<String,String>>();
+		for(String compKey:company.keySet()) {
+			CompCharacter comp = company.get(compKey);
+			compContext.add(comp.getCharacterContext());
+		}
+		return compContext;
 	}
 
 	public void countTurn() {

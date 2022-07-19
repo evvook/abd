@@ -16,14 +16,9 @@ public class ScenarioDAO {
 	
 	private String Namespace = "abd.scenario.scenarioMapper";
 	
-	public List<Map<String,String>> selectStartScene(Map<String,String> paramMap) throws Exception{
-		Map<String,String> paramMapCopy = new HashMap<String, String>();
-		paramMapCopy.putAll(paramMap);
-		
-		for(String key:paramMapCopy.keySet()) {
-			paramMap.remove(key,"");
-		}
-		return sqlSessionTemplate.selectList(Namespace+".selectStartScene",paramMap);
+	public List<Map<String,String>> selectScenes() throws Exception{
+		Map<String,String> paramMap = new HashMap<String, String>();
+		return sqlSessionTemplate.selectList(Namespace+".selectScenes",paramMap);
 	}
 
 	public List<Map<String, String>> selectEvents(Map<String, String> paramMap) throws Exception{

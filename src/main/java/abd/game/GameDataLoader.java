@@ -12,7 +12,7 @@ public interface GameDataLoader {
 
 	public List<Map<String, String>> getCharacterLine(Map<String, String> paramMap) throws Exception;
 
-	public List<Map<String, String>> getStartSceneInfo(Map<String, String> paramMap) throws Exception;
+//	public List<Map<String, String>> getStartSceneInfo(Map<String, String> paramMap) throws Exception;
 
 	public List<Map<String, String>> getEventsOfScene(Map<String, String> map) throws Exception;
 
@@ -28,7 +28,7 @@ public interface GameDataLoader {
 
 	public List<Map<String, String>> getBattleOfPlay(Map<String, String> playInfo) throws Exception;
 
-	public List<Map<String, String>> getCompCharacter() throws Exception;
+//	public List<Map<String, String>> getCompCharacter() throws Exception;
 
 	public List<Map<String, String>> getJustHpnOfEvent(Map<String, String> eventInfo) throws Exception;
 

@@ -24,7 +24,7 @@ public class Game {
 		
 		//시작이면
 		if("start".equals(status)) {
-			gameInterface.createPlayerCharacter(loader, (String)input.get("name"));
+			//gameInterface.createPlayerCharacter(loader, (String)input.get("name"));
 			gameInterface.startSceneLoad(loader);
 			gameInterface.goEvent();
 			gameContext= gameInterface.getGameContext();
@@ -48,5 +48,20 @@ public class Game {
 		
 		
 		return gameContext;
+	}
+
+	public Map<String, Object> setup(GameSetupLoader setupLoader, Map<String, Object> input) throws Exception {
+		// TODO Auto-generated method stub
+		Map<String,Object> gameContext = null;
+		gameInterface.createPlayerCharacter(setupLoader, (String)input.get("name"));
+		gameInterface.setupScenesInfo(setupLoader);
+		gameContext= gameInterface.getGameContext();
+		gameContext.put("status", "setup");
+		return gameContext;
+	}
+
+	public Map<String, Object> getCharStat() {
+		// TODO Auto-generated method stub
+		return gameInterface.getCharStat();
 	}
 }

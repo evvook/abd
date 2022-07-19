@@ -148,7 +148,7 @@
 			process = false;
 		}
 		
-        function ajaxRequest(inputs){
+        function ajaxRequest(inputs,url){
         	progressOn()        	
         	
         	var reqJson = new Object();
@@ -168,8 +168,11 @@
     			}
     	    };
     	    
+    	    if(!url){
+    	    	url = '/abd/gamePlay';
+    	    }
     	    /* Post 방식으로 요청 */
-    	    httpRequest.open('POST', '/abd/gamePlay', true);//경로 잡아줌
+    	    httpRequest.open('POST', url, true);//경로 잡아줌
     	    /* Response Type을 Json으로 사전 정의 */
     	    httpRequest.responseType = "json";
     	    /* 요청 Header에 컨텐츠 타입은 Json으로 사전 정의 */
@@ -179,8 +182,11 @@
         }
         
         function afterwork(result){
-        	if(result.status == "start"){
+        	if(result.status == 'setup'){
 	        	game.createHero(result.player);
+	        	
+	        	ajaxRequest({status:"start"});
+        	}else if(result.status == "start"){
 	        	if(result.script){
 		        	game.showMessage(result.script)
 	        	}
@@ -378,13 +384,13 @@
 		        				if(battle.selectName == battle.selectNext){
 				        			game.showMessage(' ');
 			        			}else{
-			        				if(battle.selectOption = 'getHelpFromCompany'){
+			        				if(battle.selectOption == 'getHelpFromCompany'){
 			        					
 			        					game.showMessage(battle.company.line);
 			        					game.setHeroStatus(battle.player);
 			        					game.updateHeroStat();
 			        					
-			        				}else if(battle.selectOption = 'cancelSelect'){
+			        				}else if(battle.selectOption == 'cancelSelect'){
 			        					game.showMessage(' ');
 			        				}
 			        			}
@@ -436,7 +442,7 @@
 	            $battleMenu.addEventListener('submit', this.onBattleMenuInput);
 	            this.changeScreen('game');
 	            //서버와 통신으로 플레이어 캐릭터 정보 설정 및 게임상태 받아오기
-	            ajaxRequest({status:"start",name:name})
+	            ajaxRequest({status:"setup",name:name},'/abd/gameSetup')
 	        }
 	        changeScreen(screen) {
 	            if(screen === 'start') {

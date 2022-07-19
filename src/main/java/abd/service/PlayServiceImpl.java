@@ -61,11 +61,11 @@ public class PlayServiceImpl implements PlayService, GameDataLoader{
 		return characterDAO.selecCharacterLine(paramMap);
 	}
 
-	@Override
-	public List<Map<String, String>> getStartSceneInfo(Map<String, String> paramMap) throws Exception {
-		// TODO Auto-generated method stub
-		return scenarioDAO.selectStartScene(paramMap);
-	}
+//	@Override
+//	public List<Map<String, String>> getStartSceneInfo(Map<String, String> paramMap) throws Exception {
+//		// TODO Auto-generated method stub
+//		return scenarioDAO.selectScenes();
+//	}
 
 	@Override
 	public List<Map<String, String>> getEventsOfScene(Map<String, String> paramMap) throws Exception {
@@ -109,11 +109,11 @@ public class PlayServiceImpl implements PlayService, GameDataLoader{
 		return scenarioDAO.selectBattle(paramMap);
 	}
 
-	@Override
-	public List<Map<String, String>> getCompCharacter() throws Exception {
-		// TODO Auto-generated method stub
-		return characterDAO.selectCompCharacters();
-	}
+//	@Override
+//	public List<Map<String, String>> getCompCharacter() throws Exception {
+//		// TODO Auto-generated method stub
+//		return characterDAO.selectCompCharacters();
+//	}
 
 	@Override
 	public List<Map<String, String>> getJustHpnOfEvent(Map<String, String> paramMap) throws Exception {
