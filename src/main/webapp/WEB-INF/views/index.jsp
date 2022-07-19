@@ -151,8 +151,7 @@
         function ajaxRequest(inputs,url){
         	progressOn()        	
         	
-        	var reqJson = new Object();
-    		reqJson.inputs = inputs;
+        	var reqJson = inputs;
     		/* 통신에 사용 될 XMLHttpRequest 객체 정의 */
     		httpRequest = new XMLHttpRequest();
     		httpRequest.onreadystatechange = () => {
