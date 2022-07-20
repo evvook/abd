@@ -178,53 +178,37 @@ public class GamePlayBattle implements GamePlayElement {
 		
 		Map<String,Object> selectContext = null;
 		
-		String commonBattleCode = selectCodes.get("commonBattle");
-		String battleHelpCode = selectCodes.get("battleHelp");
-		String pullBackCode = selectCodes.get("pullBack");
-		String pullBackHelpCode = selectCodes.get("pullBackHelp");
-		
-		if(commonBattleCode.equals(selectInfo.get("SELECT_CD"))) {
-			//일반전투선택
-			//선택지명 기본셋팅
-			currentSelectName = "commonBattle";
-			resultMap.put("selectName", currentSelectName);
-			resultMap.put("selectNext", currentSelectName);
-			selectContext = battleSelect.play(input,manager);
-			//전투선택 결과 설정
-			resultMap.putAll(selectContext);
-			
-		}else if(battleHelpCode.equals(selectInfo.get("SELECT_CD"))) {
-			//도움요청선택
-			//선택지명 기본셋팅
-			currentSelectName = "battleHelp";
-			resultMap.put("selectName", currentSelectName);
-			resultMap.put("selectNext", currentSelectName);
-			selectContext = battleHelpSelect.play(input,manager);
-			//전투선택 결과 설정
-			resultMap.putAll(selectContext);
-			
-		}else if(pullBackCode.equals(selectInfo.get("SELECT_CD"))) {
-			//재정비선택
-			//선택지명 기본셋팅
-			currentSelectName = "pullBack";
-			resultMap.put("selectName", currentSelectName);
-			resultMap.put("selectNext", currentSelectName);
-			selectContext = pullBackSelect.play(input,manager);
-			//전투선택 결과 설정
-			resultMap.putAll(selectContext);
-			
-		}else if(pullBackHelpCode.equals(selectInfo.get("SELECT_CD"))) {
-			//도움받기선택
-			//선택지명 기본셋팅
-			currentSelectName = "pullBackHelp";
-			resultMap.put("selectName", currentSelectName);
-			resultMap.put("selectNext", currentSelectName);
-			selectContext = pullBackHelpSelect.play(input,manager);
-			//전투선택 결과 설정
-			resultMap.putAll(selectContext);
-			
+		for(String selectAlias:selectCodes.keySet()) {
+			String selectCode = selectCodes.get(selectAlias);
+			if(selectCode.equals(selectInfo.get("SELECT_CD"))) {
+				//일반전투선택
+				//선택지명 기본셋팅
+				currentSelectName = selectAlias;
+				resultMap.put("selectName", currentSelectName);
+				resultMap.put("selectNext", currentSelectName);
+				
+				if("commonBattle".equals(currentSelectName)) {
+					//일반전투선택
+					selectContext = battleSelect.play(input,manager);
+					
+				}else if("battleHelp".equals(currentSelectName)) {
+					//도움요청선택
+					selectContext = battleHelpSelect.play(input,manager);
+					
+				}else if("pullBack".equals(currentSelectName)) {
+					//재정비선택
+					selectContext = pullBackSelect.play(input,manager);
+					
+				}else if("pullBackHelp".equals(currentSelectName)) {
+					//도움받기선택
+					selectContext = pullBackHelpSelect.play(input,manager);
+					
+				}
+				//전투선택 결과 설정
+				resultMap.putAll(selectContext);
+				break;
+			}
 		}
-		
 		return resultMap;
 	}
 	
