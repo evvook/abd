@@ -31,7 +31,7 @@ public class GamePlayController {
 	
 	@CrossOrigin
 	@ResponseBody
-	@RequestMapping(value="/gamePlay", method= {RequestMethod.POST,RequestMethod.OPTIONS})
+	@RequestMapping(value="/gamePlay", method= {RequestMethod.GET,RequestMethod.POST,RequestMethod.OPTIONS})
 	public Map<String,Object> play(@RequestBody Map<String,Object> param, HttpServletRequest request) throws Exception{
 		logger.info("play");
 		Map<String,Object> resultMap = new HashMap<String, Object>();

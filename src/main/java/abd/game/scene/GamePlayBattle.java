@@ -25,6 +25,7 @@ public class GamePlayBattle implements GamePlayElement {
 	private String encounteredChracterline;
 	
 	//전투 에서 선택 가능한 선택지
+	private Map<String,String> playCodes;
 	private Map<String,String> selectCodes;
 	private GamePlaySelect battleSelect;
 	private GamePlaySelect battleHelpSelect;
@@ -50,15 +51,17 @@ public class GamePlayBattle implements GamePlayElement {
 		battleCode = battle.get("BATTLE_CD");
 		mapCode = battle.get("MAP_CD");
 		
+		playCodes = new HashMap<String, String>();
 		selectCodes = new HashMap<String, String>();
 		//공격한다, 동료에게 도움요청, 후퇴한다
 		for(Map<String,String>battleInfo:battleList) {
-			selectCodes.put(battleInfo.get("SELECT_ALIAS"), battleInfo.get("PLAY_CD"));
+			playCodes.put(battleInfo.get("SELECT_ALIAS"), battleInfo.get("PLAY_CD"));
+			selectCodes.put(battleInfo.get("SELECT_ALIAS"), battleInfo.get("SELECT_CD"));
 		}
 		
 		//기본전투 선택지만 생성 및 로딩
 		Map<String,String> battleSelectInfo = new HashMap<String,String>();
-		battleSelectInfo.put("PLAY_CD", selectCodes.get("commonBattle"));
+		battleSelectInfo.put("PLAY_CD", playCodes.get("commonBattle"));
 		battleSelect = new GamePlaySelect(battleSelectInfo,loader);
 		
 		//전투 준비
@@ -174,7 +177,13 @@ public class GamePlayBattle implements GamePlayElement {
 		Map<String,String> selectInfo =(Map<String,String>)input.get("selected");
 		
 		Map<String,Object> selectContext = null;
-		if("BSL01".equals(selectInfo.get("SELECT_CD"))) {
+		
+		String commonBattleCode = selectCodes.get("commonBattle");
+		String battleHelpCode = selectCodes.get("battleHelp");
+		String pullBackCode = selectCodes.get("pullBack");
+		String pullBackHelpCode = selectCodes.get("pullBackHelp");
+		
+		if(commonBattleCode.equals(selectInfo.get("SELECT_CD"))) {
 			//일반전투선택
 			//선택지명 기본셋팅
 			currentSelectName = "commonBattle";
@@ -184,7 +193,7 @@ public class GamePlayBattle implements GamePlayElement {
 			//전투선택 결과 설정
 			resultMap.putAll(selectContext);
 			
-		}else if("BSL02".equals(selectInfo.get("SELECT_CD"))) {
+		}else if(battleHelpCode.equals(selectInfo.get("SELECT_CD"))) {
 			//도움요청선택
 			//선택지명 기본셋팅
 			currentSelectName = "battleHelp";
@@ -194,7 +203,7 @@ public class GamePlayBattle implements GamePlayElement {
 			//전투선택 결과 설정
 			resultMap.putAll(selectContext);
 			
-		}else if("BSL03".equals(selectInfo.get("SELECT_CD"))) {
+		}else if(pullBackCode.equals(selectInfo.get("SELECT_CD"))) {
 			//재정비선택
 			//선택지명 기본셋팅
 			currentSelectName = "pullBack";
@@ -204,7 +213,7 @@ public class GamePlayBattle implements GamePlayElement {
 			//전투선택 결과 설정
 			resultMap.putAll(selectContext);
 			
-		}else if("BSL04".equals(selectInfo.get("SELECT_CD"))) {
+		}else if(pullBackHelpCode.equals(selectInfo.get("SELECT_CD"))) {
 			//도움받기선택
 			//선택지명 기본셋팅
 			currentSelectName = "pullBackHelp";
@@ -241,7 +250,7 @@ public class GamePlayBattle implements GamePlayElement {
 			//화면으로 전달할 정보 설정
 			if(battleHelpSelect == null) {
 				Map<String,String> selectInfo = new HashMap<String, String>();
-				selectInfo.put("PLAY_CD", selectCodes.get(command));
+				selectInfo.put("PLAY_CD", playCodes.get(command));
 				battleHelpSelect = new GamePlaySelect(selectInfo,loader);
 			}
 			currentSelect = battleHelpSelect;
@@ -256,7 +265,7 @@ public class GamePlayBattle implements GamePlayElement {
 			//없으면 로딩
 			if(pullBackSelect == null) {
 				Map<String,String> selectInfo = new HashMap<String, String>();
-				selectInfo.put("PLAY_CD", selectCodes.get(command));
+				selectInfo.put("PLAY_CD", playCodes.get(command));
 				pullBackSelect = new GamePlaySelect(selectInfo,loader);
 			}
 			currentSelect = pullBackSelect;
@@ -271,7 +280,7 @@ public class GamePlayBattle implements GamePlayElement {
 			//없으면 로딩
 			if(pullBackHelpSelect == null) {
 				Map<String,String> selectInfo = new HashMap<String, String>();
-				selectInfo.put("PLAY_CD", selectCodes.get(command));
+				selectInfo.put("PLAY_CD", playCodes.get(command));
 				pullBackHelpSelect = new GamePlaySelect(selectInfo,loader);
 			}
 			currentSelect = pullBackHelpSelect;
