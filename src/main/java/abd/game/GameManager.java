@@ -229,7 +229,7 @@ public class GameManager implements GameInterface{
 	
 	public Map<String,Object> dayEnd(){
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		player.decreaseMp(player.getCurrentMp()-10);
+		player.decreaseMp(10);
 		//resultMap.putAll(player.getCharacterContext());
 		
 		dayCnt++;
@@ -238,7 +238,7 @@ public class GameManager implements GameInterface{
 	
 	public Map<String,Object> dayEnd(String eventCode, String eventSeq) throws Exception{
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		player.decreaseMp(player.getCurrentMp()-10);
+		player.decreaseMp(10);
 		//resultMap.putAll(player.getCharacterContext());
 		
 		dayCnt++;
