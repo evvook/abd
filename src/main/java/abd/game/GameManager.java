@@ -106,6 +106,11 @@ public class GameManager implements GameInterface{
 				eventContext = currentEvent.happened(input);
 			}
 		}
+		//전투 종료이면
+		if("endBattle".equals(eventContext.get("play"))) {
+			Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
+			eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
+		}
 		
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
@@ -113,6 +118,7 @@ public class GameManager implements GameInterface{
 			if(sceneInfo != null) {
 				currentScene = new GameScene(sceneInfo,loader,this);
 				currentEvent = currentScene.getEvent();
+				pBtl = null;
 			}else {
 				//더이상 씬이 없는 경우
 				//엔딩?
@@ -159,6 +165,11 @@ public class GameManager implements GameInterface{
 	public Map<String,Object> goSpecificEvent(String eventCode, String eventSeq) throws Exception {
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 		return currentEvent.happened();
+	}
+	
+	//특정 이벤트 시퀀스를 셋팅한다.
+	public void setSpecificEvent(String eventCode, String eventSeq) throws Exception {
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 	}
 	
 	/********************************전투선택설정****************************************/
@@ -221,7 +232,7 @@ public class GameManager implements GameInterface{
 		player.decreaseMp(player.getCurrentMp()-10);
 		//resultMap.putAll(player.getCharacterContext());
 		
-		++dayCnt;
+		dayCnt++;
 		return resultMap;
 	}
 	
@@ -230,7 +241,7 @@ public class GameManager implements GameInterface{
 		player.decreaseMp(player.getCurrentMp()-10);
 		//resultMap.putAll(player.getCharacterContext());
 		
-		++dayCnt;
+		dayCnt++;
 		if(dayCnt >= 4) {
 			//특정 조건이면 가로채서 다음씬을 시작시킴
 			currentScene.hasDone();
@@ -270,5 +281,45 @@ public class GameManager implements GameInterface{
 		resultMap.put("resultTxt",resultTxt.replace("%job%", job));
 		return resultMap;
 		
+	}
+	
+	public void setJob(String job){
+		player.setJob(job);
+	}
+	
+	public void setComp(String characterCode) {
+		player.setCompany(characterCode);
+	}
+	
+	public void supplyItems(String eventCode, String eventSeq) throws Exception {
+		setSpecificEvent(eventCode, eventSeq);
+	}
+	
+	public void getOnElve(String eventCode, String eventSeq, String characterCode, String mp) throws Exception{
+		//박무현, 유금이 동료로 합류
+		player.restoreCompany(characterCode);
+		
+		//정신력 감소
+		String[] compCodes = characterCode.split(",");
+		for(String compCode:compCodes) {
+			CompCharacter comp = player.getCompany(compCode);
+			if(mp != null) {
+				comp.decreaseMp(Integer.valueOf(mp));
+			}
+		}
+		player.decreaseMp(Integer.valueOf(mp));
+		
+		//이벤트 세팅
+		setSpecificEvent(eventCode, eventSeq);
+	}
+	
+	public Map<String,Object> checkBattle(String eventCodeY, String eventSeqY, String eventCodeN, String eventSeqN) throws Exception {
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		if(pBtl != null && pBtl.isDone()) {
+			resultMap.putAll(goSpecificEvent(eventCodeY, eventSeqY));
+		}else {
+			resultMap.putAll(goSpecificEvent(eventCodeN, eventSeqN));
+		}
+		return resultMap;
 	}
 }

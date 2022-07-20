@@ -36,8 +36,8 @@ public class GameEvJustHpn extends GameEvent {
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		//이벤트 JH인 걸 명시해준다.
 		resultMap.put("event", "justHappened");
-		resultMap.put("resultTxt", resultTxt);
-		resultMap.put("jhCode", jhCode);
+//		resultMap.put("resultTxt", resultTxt);
+//		resultMap.put("jhCode", jhCode);
 		
 		String[] methodInfo = resultOccurred.split("#");
 		String methodName = methodInfo[0];
@@ -90,6 +90,23 @@ public class GameEvJustHpn extends GameEvent {
 			if(resultContext != null)
 				resultMap.putAll(resultContext);
 		}
+		
+		//코드 설정
+		resultMap.put("jhCode", jhCode);
+		//resultTxt 설정
+		String playerName = getPlayer().getName();
+		String playerJob = getPlayer().getJob();
+		
+		if(resultMap.get("resultTxt") != null) {
+			resultTxt = (String)resultMap.get("resultTxt");
+		}
+		if(playerName != null) {
+			resultTxt = resultTxt.replace("%name%", playerName);
+		}
+		if(playerJob != null) {
+			resultTxt = resultTxt.replace("%job%", playerJob);
+		}
+		resultMap.put("script", resultTxt);
 		
 		hasDone();
 		

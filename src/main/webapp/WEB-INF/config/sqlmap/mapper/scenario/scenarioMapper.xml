@@ -7,7 +7,7 @@
 			 SCENE_CD
 			,SCENE_NM
 		FROM SCENE_GAME SG
-		where SCENE_CD = 'S901'
+		#where SCENE_CD NOT IN ('S001')
 		ORDER BY SCENE_CD
 		#ASC LIMIT 1
 	</select>
@@ -79,6 +79,8 @@
 		SELECT 
 			 BP.BATTLE_CD 
 			,BP.MAP_CD 
+			,BP.NEXT_EVENT_CD 
+			,BP.NEXT_EVENT_SEQ 
 			,SP.PLAY_CD 
 			,SP.SELECT_ALIAS 
 			,SP.SELECT_CD

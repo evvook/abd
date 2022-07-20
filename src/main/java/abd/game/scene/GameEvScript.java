@@ -33,9 +33,14 @@ public class GameEvScript extends GameEvent {
 		String currentScript = scripts.get(idxOfScript++);
 		
 		//플레이어 이름이나 직업이 포함된 스크립트가 있는 경우 리플레이스 해준다.
-		currentScript = currentScript.replace("%name%", getPlayer().getName());
-		if(getPlayer().getJob() !=null) {
-			currentScript = currentScript.replace("%job%", getPlayer().getJob());
+		String playerName = getPlayer().getName();
+		String playerJob = getPlayer().getJob();
+		
+		if(playerName !=null) {
+			currentScript = currentScript.replace("%name%",playerName );
+		}
+		if(playerJob !=null) {
+			currentScript = currentScript.replace("%job%", playerJob);
 		}
 		
 		resultMap.put("script", currentScript);

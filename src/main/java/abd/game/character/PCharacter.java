@@ -1,6 +1,7 @@
 package abd.game.character;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 	private Integer level;//플레이어 캐릭터 레벨
 	
 	private Map<String,CompCharacter> company;
+	private Map<String,CompCharacter> removedCompany;
 	private Map<String,CompCharacter> calledCompany;
 	
 	public PCharacter(String charCd, String charNm, String classCd) {
@@ -27,6 +29,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		this.maxMp = 100;
 		this.currentMp = 100;
 		
+		removedCompany = new HashMap<String, CompCharacter>();
 		calledCompany = new HashMap<String, CompCharacter>();
 	}
 	
@@ -215,4 +218,40 @@ public class PCharacter extends GameCharacter implements Playerable{
 //		Set<String> characterCodeSet = calledCompany.keySet();
 //		return Arrays.asList(characterCodeSet.toArray(new String[characterCodeSet.size()])); 
 //	}
+
+	public void setCompany(String characterCode) {
+		List<String> compCodeList = Arrays.asList(characterCode.split(","));
+		// TODO Auto-generated method stub
+		//받아서 삭제캐릭터 맵에 담거나
+		Map<String,CompCharacter> companyCopy = new HashMap<String, CompCharacter>();
+		companyCopy.putAll(company);
+		
+		for(String compKey:companyCopy.keySet()) {
+			if(!compCodeList.contains(compKey)) {
+				removedCompany.put(compKey, company.remove(compKey));
+			}
+		}
+		
+		Map<String,CompCharacter> removedCompanyCopy = new HashMap<String, CompCharacter>();
+		removedCompanyCopy.putAll(removedCompany);
+		//삭제 캐릭터 맵에서 꺼내서 컴퍼니에 담거나
+		for(String compKey:removedCompanyCopy.keySet()) {
+			if(compCodeList.contains(compKey)) {
+				company.put(compKey, removedCompany.remove(compKey));
+			}
+		}
+	}
+
+	public void restoreCompany(String characterCode) {
+		// TODO Auto-generated method stub
+		List<String> compCodeList = Arrays.asList(characterCode.split(","));
+		Map<String,CompCharacter> removedCompanyCopy = new HashMap<String, CompCharacter>();
+		removedCompanyCopy.putAll(removedCompany);
+		//삭제 캐릭터 맵에서 꺼내서 컴퍼니에 담거나
+		for(String compKey:removedCompanyCopy.keySet()) {
+			if(compCodeList.contains(compKey)) {
+				company.put(compKey, removedCompany.remove(compKey));
+			}
+		}
+	}
 }

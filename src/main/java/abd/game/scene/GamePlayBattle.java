@@ -14,6 +14,8 @@ import abd.game.character.PCharacter;
 public class GamePlayBattle implements GamePlayElement {
 	private String battleCode;
 	private String mapCode;
+	private String nextEventCode;
+	private String nextEventSeq;
 	
 	private GameDataLoader loader;
 	
@@ -50,6 +52,8 @@ public class GamePlayBattle implements GamePlayElement {
 		Map<String,String> battle = battleList.get(0);
 		battleCode = battle.get("BATTLE_CD");
 		mapCode = battle.get("MAP_CD");
+		nextEventCode = battle.get("NEXT_EVENT_CD");
+		nextEventSeq = battle.get("NEXT_EVENT_SEQ");
 		
 		playCodes = new HashMap<String, String>();
 		selectCodes = new HashMap<String, String>();
@@ -86,15 +90,13 @@ public class GamePlayBattle implements GamePlayElement {
 			if(!encounteredChracter.isAlive()) {
 				//이기거나
 				//다음 상대 셋팅
-				if(encounter.isPoolEmpty()) {
-					//다음 이벤트로 이동할 수 있는 무언가 필요
-					context.put("process", "endBattle");
-					
+				setEncounterdChracter(loader);
+				if(isDone()) {
+					onGoing = false;
 				}else {
+					context.put("npc", encounteredChracter.getCharacterContext());
 					context.put("battleResult", "win");
 					context.put("depeatedNpc", npCharContext);
-					setEncounterdChracter(loader);
-					context.put("npc", encounteredChracter.getCharacterContext());
 				}
 				
 			}else if(!player.isAlive()){
@@ -110,12 +112,16 @@ public class GamePlayBattle implements GamePlayElement {
 				//진행중
 				context.put("process", "onGoing");
 			}else {
-				context.put("process", "start");
-				
-				currentSelectName = "commonBattle";
-				context.put("selectName", currentSelectName);
-				context.put("selectNext", currentSelectName);
-				onGoing = true;
+				if(isDone()) {
+					//다음 이벤트로 이동할 수 있는 무언가 필요
+					context.put("process", "end");
+				}else {
+					context.put("process", "start");
+					currentSelectName = "commonBattle";
+					context.put("selectName", currentSelectName);
+					context.put("selectNext", currentSelectName);
+					onGoing = true;
+				}
 			}
 		}
 		if(encounteredChracterline != null) {
@@ -355,5 +361,17 @@ public class GamePlayBattle implements GamePlayElement {
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
+	}
+
+	public boolean isDone() {
+		// TODO Auto-generated method stub
+		return encounter.isPoolEmpty();
+	}
+	
+	public Map<String,String> getNextEventInfo(){
+		Map<String,String> nextEventInfo = new HashMap<String, String>();
+		nextEventInfo.put("EVENT_CD", nextEventCode);
+		nextEventInfo.put("EVENT_SEQ", nextEventSeq);
+		return nextEventInfo;
 	}
 }

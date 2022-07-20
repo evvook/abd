@@ -201,7 +201,7 @@
 	                game.clearMonster();
 	                game.updateMonsterStat();
 	        		
-			        game.showMessage(result.resultTxt)
+			        game.showMessage(result.script)
 			        	
 	        	}else if(result.event == "play"){
 	        		
