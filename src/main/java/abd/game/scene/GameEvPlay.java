@@ -96,6 +96,7 @@ public class GameEvPlay extends GameEvent {
 		if("S".equals(playType)) {
 			//셀렉트 결과는 이벤트 등이 될 수 있으므로 그냥 통째로 받는다.
 			playContext = pEl.play(input,manager);
+			resultMap.put("play", "select");
 			resultMap.putAll(playContext);
 			
 		}else if("I".equals(playType)) {

@@ -186,6 +186,10 @@
 	        	
 	        	ajaxRequest({status:"start"});
         	}else if(result.status == "start" || result.status == "onGoing"){
+        		console.log(result);
+        		if(result.sceneStatus == 'end'){
+        			game.showMessage(' ');
+        		}
         		
 	        	if(result.event == "script"){
 	        		//game.clearInputs();

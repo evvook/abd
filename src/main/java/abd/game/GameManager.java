@@ -1,5 +1,6 @@
 package abd.game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class GameManager implements GameInterface{
 	//이벤트
 	private GameEvent currentEvent;
 	private Map<String,Object> eventContext;
+	private List<String> eventScripts;
 	
 	//데이터 로드를 위한 객체(서비스)
 	private GameDataLoader loader;
@@ -35,6 +37,7 @@ public class GameManager implements GameInterface{
 		eventContext = new HashMap<String, Object>();
 		sceneInfoList = new LinkedList<Map<String,String>>();
 		lvlData = new HashMap<String, Map<String,String>>();
+		eventScripts = new ArrayList<String>();
 	}
 	
 	@Override
@@ -81,7 +84,21 @@ public class GameManager implements GameInterface{
 		}
 		context.putAll(eventContext);
 		
+		eventContext.clear();
+		eventScripts.clear();
+		
 		return context;
+	}
+	
+	public void setScript(Map<String,Object> resultMap) {
+		String script = (String)resultMap.remove("script");
+		if(script != null) {
+			eventScripts.add(script);
+		}
+	}
+	
+	public void setScript(String script) {
+		eventScripts.add(script);
 	}
 	
 	@Override
@@ -91,19 +108,6 @@ public class GameManager implements GameInterface{
 	
 	@Override
 	public void goEvent(Map<String,Object> input) throws Exception {
-		if(currentEvent.isDone()) {
-			currentEvent = currentScene.getNextEvent();
-			eventContext = currentEvent.happened(input);
-		}else {
-			eventContext = currentEvent.happened(input);
-		}
-		
-		//전투 종료이면 종료 이벤트로 이동한다.
-		if("endBattle".equals(eventContext.get("play"))) {
-			Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
-			eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
-		}
-		
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
 			Map<String,String> sceneInfo = sceneInfoList.pollFirst();
@@ -111,11 +115,87 @@ public class GameManager implements GameInterface{
 				currentScene = new GameScene(sceneInfo,loader,this);
 				currentEvent = currentScene.getEvent();
 				pBtl = null;
+				
+				//담아줌
+				List<String> scripts = new ArrayList<String>();
+				scripts.addAll(eventScripts);
+				eventContext.put("scripts", scripts);
+				
+				//뭔가 클리어를 해줌
+				eventContext.remove("select");
+				eventContext.remove("input");
+				eventContext.remove("battle");
+				eventContext.remove("play");
+				
+				eventContext.put("sceneStatus", "end");
 			}else {
 				//더이상 씬이 없는 경우
 				//엔딩?
 			}
+		}else {
+			
+			if(currentEvent.isDone()) {
+				currentEvent = currentScene.getNextEvent();
+			}
+			
+			Map<String,Object> resultContext = currentEvent.happened(input);
+			eventContext.putAll(resultContext);
+			
+			if(!"P".equals(currentEvent.getEventType())) {
+				if("select".equals(eventContext.get("play"))) {
+					//Map<String,String> rSelect = (Map<String,String>)eventContext.get("select");
+					if("afterSelect".equals(eventContext.get("status"))) {
+//						eventScripts.clear();
+						eventContext.remove("play");
+						eventContext.remove("status");
+						setScript(eventContext);
+						goEvent(null);
+						
+					}
+				}else {
+					setScript(eventContext);
+					goEvent(input);
+				}
+				
+				
+				
+			}else if("P".equals(currentEvent.getEventType())) {
+				if("input".equals(eventContext.get("play"))) {
+					Map<String,String> rInput = (Map<String,String>)eventContext.get("input");
+					if("afterInput".equals(rInput.get("status"))) {
+//						eventScripts.clear();
+						eventContext.remove("input");
+						setScript(rInput.get("resultTxt"));
+						goEvent(null);
+						
+					}
+				}
+//				else if("select".equals(eventContext.get("play"))) {
+//					if("afterSelect".equals(eventContext.get("status"))) {
+//						eventScripts.clear();
+//						eventContext.remove("play");
+//						eventContext.remove("status");
+//						setScript(eventContext);
+//						goEvent(null);
+//						
+//					}
+//				}
+				
+				//담아줌
+				List<String> scripts = new ArrayList<String>();
+				scripts.addAll(eventScripts);
+//				eventScripts.clear();
+				eventContext.put("scripts", scripts);
+			}
+			
+			//전투 종료이면 종료 이벤트로 이동한다.
+			if("endBattle".equals(eventContext.get("play"))) {
+				Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
+				eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
+			}
+			
 		}
+		
 	}
 
 	public PCharacter getPlayer() {
