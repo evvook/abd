@@ -54,6 +54,10 @@ public class GameEvScript extends GameEvent {
 	@Override
 	public Map<String, Object> happened(Map<String, Object> input) {
 		// TODO Auto-generated method stub
+		if(input == null) {
+			return happened();
+		}
+		
 		return null;
 	}
 

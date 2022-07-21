@@ -91,22 +91,14 @@ public class GameManager implements GameInterface{
 	
 	@Override
 	public void goEvent(Map<String,Object> input) throws Exception {
-		if(input == null) {
-			if(currentEvent.isDone()) {
-				currentEvent = currentScene.getNextEvent();
-				eventContext = currentEvent.happened();
-			}else {
-				eventContext = currentEvent.happened();
-			}
+		if(currentEvent.isDone()) {
+			currentEvent = currentScene.getNextEvent();
+			eventContext = currentEvent.happened(input);
 		}else {
-			if(currentEvent.isDone()) {
-				currentEvent = currentScene.getNextEvent();
-				eventContext = currentEvent.happened(input);
-			}else {
-				eventContext = currentEvent.happened(input);
-			}
+			eventContext = currentEvent.happened(input);
 		}
-		//전투 종료이면
+		
+		//전투 종료이면 종료 이벤트로 이동한다.
 		if("endBattle".equals(eventContext.get("play"))) {
 			Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
 			eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
@@ -313,7 +305,7 @@ public class GameManager implements GameInterface{
 		setSpecificEvent(eventCode, eventSeq);
 	}
 	
-	public Map<String,Object> checkBattle(String eventCodeY, String eventSeqY, String eventCodeN, String eventSeqN) throws Exception {
+	public Map<String,Object> checkBattleEnd(String eventCodeY, String eventSeqY, String eventCodeN, String eventSeqN) throws Exception {
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		if(pBtl != null && pBtl.isDone()) {
 			resultMap.putAll(goSpecificEvent(eventCodeY, eventSeqY));

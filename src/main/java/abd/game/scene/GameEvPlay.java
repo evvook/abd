@@ -82,6 +82,10 @@ public class GameEvPlay extends GameEvent {
 	@Override
 	public Map<String, Object> happened(Map<String, Object> input) throws Exception {
 		// TODO Auto-generated method stub
+		if(input == null) {
+			return happened();
+		}
+		
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		//이벤트 플레이인 걸 명시해준다.
 		resultMap.put("event", "play");

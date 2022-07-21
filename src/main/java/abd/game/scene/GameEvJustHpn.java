@@ -97,8 +97,8 @@ public class GameEvJustHpn extends GameEvent {
 		String playerName = getPlayer().getName();
 		String playerJob = getPlayer().getJob();
 		
-		if(resultMap.get("resultTxt") != null) {
-			resultTxt = (String)resultMap.get("resultTxt");
+		if(resultMap.get("script") != null) {
+			resultTxt = (String)resultMap.get("script");
 		}
 		if(playerName != null) {
 			resultTxt = resultTxt.replace("%name%", playerName);
@@ -116,6 +116,10 @@ public class GameEvJustHpn extends GameEvent {
 	@Override
 	public Map<String, Object> happened(Map<String, Object> input) throws Exception {
 		// TODO Auto-generated method stub
+		if(input == null) {
+			return happened();
+		}
+
 		return null;
 	}
 
