@@ -74,7 +74,7 @@ public class GamePlaySelect implements GamePlayElement{
 		//{selected={SELECT_CD=SL001, OPTION_SEQ=1}}
 		Map<String,String> key = new HashMap<String, String>();
 		if(selectCode.equals(selectInfo.get("SELECT_CD"))) {
-			String optionSeq = (String)selectInfo.get("OPTION_SEQ");
+			String optionSeq = String.valueOf(selectInfo.get("OPTION_SEQ"));
 			key.put(selectCode, optionSeq);
 		}
 		
