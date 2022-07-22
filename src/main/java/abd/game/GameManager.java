@@ -32,6 +32,9 @@ public class GameManager implements GameInterface{
 	
 	//테스트용
 	int dayCnt=1;
+	boolean dayOut = false;
+	
+	boolean sceneEnd = false;
 	
 	public GameManager() {
 		eventContext = new HashMap<String, Object>();
@@ -83,6 +86,12 @@ public class GameManager implements GameInterface{
 			context.put("player", pCharContext);
 		}
 		context.putAll(eventContext);
+
+		context.put("day", dayCnt);
+		if(dayOut) {
+			dayCnt++;
+			dayOut = false;
+		}
 		
 		eventContext.clear();
 		eventScripts.clear();
@@ -108,6 +117,11 @@ public class GameManager implements GameInterface{
 	
 	@Override
 	public void goEvent(Map<String,Object> input) throws Exception {
+//		if(dayCnt++ == 5) {
+//			//특정 조건이면 가로채서 다음씬을 시작시킴
+//			currentScene.hasDone();
+//		}
+		
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
 			Map<String,String> sceneInfo = sceneInfoList.pollFirst();
@@ -128,9 +142,23 @@ public class GameManager implements GameInterface{
 				eventContext.remove("play");
 				
 				eventContext.put("sceneStatus", "end");
+				//dayOut = true;
 			}else {
 				//더이상 씬이 없는 경우
 				//엔딩?
+			}
+		}else if(sceneEnd){
+			eventContext.put("sceneStatus", "end");
+			sceneEnd = false;
+			//담아줌
+			List<String> scripts = new ArrayList<String>();
+			scripts.addAll(eventScripts);
+			eventContext.put("scripts", scripts);
+			
+			if(dayCnt >= 3) {
+				//특정 조건이면 가로채서 다음씬을 시작시킴
+				currentScene.hasDone();
+				goEvent();
 			}
 		}else {
 			
@@ -141,61 +169,70 @@ public class GameManager implements GameInterface{
 			Map<String,Object> resultContext = currentEvent.happened(input);
 			eventContext.putAll(resultContext);
 			
+			//플레이가 아니면
 			if(!"P".equals(currentEvent.getEventType())) {
+
+				//직전 이벤트가 플레이고 셀렉트일때
 				if("select".equals(eventContext.get("play"))) {
 					//Map<String,String> rSelect = (Map<String,String>)eventContext.get("select");
 					if("afterSelect".equals(eventContext.get("status"))) {
-//						eventScripts.clear();
+						//플레이 정보는 삭제하고
 						eventContext.remove("play");
 						eventContext.remove("status");
+						//스크립트 담아주고
 						setScript(eventContext);
+						//null을 파라미터로 이벤트 호출
 						goEvent(null);
 						
 					}
-				}else {
+				//스크립트가 있다면 담아주고 이벤트 호출
+				}else if(eventContext.get("script") != null) {
 					setScript(eventContext);
 					goEvent(input);
 				}
 				
-				
-				
+			//플레이이면	
 			}else if("P".equals(currentEvent.getEventType())) {
-				if("input".equals(eventContext.get("play"))) {
-					Map<String,String> rInput = (Map<String,String>)eventContext.get("input");
-					if("afterInput".equals(rInput.get("status"))) {
-//						eventScripts.clear();
-						eventContext.remove("input");
-						setScript(rInput.get("resultTxt"));
-						goEvent(null);
-						
-					}
-				}
-//				else if("select".equals(eventContext.get("play"))) {
-//					if("afterSelect".equals(eventContext.get("status"))) {
-//						eventScripts.clear();
-//						eventContext.remove("play");
-//						eventContext.remove("status");
-//						setScript(eventContext);
-//						goEvent(null);
-//						
-//					}
-//				}
 				
-				//담아줌
-				List<String> scripts = new ArrayList<String>();
-				scripts.addAll(eventScripts);
-//				eventScripts.clear();
-				eventContext.put("scripts", scripts);
+				//전투 종료이면 종료 이벤트로 이동한다.
+				if("endBattle".equals(eventContext.get("play"))) {
+					Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
+					eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
+					
+					setScript(eventContext);
+					goEvent(null);
+				}else {
+					//인풋이고 에프터인풋이면 리절트 텍스트 담아주고 이벤트 호출
+					if("input".equals(eventContext.get("play"))) {
+						Map<String,String> rInput = (Map<String,String>)eventContext.get("input");
+						if("afterInput".equals(rInput.get("status"))) {
+							eventContext.remove("input");
+							setScript(rInput.get("resultTxt"));
+							goEvent(null);
+							
+						}
+					//셀렉트이고 애프터셀렉트 이면 스크립트 담아주고 플레이 정보 제거
+					}else if("select".equals(eventContext.get("play"))) {
+						if("afterSelect".equals(eventContext.get("status"))) {
+							eventContext.remove("play");
+							eventContext.remove("status");
+							setScript(eventContext);
+							goEvent(null);
+							
+						}
+					//스크립트가 있다면 담아주고 이벤트 호출	
+					}else if(eventContext.get("script") != null){
+						setScript(eventContext);
+						goEvent(null);
+					}
+					
+					//스크립트 담아주고 이벤트 더이상 호출하지 않음
+					List<String> scripts = new ArrayList<String>();
+					scripts.addAll(eventScripts);
+					eventContext.put("scripts", scripts);
+				}
 			}
-			
-			//전투 종료이면 종료 이벤트로 이동한다.
-			if("endBattle".equals(eventContext.get("play"))) {
-				Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
-				eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
-			}
-			
 		}
-		
 	}
 
 	public PCharacter getPlayer() {
@@ -304,7 +341,9 @@ public class GameManager implements GameInterface{
 		player.decreaseMp(10);
 		//resultMap.putAll(player.getCharacterContext());
 		
-		dayCnt++;
+//		dayCnt++;
+		dayOut = true;
+		
 		return resultMap;
 	}
 	
@@ -313,11 +352,10 @@ public class GameManager implements GameInterface{
 		player.decreaseMp(10);
 		//resultMap.putAll(player.getCharacterContext());
 		
-		dayCnt++;
-		if(dayCnt >= 4) {
-			//특정 조건이면 가로채서 다음씬을 시작시킴
-			currentScene.hasDone();
-		}
+//		if(dayCnt++ >= 5) {
+//			//특정 조건이면 가로채서 다음씬을 시작시킴
+//			currentScene.hasDone();
+//		}
 		
 		//특정 이벤트 설정
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
@@ -337,6 +375,10 @@ public class GameManager implements GameInterface{
 				player.increaseMp(Integer.valueOf(mp));
 			}
 		}
+		
+		dayOut = true;
+		sceneEnd = true;
+		
 		//특정 이벤트 설정
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 	}
@@ -344,6 +386,10 @@ public class GameManager implements GameInterface{
 	public void mentalCare(String eventCode, String eventSeq) throws Exception {
 		//특정 이벤트 설정
 		player.increaseMp(10);
+		
+		dayOut = true;
+		sceneEnd = true;
+		
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 	}
 	
