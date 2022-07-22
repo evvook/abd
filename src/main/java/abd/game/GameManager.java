@@ -137,6 +137,9 @@ public class GameManager implements GameInterface{
 				eventContext.remove("battle");
 				eventContext.remove("play");
 				
+				if(dayCnt == 7) {
+					eventContext.put("sceneInfo", "intro");
+				}
 				eventContext.put("sceneStatus", "end");
 				//dayOut = true;
 			}else {
@@ -153,7 +156,6 @@ public class GameManager implements GameInterface{
 			
 			if(dayCnt == 6) {
 				//특정 조건이면 가로채서 다음씬을 시작시킴
-				eventContext.put("sceneStatus", "intro");
 				currentScene.hasDone();
 				goEvent();
 			}
