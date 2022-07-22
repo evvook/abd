@@ -7,9 +7,8 @@
 			 SCENE_CD
 			,SCENE_NM
 		FROM SCENE_GAME SG
-		#where SCENE_CD NOT IN ('S001')
+		#where SCENE_CD NOT IN ('S001','S002')
 		ORDER BY SCENE_CD
-		#ASC LIMIT 1
 	</select>
 	<select id="selectEvents" parameterType="hashmap" resultType="hashmap">
 		SELECT 

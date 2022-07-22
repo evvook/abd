@@ -86,7 +86,9 @@
 	        <span id="monster-hp"></span>
 	        <span id="monster-att"></span>
 	    </div>
-	    <div id="message"></div>
+	    <div id="message">
+	    	<p>test<br>123<br></p>
+	    </div>
 	    <form id="game-menu" style="display: none;">
 <!-- 	        <div id="menu-1">1.모험</div>
 	        <div id="menu-2">2.카페에 쉬러가기(체력 회복)</div> -->
@@ -127,6 +129,7 @@
 		const $monsterAtt = document.querySelector('#monster-att');
 		const $monsterLine = document.querySelector('#monster-line');
 		const $message = document.querySelector('#message');	
+		const $messageP = document.querySelector('#message p');	
 		
 		var process = false;
 		
@@ -190,6 +193,9 @@
         		if(result.sceneStatus == 'end'){
         			game.showMessage(' ');
         		}
+        		if(result.scripts.length>0){
+        			game.showMessage(result.scripts.join("<br>"));
+        		}
         		
 	        	if(result.event == "script"){
 	        		//game.clearInputs();
@@ -197,7 +203,7 @@
 	                game.clearMonster();
 	                game.updateMonsterStat();
 	        		
-			        game.showMessage(result.script)
+			        //game.showMessage(result.script)
 			        	
 	        	}else if(result.event == "justHappened"){
 	        		//game.clearInputs();
@@ -205,7 +211,7 @@
 	                game.clearMonster();
 	                game.updateMonsterStat();
 	        		
-			        game.showMessage(result.script)
+			        //game.showMessage(result.script)
 			        	
 	        	}else if(result.event == "play"){
 	        		
@@ -216,7 +222,7 @@
 		                game.changeScreen('game');
 		                game.clearMonster();
 		                game.updateMonsterStat();
-				        game.showMessage(' ')
+				        //game.showMessage(' ')
 				        
 		        		var divTag = document.querySelector("#message");
 				        var head = document.createElement("div");
@@ -243,7 +249,7 @@
 		        			game.changeScreen('game');
 			                game.clearMonster();
 			                game.updateMonsterStat();
-					        game.showMessage(' ')
+					        //game.showMessage(' ')
 					        
 					        var divTag = document.querySelector("#message");
 					        var inputTag = document.createElement("input");
@@ -271,6 +277,9 @@
 			        		game.updateMonsterStat();
 			        		
 			        		//game.showMessage(' ');
+			        		if(result.scripts.length>0){
+			        			game.showMessage(result.scripts.join("<br>"));
+			        		}
 			        		
 			        		//공통화
 			        		createBattleSelect(battle.selectName, battle);
@@ -620,7 +629,14 @@
             }
             
             showMessage(text) {
-                $message.textContent = text;
+           		var cnt = $message.childElementCount;
+           		for(var i=cnt-1; i>0 ;i--){
+           			var c = $message.children[i];
+           			if(c){
+            			$message.removeChild(c);
+           			}
+           		}
+           		$messageP.innerHTML = text;
             }
             
             quit() {
