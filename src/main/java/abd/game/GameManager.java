@@ -117,10 +117,6 @@ public class GameManager implements GameInterface{
 	
 	@Override
 	public void goEvent(Map<String,Object> input) throws Exception {
-//		if(dayCnt++ == 5) {
-//			//특정 조건이면 가로채서 다음씬을 시작시킴
-//			currentScene.hasDone();
-//		}
 		
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
@@ -155,7 +151,7 @@ public class GameManager implements GameInterface{
 			scripts.addAll(eventScripts);
 			eventContext.put("scripts", scripts);
 			
-			if(dayCnt >= 3) {
+			if(dayCnt >= 5) {
 				//특정 조건이면 가로채서 다음씬을 시작시킴
 				currentScene.hasDone();
 				goEvent();
