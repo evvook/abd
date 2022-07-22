@@ -87,7 +87,7 @@
 	        <span id="monster-att"></span>
 	    </div>
 	    <div id="message">
-	    	<p>test<br>123<br></p>
+	    	<p></p>
 	    </div>
 	    <form id="game-menu" style="display: none;">
 <!-- 	        <div id="menu-1">1.모험</div>

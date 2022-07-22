@@ -151,8 +151,9 @@ public class GameManager implements GameInterface{
 			scripts.addAll(eventScripts);
 			eventContext.put("scripts", scripts);
 			
-			if(dayCnt >= 5) {
+			if(dayCnt == 6) {
 				//특정 조건이면 가로채서 다음씬을 시작시킴
+				eventContext.put("sceneStatus", "intro");
 				currentScene.hasDone();
 				goEvent();
 			}
@@ -381,7 +382,7 @@ public class GameManager implements GameInterface{
 	
 	public void mentalCare(String eventCode, String eventSeq) throws Exception {
 		//특정 이벤트 설정
-		player.increaseMp(10);
+		player.increaseMp(25);
 		
 		dayOut = true;
 		sceneEnd = true;
