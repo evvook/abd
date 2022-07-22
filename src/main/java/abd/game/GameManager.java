@@ -102,12 +102,15 @@ public class GameManager implements GameInterface{
 	public void setScript(Map<String,Object> resultMap) {
 		String script = (String)resultMap.remove("script");
 		if(script != null) {
-			eventScripts.add(script);
+			setScript(script);
 		}
 	}
 	
 	public void setScript(String script) {
-		eventScripts.add(script);
+		String[] scripts = script.split("<br>");
+		for(String s:scripts) {
+			eventScripts.add(s);
+		}
 	}
 	
 	@Override
