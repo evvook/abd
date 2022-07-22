@@ -52,7 +52,11 @@ public abstract class GameCharacter{
 	}
 	
 	public Integer getAtt() {
-		return att;
+		if(armed) {
+			return att+30;
+		}else {
+			return att;
+		}
 	}
 	public Integer getHp() {
 		return maxHp;

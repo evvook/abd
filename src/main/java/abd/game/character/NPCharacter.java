@@ -23,6 +23,8 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 		super(charCd, charNm, classCd);
 		this.turnCount = 0;
 		
+		this.armed = true;
+		
 		this.lines = new HashMap<String, List<String>>();
 		List<String> eLines = new ArrayList<String>();
 		List<String> aLines = new ArrayList<String>();
