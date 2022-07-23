@@ -181,11 +181,11 @@ public class PCharacter extends GameCharacter implements Playerable{
 		}
 	}
 	
-	public List<Map<String,String>> getCompContext(){
-		List<Map<String,String>> compContext = new ArrayList<Map<String,String>>();
+	public Map<String,Object> getCompContext(){
+		Map<String,Object> compContext = new HashMap<String,Object>();
 		for(String compKey:company.keySet()) {
 			CompCharacter comp = company.get(compKey);
-			compContext.add(comp.getCharacterContext());
+			compContext.put(comp.getName(),comp.getCharacterContext());
 		}
 		return compContext;
 	}
