@@ -8,7 +8,7 @@
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="/WEB-INF/config/sqlmap/mapper/**/*.xml" />
+		<property name="mapperLocations" value="/WEB-INF/sqlmapper/**/*.xml" />
 		<property name="configLocation" value="/WEB-INF/config/sqlmap/mapper-config.xml" />
 	</bean>	
 	<!-- mapper 등록 위치 끝 -->
@@ -18,7 +18,7 @@
 	</bean> -->
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="/WEB-INF/config/sqlmap/mapper/**/*.xml" />
+		<property name="mapperLocations" value="/WEB-INF/sqlmapper/**/*.xml" />
 	</bean>
 
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
