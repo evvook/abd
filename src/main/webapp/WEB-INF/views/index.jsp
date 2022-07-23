@@ -355,6 +355,8 @@
 					            		}
 					            		game.setMonsterStatus(battle.npc);
 							        	game.updateMonsterStat();
+							        	game.setHeroStatus(battle.player);
+							        	game.updateHeroStat();
 		        					}
 		        					//취소
 		        					else if(battle.selectOption == 'cancelSelect'){

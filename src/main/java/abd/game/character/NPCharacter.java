@@ -18,9 +18,9 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 	private Integer turnCount;
 	private boolean encounter;
 	
-	public NPCharacter(String charCd, String charNm, String classCd) {
+	public NPCharacter(String charCd, String charNm, String classCd, String hp, String att, String ac, String av) {
 		// TODO Auto-generated constructor stub
-		super(charCd, charNm, classCd);
+		super(charCd, charNm, classCd, hp, att, ac, av);
 		this.turnCount = 0;
 		
 		this.armed = true;
@@ -36,20 +36,11 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 		this.lines.put("R", rLines);
 	}
 
-	public void setStatus(String hp, String att, String xp, String freq) {
+	public void setStatus(String xp, String freq) {
 		// TODO Auto-generated method stub
 		try {
-			this.att = Integer.valueOf(att);
 			this.maxFreq = Integer.valueOf(freq);
 			this.currentFreq = Integer.valueOf(freq);
-			
-			if("".equals(hp) || hp == null) {
-				this.maxHp = 0;
-				this.currentHp = 0;
-			}else {
-				this.maxHp = Integer.valueOf(hp);
-				this.currentHp = Integer.valueOf(hp);
-			}
 			
 			if("".equals(xp) || xp == null) {
 				this.xp = 0;
@@ -66,9 +57,9 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 	}
 	
 	@Override
-	public void react(GameCharacter other) {
+	public Map<String,Object> react(GameCharacter other) {
 		// TODO Auto-generated method stub
-		action.react(other);
+		return action.react(other);
 	}
 
 	public Integer getXp() {
@@ -162,10 +153,10 @@ public class NPCharacter extends GameCharacter implements NonPlayerable,CountTur
 	}
 
 	@Override
-	public Map<String, String> getCharacterContext() {
+	public Map<String, Object> getCharacterContext() {
 		// TODO Auto-generated method stub
 		//"{\"name\":\"김은우\",\"hp\":\"100\",\"att\":\"10\",\"xp\":\"0\",\"lev\":\"1\",\"reqdXp\":\"15\"}"
-		Map<String,String> npcContext = new HashMap<String, String>();
+		Map<String,Object> npcContext = new HashMap<String, Object>();
 		
 		npcContext.put("name", getName());
 		npcContext.put("maxHp", getHp().toString());

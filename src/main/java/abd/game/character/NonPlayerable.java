@@ -9,7 +9,7 @@ public interface NonPlayerable {
 	
 	public int getFreq();
 	
-	public void react(GameCharacter other);	
+	public Map<String,Object> react(GameCharacter other);	
 	
 	public String getLine();
 	

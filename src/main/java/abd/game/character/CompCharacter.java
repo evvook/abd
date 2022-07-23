@@ -24,12 +24,14 @@ public class CompCharacter extends GameCharacter {
 	private Integer currentReplTerm;
 	private Integer termCnt;
 	
+	private PCharacter player;
+	
 	//대사 관련
 	private Map<String,List<String>> lines;//조우시 대사(encounter), 액션시 대사(action), 사망시 대사(defeat), 도망시(runAway) 대사
 	private String line = "NO_TEXT";
 	
-	public CompCharacter(String charCd, String charNm, String classCd) {
-		super(charCd, charNm, classCd);
+	public CompCharacter(String charCd, String charNm, String classCd, String hp, String att, String ac, String av) {
+		super(charCd, charNm, classCd, hp, att, ac, av);
 		// TODO Auto-generated constructor stub
 		//기본은 활성화 상태
 		active = true;
@@ -65,11 +67,15 @@ public class CompCharacter extends GameCharacter {
 	public Integer getSpAbl2() {
 		return spAbl2;
 	}
+	
+	public void setPlayer(PCharacter player) {
+		this.player = player;
+	}
 
 	@Override
-	public Map<String, String> getCharacterContext() {
+	public Map<String, Object> getCharacterContext() {
 		// TODO Auto-generated method stub
-		Map<String,String> pcContext = new HashMap<String, String>();
+		Map<String,Object> pcContext = new HashMap<String, Object>();
 		
 		pcContext.put("name", getName());
 		pcContext.put("maxHp", getHp().toString());
@@ -92,11 +98,16 @@ public class CompCharacter extends GameCharacter {
 		return pcContext;
 	}
 
-	public void act(NPCharacter encounteredChracter) {
+	public void act(NPCharacter encounteredChracter) throws Exception {
 		// TODO Auto-generated method stub
 		//전투
 		if(active) {
-			this.action.act(encounteredChracter);
+			player.setActionResult(this.action.act(encounteredChracter));
+			if(this.isAlive()) {
+				if(!encounteredChracter.isAlive()) {
+					player.takeExp(encounteredChracter);
+				}
+			}
 		}
 	}
 	
@@ -108,14 +119,11 @@ public class CompCharacter extends GameCharacter {
 		healMp.react(player);
 	}
 	
-	//hp,mp,att,spabl1,apabl2,
-	public void setStatus(String hp, String mp, String att, String minReplTerm, String maxReplTerm, String spAbl1, String spAbl2) {
+	//mp,spabl1,apabl2,
+	public void setStatus(String mp, String minReplTerm, String maxReplTerm, String spAbl1, String spAbl2) {
 		// TODO Auto-generated method stub
-		this.maxHp = Integer.valueOf(hp);
-		this.currentHp = Integer.valueOf(hp);
 		this.maxMp = Integer.valueOf(mp);
 		this.currentMp = Integer.valueOf(mp);
-		this.att = Integer.valueOf(att);
 		this.minReplTerm = Integer.valueOf(minReplTerm);
 		this.maxReplTerm = Integer.valueOf(maxReplTerm);
 		this.currentReplTerm = Integer.valueOf(maxReplTerm);

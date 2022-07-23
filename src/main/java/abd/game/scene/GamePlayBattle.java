@@ -78,7 +78,7 @@ public class GamePlayBattle implements GamePlayElement {
 	public Map<String, Object> getElContext() throws Exception {
 		// TODO Auto-generated method stub
 		Map<String, Object> context = new HashMap<String, Object>();
-		Map<String, String> pCharContext = player.getCharacterContext();
+		Map<String, Object> pCharContext = player.getCharacterContext();
 		context.put("player", pCharContext);
 		if(company != null) {
 			context.put("company", company.getCharacterContext());
@@ -86,7 +86,7 @@ public class GamePlayBattle implements GamePlayElement {
 			company = null;
 		}
 		if(encounteredChracter != null) {
-			Map<String, String> npCharContext = encounteredChracter.getCharacterContext();
+			Map<String, Object> npCharContext = encounteredChracter.getCharacterContext();
 			if(!encounteredChracter.isAlive()) {
 				//이기거나
 				//다음 상대 셋팅

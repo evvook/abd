@@ -1,5 +1,8 @@
 package abd.game.character;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import abd.game.character.action.Action;
@@ -22,19 +25,61 @@ public abstract class GameCharacter{
 	protected Integer currentMp;
 	protected Integer att;
 	
+	//명중/회피
+	protected Integer ac;
+	protected Integer av;
+	protected List<String> acPool;
+	protected List<String> avPool;
+	
 	//무장여부
 	protected boolean armed = false;
 	//무장할 경우 증가하는 추가 공격치
 	protected Integer extraAtt = 0;
 	
-	public GameCharacter(String charCd, String charNm, String classCd) {
+	public GameCharacter(String charCd, String charNm, String classCd, String hp, String att, String ac, String av) {
 		// TODO Auto-generated constructor stub
 		this.code = charCd;
 		this.name = charNm;
 		this.classCd = classCd;
+		
+		this.maxHp = Integer.valueOf(hp);
+		this.currentHp = Integer.valueOf(hp);
+		this.att = Integer.valueOf(att);
+		this.ac = Integer.valueOf(ac);
+		this.av = Integer.valueOf(av);
+		
+		setAcAvPool();
+		
 		this.alive = true;
 	}
 	
+	protected void setAcAvPool() {
+		String[] acArr = new String[10+this.ac];
+		Arrays.fill(acArr, "SUCCESS");
+		acPool = new ArrayList<String>(Arrays.asList(acArr));
+		if(acArr.length < 20) {
+			for(int i = acArr.length; i<20; i++) {
+				acPool.add("MISSED");
+			}
+		}
+		
+		String[] avArr = new String[this.av];
+		Arrays.fill(avArr, "AVOID");
+		avPool = new ArrayList<String>(Arrays.asList(avArr));
+		if(avArr.length < 20) {
+			for(int i = avArr.length; i<20; i++) {
+				avPool.add("FAIL");
+			}
+		}
+	}
+	
+	public List<String> getAcPool(){
+		return acPool;
+	}
+	
+	public List<String> getAvPool(){
+		return avPool;
+	}
 	
 	public String getCode() {
 		// TODO Auto-generated method stub
@@ -57,6 +102,12 @@ public abstract class GameCharacter{
 		}else {
 			return att;
 		}
+	}
+	public Integer getAc() {
+		return ac;
+	}
+	public Integer getAv() {
+		return av;
 	}
 	public Integer getHp() {
 		return maxHp;
@@ -133,5 +184,5 @@ public abstract class GameCharacter{
 		}
 	}
 
-	public abstract Map<String, String> getCharacterContext();
+	public abstract Map<String, Object> getCharacterContext();
 }

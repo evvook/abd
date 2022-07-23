@@ -1,8 +1,11 @@
 package abd.game.character.action;
 
+import java.util.Map;
+
 import abd.game.character.GameCharacter;
+import abd.game.character.NPCharacter;
 
 public interface Action {
-	public void act(GameCharacter other);
-	public void react(GameCharacter other);
+	public Map<String,Object> act(NPCharacter other);
+	public Map<String,Object> react(GameCharacter other);
 }

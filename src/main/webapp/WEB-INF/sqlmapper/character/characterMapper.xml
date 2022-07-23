@@ -25,7 +25,9 @@
 			,CMT.CHAR_NM 
 			,CMT.CLASS_CD 
 			,CL.HP
-			,CL.ATT 
+			,CL.ATT
+			,CL.AC
+			,CL.AV
 			,CL.XP 
 			,CL.FREQ 
 		FROM CHARACTER_MT CMT 
@@ -41,6 +43,8 @@
 			,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` 
 			,LVL.HP 
 			,LVL.ATT 
+			,LVL.AC
+			,LVL.AV
 			,LVL.REQD_XP 
 		FROM CHARACTER_LVL LVL
 		WHERE 1=1
@@ -76,6 +80,8 @@
 			,CC.SP_ABL2
 			,CL.HP 
 			,CL.ATT
+			,CL.AC
+			,CL.AV
 			,CN.LINE_TXT
 			,CN.TYPE
 		FROM CHARACTER_MT CM 

@@ -11,8 +11,8 @@ public class GameCharacterBuilder {
 
 	public static NPCharacter getNPCharacterInstance(Map<String, String> charInfo, List<Map<String,String>> charLineList) throws Exception {
 		
-		NPCharacter newCharacter = new NPCharacter(charInfo.get("CHAR_CD"),charInfo.get("CHAR_NM"),charInfo.get("CLASS_CD"));
-		newCharacter.setStatus(charInfo.get("HP"),charInfo.get("ATT"),charInfo.get("XP"),charInfo.get("FREQ"));
+		NPCharacter newCharacter = new NPCharacter(charInfo.get("CHAR_CD"),charInfo.get("CHAR_NM"),charInfo.get("CLASS_CD"),charInfo.get("HP"),charInfo.get("ATT"),charInfo.get("AC"),charInfo.get("AV"));
+		newCharacter.setStatus(charInfo.get("XP"),charInfo.get("FREQ"));
 		
 		newCharacter.setAction(new Fight(newCharacter));
 		
@@ -24,8 +24,8 @@ public class GameCharacterBuilder {
 	
 	public static PCharacter getPCharacterInstance(Map<String, String> charInfo, String character_name) throws Exception {
 		
-		PCharacter newCharacter = new PCharacter(charInfo.get("CHAR_CD"),character_name,charInfo.get("CLASS_CD"));
-		newCharacter.setLvlStatus(charInfo.get("LEVEL"),charInfo.get("HP"),charInfo.get("ATT"),charInfo.get("REQD_XP"));
+		PCharacter newCharacter = new PCharacter(charInfo.get("CHAR_CD"),character_name,charInfo.get("CLASS_CD"),charInfo.get("HP"),charInfo.get("ATT"),charInfo.get("AC"),charInfo.get("AV"));
+		newCharacter.setLvlStatus(charInfo);
 		newCharacter.setAction(new Fight(newCharacter));
 		
 		return newCharacter;
@@ -33,8 +33,8 @@ public class GameCharacterBuilder {
 	
 	public static CompCharacter getCompCharacterInstance(Map<String, String> charInfo, List<Map<String, String>> characterLines) throws Exception {
 
-		CompCharacter newCharacter = new CompCharacter(charInfo.get("CHAR_CD"),charInfo.get("CHAR_NM"),charInfo.get("CLASS_CD"));
-		newCharacter.setStatus(charInfo.get("HP"),charInfo.get("MP"),charInfo.get("ATT"),charInfo.get("MIN_REPL_TERM"),charInfo.get("MAX_REPL_TERM"),charInfo.get("SP_ABL1"),charInfo.get("SP_ABL2"));
+		CompCharacter newCharacter = new CompCharacter(charInfo.get("CHAR_CD"),charInfo.get("CHAR_NM"),charInfo.get("CLASS_CD"),charInfo.get("HP"),charInfo.get("ATT"),charInfo.get("AC"),charInfo.get("AV"));
+		newCharacter.setStatus(charInfo.get("MP"),charInfo.get("MIN_REPL_TERM"),charInfo.get("MAX_REPL_TERM"),charInfo.get("SP_ABL1"),charInfo.get("SP_ABL2"));
 		
 		if(GameCharacter.CLASS_FIGHTER.equals(charInfo.get("CLASS_CD"))) {
 			newCharacter.setAction(new Fight(newCharacter));

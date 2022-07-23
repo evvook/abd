@@ -80,7 +80,7 @@ public class GameManager implements GameInterface{
 	public Map<String, Object> getGameContext() {
 		// TODO Auto-generated method stub
 		Map<String, Object> context = new HashMap<String, Object>();
-		Map<String, String> pCharContext = player.getCharacterContext();
+		Map<String, Object> pCharContext = player.getCharacterContext();
 		if(currentEvent == null || !"B".equals(currentEvent.getchildType())){
 			//이벤트가 존재하지 않거나 이벤트트의 하위타입이 전투가 아니면 플레이어 정보를 넣어준다.
 			context.put("player", pCharContext);

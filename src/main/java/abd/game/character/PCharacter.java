@@ -21,9 +21,11 @@ public class PCharacter extends GameCharacter implements Playerable{
 	private Map<String,CompCharacter> removedCompany;
 	private Map<String,CompCharacter> calledCompany;
 	
-	public PCharacter(String charCd, String charNm, String classCd) {
+	private Map<String,Object> actionResult;
+	
+	public PCharacter(String charCd, String charNm, String classCd, String hp, String att, String ac, String av) {
 		// TODO Auto-generated constructor stub
-		super(charCd, charNm,classCd);
+		super(charCd, charNm,classCd, hp, att, ac, av);
 		
 		//플레이어는 기본 100의 정신력을 가짐
 		this.maxMp = 100;
@@ -31,6 +33,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		
 		removedCompany = new HashMap<String, CompCharacter>();
 		calledCompany = new HashMap<String, CompCharacter>();
+		actionResult = new HashMap<String, Object>();
 	}
 	
 	public void setGameManager(GameManager manager) {
@@ -63,7 +66,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		npc.setFreq(1);
 	}	
 	
-	private void takeExp(NonPlayerable charact) throws Exception {
+	public void takeExp(NonPlayerable charact) throws Exception {
 		// TODO Auto-generated method stub
 		xp += charact.getXp();
 		if(isLevelUp()) {
@@ -90,11 +93,14 @@ public class PCharacter extends GameCharacter implements Playerable{
 //		
 //		setLvlStatus(lvlData.get("LEVEL"),lvlData.get("HP"),lvlData.get("ATT"),lvlData.get("REQD_XP"));
 //	}
+	public void setActionResult(Map<String,Object> actionResult) {
+		this.actionResult.putAll(actionResult);
+	}
 
 	@Override
-	public void act(GameCharacter other) {
+	public void act(NPCharacter other) {
 		// TODO Auto-generated method stub
-		action.act(other);
+		setActionResult(action.act(other));
 	}
 	
 	@Override
@@ -103,7 +109,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		return level;
 	}
 
-	public void setLvlStatus(String level, String hp, String att, String requiredXp) {
+	public void setLvlStatus(String level, String hp, String att, String ac, String av, String requiredXp) {
 		// TODO Auto-generated method stub
 		try {
 			if(this.xp != null && this.xp != 0) {
@@ -116,7 +122,11 @@ public class PCharacter extends GameCharacter implements Playerable{
 			this.maxHp = Integer.valueOf(hp);
 			this.currentHp = Integer.valueOf(hp);
 			this.att = Integer.valueOf(att);
+			this.ac = Integer.valueOf(ac);
+			this.av = Integer.valueOf(av);
 			this.requiredXp = Integer.valueOf(requiredXp);
+			
+			setAcAvPool();
 		}catch(NullPointerException e) {
 			throw e;
 		}
@@ -124,14 +134,14 @@ public class PCharacter extends GameCharacter implements Playerable{
 
 	public void setLvlStatus(Map<String, String> lvlData) {
 		// TODO Auto-generated method stub
-		setLvlStatus(lvlData.get("LEVEL"),lvlData.get("HP"),lvlData.get("ATT"),lvlData.get("REQD_XP"));
+		setLvlStatus(lvlData.get("LEVEL"),lvlData.get("HP"),lvlData.get("ATT"),lvlData.get("AC"),lvlData.get("AV"),lvlData.get("REQD_XP"));
 	}	
 
 	@Override
-	public Map<String, String> getCharacterContext() {
+	public Map<String, Object> getCharacterContext() {
 		// TODO Auto-generated method stub
 		//"{\"name\":\"김은우\",\"hp\":\"100\",\"att\":\"10\",\"xp\":\"0\",\"lev\":\"1\",\"reqdXp\":\"15\"}"
-		Map<String,String> pcContext = new HashMap<String, String>();
+		Map<String,Object> pcContext = new HashMap<String, Object>();
 		
 		pcContext.put("name", getName());
 		pcContext.put("maxHp", getHp().toString());
@@ -139,9 +149,16 @@ public class PCharacter extends GameCharacter implements Playerable{
 		pcContext.put("maxMp", getMp().toString());
 		pcContext.put("mp", getCurrentMp().toString());	
 		pcContext.put("att", getAtt().toString());
+		pcContext.put("ac", getAc().toString());
+		pcContext.put("av", getAv().toString());
 		pcContext.put("lev", level.toString());
 		pcContext.put("xp", xp.toString());
 		pcContext.put("reqdXp", requiredXp.toString());
+		
+		Map<String,Object> arCopy = new HashMap<String, Object>();
+		arCopy.putAll(actionResult);
+		pcContext.put("actionResult", arCopy);
+		actionResult.clear();
 		
 		return pcContext;
 	}
@@ -177,12 +194,18 @@ public class PCharacter extends GameCharacter implements Playerable{
 			List<Map<String,String>> characterLines = new ArrayList<Map<String,String>>();
 			characterLines.add(companyInfo);
 			CompCharacter companyCharacter = GameCharacterBuilder.getCompCharacterInstance(companyInfo,characterLines);
+			companyCharacter.setPlayer(this);
 			company.put(caracterCode, companyCharacter);
 		}
 	}
 	
+<<<<<<< HEAD
 	public Map<String,Object> getCompContext(){
 		Map<String,Object> compContext = new HashMap<String,Object>();
+=======
+	public List<Map<String,Object>> getCompContext(){
+		List<Map<String,Object>> compContext = new ArrayList<Map<String,Object>>();
+>>>>>>> 5ab7d55 (ac and av)
 		for(String compKey:company.keySet()) {
 			CompCharacter comp = company.get(compKey);
 			compContext.put(comp.getName(),comp.getCharacterContext());
