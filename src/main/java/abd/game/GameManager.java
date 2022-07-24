@@ -397,7 +397,7 @@ public class GameManager implements GameInterface{
 	
 	public Map<String,Object> setJob(String job, String resultTxt){
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		player.setJob(job);
+		setJob(job);
 		resultMap.put("resultTxt",resultTxt.replace("%job%", job));
 		return resultMap;
 		
@@ -405,6 +405,15 @@ public class GameManager implements GameInterface{
 	
 	public void setJob(String job){
 		player.setJob(job);
+	}
+	
+	public Map<String,Object> sayHello(String hello, String resultTxt){
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		resultTxt = resultTxt.replace("%name%", player.getName());
+		resultTxt = resultTxt.replace("%hello%", hello);
+		resultMap.put("resultTxt",resultTxt);
+		return resultMap;
+		
 	}
 	
 	public void setComp(String characterCode) {

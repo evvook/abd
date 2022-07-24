@@ -78,14 +78,14 @@ public class CompCharacter extends GameCharacter {
 		pcContext.put("mp", getCurrentMp().toString());
 		pcContext.put("att", getAtt().toString());
 		if(active) {
-			pcContext.put("active", "active");
+			pcContext.put("active", "도움 가능");
 			pcContext.put("line", line);
 			//전투 진행한 동료는 비활성화 된다.
 			setInactive();
 			//턴이 지나야 활성화 됨
 			++termCnt;
 		}else {
-			pcContext.put("active", "inactive");
+			pcContext.put("active", "도움 불가능");
 			pcContext.put("line", "당신을 도울 수 있는 상황이 아닙니다.");
 		}
 		
