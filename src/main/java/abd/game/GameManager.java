@@ -9,6 +9,7 @@ import java.util.Map;
 import abd.game.character.CompCharacter;
 import abd.game.character.GameCharacterBuilder;
 import abd.game.character.PCharacter;
+import abd.game.scene.GameEvBranch;
 import abd.game.scene.GameEvent;
 import abd.game.scene.GamePlayBattle;
 import abd.game.scene.GameScene;
@@ -35,6 +36,7 @@ public class GameManager implements GameInterface{
 	boolean dayOut = false;
 	
 	boolean sceneEnd = false;
+	private GameEvBranch evBranch;
 	
 	public GameManager() {
 		eventContext = new HashMap<String, Object>();
@@ -184,13 +186,13 @@ public class GameManager implements GameInterface{
 						//스크립트 담아주고
 						setScript(eventContext);
 						//null을 파라미터로 이벤트 호출
-						goEvent(null);
+						goEvent();
 						
 					}
 				//스크립트가 있다면 담아주고 이벤트 호출
 				}else if(eventContext.get("script") != null) {
 					setScript(eventContext);
-					goEvent(input);
+					goEvent();
 				}
 				
 			//플레이이면	
@@ -202,15 +204,16 @@ public class GameManager implements GameInterface{
 					eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
 					
 					setScript(eventContext);
-					goEvent(null);
+					goEvent();
 				}else {
 					//인풋이고 에프터인풋이면 리절트 텍스트 담아주고 이벤트 호출
 					if("input".equals(eventContext.get("play"))) {
+						@SuppressWarnings("unchecked")
 						Map<String,String> rInput = (Map<String,String>)eventContext.get("input");
 						if("afterInput".equals(rInput.get("status"))) {
 							eventContext.remove("input");
 							setScript(rInput.get("resultTxt"));
-							goEvent(null);
+							goEvent();
 							
 						}
 					//셀렉트이고 애프터셀렉트 이면 스크립트 담아주고 플레이 정보 제거
@@ -219,13 +222,13 @@ public class GameManager implements GameInterface{
 							eventContext.remove("play");
 							eventContext.remove("status");
 							setScript(eventContext);
-							goEvent(null);
+							goEvent();
 							
 						}
 					//스크립트가 있다면 담아주고 이벤트 호출	
 					}else if(eventContext.get("script") != null){
 						setScript(eventContext);
-						goEvent(null);
+						goEvent();
 					}
 					
 					//스크립트 담아주고 이벤트 더이상 호출하지 않음
@@ -245,6 +248,11 @@ public class GameManager implements GameInterface{
 	public void setBattle(GamePlayBattle pBtl) {
 		// TODO Auto-generated method stub
 		this.pBtl = pBtl;
+	}
+	
+	public void setBranch(GameEvBranch evBranch) {
+		// TODO Auto-generated method stub
+		this.evBranch = evBranch;
 	}
 	
 	@Override
@@ -274,12 +282,24 @@ public class GameManager implements GameInterface{
 	
 	//특정 이벤트 시퀀스로 이동한다.
 	public Map<String,Object> goSpecificEvent(String eventCode, String eventSeq) throws Exception {
+		currentEvent.hasDone();
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 		return currentEvent.happened();
 	}
 	
+	//특정 이벤트 시퀀스로 이동한다.
+	public Map<String,Object> goSpecificEvent(String eventCode, String eventSeq, String param) throws Exception {
+		currentEvent.hasDone();
+		currentEvent = currentScene.getEvent(eventCode, eventSeq);
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("param", param);
+		Map<String,Object> resultMap = currentEvent.happened(paramMap);
+		return resultMap;
+	}
+	
 	//특정 이벤트 시퀀스를 셋팅한다.
 	public void setSpecificEvent(String eventCode, String eventSeq) throws Exception {
+		currentEvent.hasDone();
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 	}
 	
@@ -314,6 +334,7 @@ public class GameManager implements GameInterface{
 	//아이템 사용
 	public Map<String,Object> useItem(String item) throws Exception{
 		Map<String,Object> resultMap = new HashMap<String, Object>();
+		pBtl.countTurn();
 		resultMap.putAll(pBtl.getBattle());
 		resultMap.putAll(player.useItem(item));
 		return resultMap;
@@ -450,5 +471,88 @@ public class GameManager implements GameInterface{
 			resultMap.putAll(goSpecificEvent(eventCodeN, eventSeqN));
 		}
 		return resultMap;
+	}
+	
+	public Map<String,Object> checkBattleEnd() throws Exception {
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		if(pBtl != null && pBtl.isDone()) {
+			resultMap.putAll(evBranch.goYEvent());
+		}else {
+			resultMap.putAll(evBranch.goNEvent());
+		}
+		return resultMap;
+	}
+	
+	public Map<String,Object> checkSinArmed(String eventCodeY, String eventSeqY, String eventCodeN, String eventSeqN, String outEventCode, String outEventSeq, String characterCode) throws Exception{
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		CompCharacter sin = player.getCompany("C05");
+		//신해량이 있는 경우
+		//신해량이 무장을 하지 않았고, 캐릭터코드가 신해량이 아닌경우
+		if(sin != null && !sin.isArmed() && !characterCode.equals(sin.getCode())) {
+			Map<String,Object> eventResult = goSpecificEvent(eventCodeY, eventSeqY,sin.getCode());
+			String script = (String)eventResult.get("script");
+			script = script.replace("%compName%", sin.getName());
+			eventResult.put("script",script);
+			resultMap.putAll(eventResult);
+		}else {
+			//신해량이 무장을 이미 했거나, 캐릭터코드가 신해량인 경우
+			Map<String,Object> eventResult = goSpecificEvent(eventCodeN, eventSeqN,characterCode);
+			String script = (String)eventResult.get("script");
+			if("ME".equals(characterCode)) {
+				script = script.replace("%compName%", player.getName());
+			}else {
+				script = script.replace("%compName%", player.getCompany(characterCode).getName());
+			}
+			eventResult.put("script",script);
+			resultMap.putAll(eventResult);
+		}
+		setSpecificEvent(outEventCode, outEventSeq);
+		return resultMap;
+	}
+	
+	public Map<String,Object> checkSinArmed(String characterCode) throws Exception{
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		CompCharacter sin = player.getCompany("C05");
+		//신해량이 있는 경우
+		//신해량이 무장을 하지 않았고, 캐릭터코드가 신해량이 아닌경우
+		if(sin != null && !sin.isArmed() && !characterCode.equals(sin.getCode())) {
+			Map<String,Object> eventResult = evBranch.goYEvent(sin.getCode());
+			String script = (String)eventResult.get("script");
+			script = script.replace("%compName%", sin.getName());
+			eventResult.put("script",script);
+			resultMap.putAll(eventResult);
+		}else {
+			//신해량이 무장을 이미 했거나, 캐릭터코드가 신해량인 경우
+			Map<String,Object> eventResult = evBranch.goNEvent(characterCode);
+			String script = (String)eventResult.get("script");
+			if("ME".equals(characterCode)) {
+				script = script.replace("%compName%", player.getName());
+			}else {
+				script = script.replace("%compName%", player.getCompany(characterCode).getName());
+			}
+			eventResult.put("script",script);
+			resultMap.putAll(eventResult);
+		}
+		evBranch.setOutEvent();
+		return resultMap;
+	}
+	
+	public void takeGun(String characterCode) {
+		if("ME".equals(characterCode)) {
+			player.setArmed();
+		}else {
+			CompCharacter comp = player.getCompany(characterCode);
+			comp.setArmed();
+		}
+	}
+	
+	public void giveGunTo(String characterCode) throws Exception{
+		if("ME".equals(characterCode)) {
+			takeGun(characterCode);
+		}else {
+			CompCharacter comp = player.getCompany(characterCode);
+			comp.setArmed();
+			comp.increaseReliabl(10);
+		}
 	}
 }

@@ -29,15 +29,21 @@ public class GameEvJustHpn extends GameEvent {
 		resultOccurred = jhInfo.get("RESULT_OCCURRED");
 	}
 
+	public String getCode() {
+		return jhCode;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> happened() throws Exception {
+	public Map<String, Object> happened(Map<String, Object> input) throws Exception {
 		// TODO Auto-generated method stub
+		if(input == null) {
+			return happened();
+		}
+		
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		//이벤트 JH인 걸 명시해준다.
 		resultMap.put("event", "justHappened");
-//		resultMap.put("resultTxt", resultTxt);
-//		resultMap.put("jhCode", jhCode);
 		
 		String[] methodInfo = resultOccurred.split("#");
 		String methodName = methodInfo[0];
@@ -49,6 +55,76 @@ public class GameEvJustHpn extends GameEvent {
 			Method method = null;
 			Map<String,Object> resultContext = null;
 			
+			String param = (String)input.get("param");
+			if(methodInfo.length > 1) {
+				if(methodInfo.length == 5) {
+					String methodParam1 = methodInfo[1];
+					String methodParam2 = methodInfo[2];
+					String methodParam3 = methodInfo[3];
+					String methodParam4 = methodInfo[4];
+					method = clazz.getDeclaredMethod(methodName,String.class,String.class,String.class,String.class,String.class);
+					resultContext = (Map<String,Object>)method.invoke(instance,methodParam1,methodParam2,methodParam3,methodParam4,param);
+				}else if(methodInfo.length == 7) {
+					String methodParam1 = methodInfo[1];
+					String methodParam2 = methodInfo[2];
+					String methodParam3 = methodInfo[3];
+					String methodParam4 = methodInfo[4];
+					String methodParam5 = methodInfo[5];
+					String methodParam6 = methodInfo[6];
+					method = clazz.getDeclaredMethod(methodName,String.class,String.class,String.class,String.class,String.class,String.class,String.class);
+					resultContext = (Map<String,Object>)method.invoke(instance,methodParam1,methodParam2,methodParam3,methodParam4,methodParam5,methodParam6,param);
+				}
+			}else {
+				method = clazz.getDeclaredMethod(methodName,String.class);
+				resultContext = (Map<String,Object>)method.invoke(instance,param);
+				}
+			
+			
+			if(resultContext != null)
+				resultMap.putAll(resultContext);
+		}
+		
+		//코드 설정
+		//esultMap.put("jhCode", jhCode);
+		//resultTxt 설정
+		String playerName = getPlayer().getName();
+		String playerJob = getPlayer().getJob();
+		
+		if(resultMap.get("script") != null) {
+			resultTxt = (String)resultMap.get("script");
+		}
+		if(playerName != null) {
+			resultTxt = resultTxt.replace("%name%", playerName);
+		}
+		if(playerJob != null) {
+			resultTxt = resultTxt.replace("%job%", playerJob);
+		}
+		resultMap.put("script", resultTxt);
+		
+		hasDone();
+		
+		return resultMap;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> happened() throws Exception {
+		// TODO Auto-generated method stub
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		//이벤트 JH인 걸 명시해준다.
+		resultMap.put("event", "justHappened");
+		
+		String[] methodInfo = resultOccurred.split("#");
+		String methodName = methodInfo[0];
+		
+		if(methodName != null && !"".equals(methodName)) {
+			Object instance = manager;
+			Class<?> clazz = instance.getClass();
+
+			Method method = null;
+			Map<String,Object> resultContext = null;
+			
+				
 			if(methodInfo.length > 1) {
 				if(methodInfo.length == 2) {
 					String methodParam = methodInfo[1];
@@ -86,13 +162,12 @@ public class GameEvJustHpn extends GameEvent {
 				method = clazz.getDeclaredMethod(methodName);
 				resultContext = (Map<String,Object>)method.invoke(instance);
 			}
-			
 			if(resultContext != null)
 				resultMap.putAll(resultContext);
 		}
 		
 		//코드 설정
-		resultMap.put("jhCode", jhCode);
+		//resultMap.put("jhCode", jhCode);
 		//resultTxt 설정
 		String playerName = getPlayer().getName();
 		String playerJob = getPlayer().getJob();
@@ -112,15 +187,4 @@ public class GameEvJustHpn extends GameEvent {
 		
 		return resultMap;
 	}
-
-	@Override
-	public Map<String, Object> happened(Map<String, Object> input) throws Exception {
-		// TODO Auto-generated method stub
-		if(input == null) {
-			return happened();
-		}
-
-		return null;
-	}
-
 }

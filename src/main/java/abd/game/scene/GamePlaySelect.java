@@ -101,6 +101,12 @@ public class GamePlaySelect implements GamePlayElement{
 					String methodParam2 = methodInfo[2];
 					method = clazz.getDeclaredMethod(methodName,String.class,String.class);
 					resultContext = (Map<String,Object>)method.invoke(instance,methodParam1,methodParam2);
+				}else if(methodInfo.length == 4) {
+					String methodParam1 = methodInfo[1];
+					String methodParam2 = methodInfo[2];
+					String methodParam3 = methodInfo[3];
+					method = clazz.getDeclaredMethod(methodName,String.class,String.class,String.class);
+					resultContext = (Map<String,Object>)method.invoke(instance,methodParam1,methodParam2,methodParam3);
 				}
 			}else {
 				method = clazz.getDeclaredMethod(methodName);

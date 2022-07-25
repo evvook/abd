@@ -53,6 +53,14 @@ public abstract class GameCharacter{
 		this.alive = true;
 	}
 	
+	public boolean isArmed() {
+		return armed;
+	}
+	
+	public void setArmed() {
+		armed = true;
+	}
+	
 	protected void setAcAvPool() {
 		String[] acArr = new String[10+this.ac];
 		Arrays.fill(acArr, "SUCCESS");

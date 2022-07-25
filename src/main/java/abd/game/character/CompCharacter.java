@@ -24,6 +24,9 @@ public class CompCharacter extends GameCharacter {
 	private Integer currentReplTerm;
 	private Integer termCnt;
 	
+	private Integer currentReliabl;
+	private Integer maxReliabl;
+	
 	private PCharacter player;
 	
 	//대사 관련
@@ -83,6 +86,7 @@ public class CompCharacter extends GameCharacter {
 		pcContext.put("maxMp", getMp().toString());
 		pcContext.put("mp", getCurrentMp().toString());
 		pcContext.put("att", getAtt().toString());
+		pcContext.put("currentReliabl", currentReliabl.toString());
 		if(active) {
 			pcContext.put("active", "도움 가능");
 			pcContext.put("line", line);
@@ -120,13 +124,16 @@ public class CompCharacter extends GameCharacter {
 	}
 	
 	//mp,spabl1,apabl2,
-	public void setStatus(String mp, String minReplTerm, String maxReplTerm, String spAbl1, String spAbl2) {
+	public void setStatus(String mp, String minReplTerm, String maxReplTerm, String spAbl1, String spAbl2, String minReliabl, String maxReliabl) {
 		// TODO Auto-generated method stub
 		this.maxMp = Integer.valueOf(mp);
 		this.currentMp = Integer.valueOf(mp);
 		this.minReplTerm = Integer.valueOf(minReplTerm);
 		this.maxReplTerm = Integer.valueOf(maxReplTerm);
 		this.currentReplTerm = Integer.valueOf(maxReplTerm);
+//		this.minReliab = Integer.valueOf(minReliab);
+		this.maxReliabl = Integer.valueOf(maxReliabl);
+		this.currentReliabl = Integer.valueOf(minReliabl);
 		
 		//특수능력치가 있다면, 설정
 		if("".equals(spAbl1) || spAbl1 == null) {
@@ -191,6 +198,9 @@ public class CompCharacter extends GameCharacter {
 
 	public void increaseReliabl(Integer reliabl) {
 		// TODO Auto-generated method stub
-		
+		currentReliabl = currentReliabl + reliabl;
+		if(currentReliabl > maxReliabl) {
+			currentReliabl = maxReliabl;
+		}
 	}
 }

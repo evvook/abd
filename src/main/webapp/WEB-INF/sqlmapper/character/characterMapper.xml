@@ -78,6 +78,8 @@
 			,CC.MAX_REPL_TERM 
 			,CC.SP_ABL1
 			,CC.SP_ABL2
+			,CC.MIN_RELIABL
+			,CC.MAX_RELIABL
 			,CL.HP 
 			,CL.ATT
 			,CL.AC

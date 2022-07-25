@@ -49,6 +49,10 @@ public class GameScene {
 		return this.sceneCode;
 	}
 	
+	public String getSceneName() {
+		return this.sceneName;
+	}
+	
 	private GameEvent setEvent(String eventCode, String eventSeq) throws Exception {
 		GameEvent event = null;
 		for(int i=0;i<eventInfo.size();i++) {
@@ -67,6 +71,10 @@ public class GameScene {
 					
 				}else if("P".equals(eventInfo.get("E_TYPE"))) {
 					event = new GameEvPlay(eventInfo,loader,this,manager);
+					
+				}else if("B".equals(eventInfo.get("E_TYPE"))) {
+					event = new GameEvBranch(eventInfo,loader,this,manager);
+					manager.setBranch((GameEvBranch)event);
 					
 				}
 				if(!events.isEmpty()) {
@@ -125,6 +133,11 @@ public class GameScene {
 					if(eventCode.equals(event.getEventCode()) && eventSeq.equals(event.getEventSeq())) {
 						selectedEvent = event;
 						selectedEvent.doneBack();
+						
+						//브랜치인 경우 매니저에 설정된 브랜치 변경
+						if("B".equals(selectedEvent.getEventType())) {
+							manager.setBranch((GameEvBranch)selectedEvent);
+						}
 						idxOfEvents = i;
 					}
 				}

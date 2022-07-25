@@ -34,7 +34,7 @@ public class GameCharacterBuilder {
 	public static CompCharacter getCompCharacterInstance(Map<String, String> charInfo, List<Map<String, String>> characterLines) throws Exception {
 
 		CompCharacter newCharacter = new CompCharacter(charInfo.get("CHAR_CD"),charInfo.get("CHAR_NM"),charInfo.get("CLASS_CD"),charInfo.get("HP"),charInfo.get("ATT"),charInfo.get("AC"),charInfo.get("AV"));
-		newCharacter.setStatus(charInfo.get("MP"),charInfo.get("MIN_REPL_TERM"),charInfo.get("MAX_REPL_TERM"),charInfo.get("SP_ABL1"),charInfo.get("SP_ABL2"));
+		newCharacter.setStatus(charInfo.get("MP"),charInfo.get("MIN_REPL_TERM"),charInfo.get("MAX_REPL_TERM"),charInfo.get("SP_ABL1"),charInfo.get("SP_ABL2"),charInfo.get("MIN_RELIABL"),charInfo.get("MAX_RELIABL"));
 		
 		if(GameCharacter.CLASS_FIGHTER.equals(charInfo.get("CLASS_CD"))) {
 			newCharacter.setAction(new Fight(newCharacter));

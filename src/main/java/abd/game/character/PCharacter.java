@@ -277,4 +277,20 @@ public class PCharacter extends GameCharacter implements Playerable{
 			}
 		}
 	}
+
+	public void increaseCompReliabl() {
+		// TODO Auto-generated method stub
+		for(String key:company.keySet()) {
+			CompCharacter comp = company.get(key);
+			comp.increaseReliabl(10);
+		}
+	}
+
+	public void initCompActive() {
+		// TODO Auto-generated method stub
+		for(String key:company.keySet()) {
+			CompCharacter comp = company.get(key);
+			comp.setActive();
+		}
+	}
 }

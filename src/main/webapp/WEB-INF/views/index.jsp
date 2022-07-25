@@ -193,9 +193,6 @@
         		if(result.sceneStatus == 'end'){
         			game.showMessage(' ');
         		}
-        		if(result.scripts.length>0){
-        			game.showMessage(result.scripts.join("<br>"));
-        		}
         		
 	        	if(result.event == "script"){
 	        		//game.clearInputs();
@@ -204,6 +201,10 @@
 	                game.updateMonsterStat();
 	        		
 			        //game.showMessage(result.script)
+	        		game.showMessage(' ');
+	        		if(result.scripts.length>0){
+	        			game.showMessage(result.scripts.join("<br>"));
+	        		}
 			        	
 	        	}else if(result.event == "justHappened"){
 	        		//game.clearInputs();
@@ -212,8 +213,17 @@
 	                game.updateMonsterStat();
 	        		
 			        //game.showMessage(result.script)
+
+	        		game.showMessage(' ');
+	        		if(result.scripts.length>0){
+	        			game.showMessage(result.scripts.join("<br>"));
+	        		}
 			        	
 	        	}else if(result.event == "play"){
+	        		game.showMessage(' ');
+	        		if(result.scripts.length>0){
+	        			game.showMessage(result.scripts.join("<br>"));
+	        		}
 	        		
 		        	if(result.play == "select"){
 		        		//game.clearInputs();
@@ -264,7 +274,6 @@
 					        game.showMessage(input.resultTxt)
 		        		}
 		        	}else if(result.play == "battle"){
-		        		//debugger;
 		        		var battle = result.battle;
 		        		
 		        		if(battle.process == 'start'){
@@ -345,8 +354,41 @@
 			        					var company = battle.company;
 					            		//oo이/가 적에게 xx의 데미지를 주고, yy의 데미지를 받았다
 					            		if(company.active == "active"){
-						            		var message = '"'+company.line+'" ';
-						            		message += company.name+"이(가) "+company.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다. ";
+						            		var message = '"'+company.line+'"<br>';
+						            		var ar = battle.player.actionResult;
+						             		var pDamage = 0;
+						             		var pActionRslt = '';
+						             		if(ar.playerResult){
+							             		for(var idx in ar.playerResult){
+							             		    if(ar.playerResult[idx] == "SUCCESS"){
+							             		        pActionRslt += '공격 성공! ';
+							             		        pDamage += Number(battle.company.att);
+							             		    }else if(ar.playerResult[idx] == "MISSED"){
+							             		        pActionRslt += '빗나감! ';
+							             		    }else if(ar.playerResult[idx] == "AVOID"){
+							             		        pActionRslt += '적 회피! ';
+							             		    }
+							             		}
+						             		}
+						             		
+						             		var eDamage = 0;
+						             		var eActionRslt = '';
+						             		if(ar.enermyResult){
+						             			var eResult = ar.enermyResult.ATTACK1;
+						             			if(eResult == "SUCCESS"){
+						             				eActionRslt += '회피 실패! ';
+						             				eDamage += Number(battle.npc.att);
+						             			}else if(eResult == "MISSED"){
+						             				eActionRslt += '빗나감! ';
+						             				
+						             			}else if(eResult == "AVOID"){
+						             				eActionRslt += '회피! ';
+						             				
+						             			}
+						             		}
+						            		
+						            		//message += company.name+"이(가) "+company.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다. ";
+						            		message += pActionRslt+company.name+"이(가) "+pDamage+"의 데미지를 주었다. "+eActionRslt+company.name+"이(가) "+eDamage+"의 데미지를 받았다.<br>";
 						            		message += company.name+" 체력: "+company.hp+"/"+company.maxHp;
 						            		game.showMessage(message);
 					            		}else if(company.active == "inactive"){

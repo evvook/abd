@@ -71,20 +71,13 @@ public class GamePlayBattle implements GamePlayElement {
 		//전투 준비
 		encounter = new Encounter();
 		initBattle();
-		
+		player.initCompActive();
 	}
 
 	@Override
 	public Map<String, Object> getElContext() throws Exception {
 		// TODO Auto-generated method stub
 		Map<String, Object> context = new HashMap<String, Object>();
-		Map<String, Object> pCharContext = player.getCharacterContext();
-		context.put("player", pCharContext);
-		if(company != null) {
-			context.put("company", company.getCharacterContext());
-			//정보만 담고 비워준다.
-			company = null;
-		}
 		if(encounteredChracter != null) {
 			Map<String, Object> npCharContext = encounteredChracter.getCharacterContext();
 			if(!encounteredChracter.isAlive()) {
@@ -97,6 +90,8 @@ public class GamePlayBattle implements GamePlayElement {
 					context.put("npc", encounteredChracter.getCharacterContext());
 					context.put("battleResult", "win");
 					context.put("depeatedNpc", npCharContext);
+					
+					player.increaseCompReliabl();
 				}
 				
 			}else if(!player.isAlive()){
@@ -124,6 +119,15 @@ public class GamePlayBattle implements GamePlayElement {
 				}
 			}
 		}
+		
+		Map<String, Object> pCharContext = player.getCharacterContext();
+		context.put("player", pCharContext);
+		if(company != null) {
+			context.put("company", company.getCharacterContext());
+			//정보만 담고 비워준다.
+			company = null;
+		}		
+		
 		if(encounteredChracterline != null) {
 			//context.put("line", encounteredChracterline);
 			//context.put("status", "goAway");
@@ -170,7 +174,7 @@ public class GamePlayBattle implements GamePlayElement {
 		}
 	}
 
-	private void countTurn() {
+	public void countTurn() {
 		// TODO Auto-generated method stub
 		encounter.countTurn();
 		player.countTurn();
@@ -328,6 +332,8 @@ public class GamePlayBattle implements GamePlayElement {
 		company = player.getCompany(characterCode);
 		company.act(encounteredChracter);
 		
+		countTurn();
+		
 		//일반배틀선택 선택지 보여줌
 		currentSelect = beforeSelect;
 		currentSelectName = beforeSelectName;
@@ -350,6 +356,7 @@ public class GamePlayBattle implements GamePlayElement {
 		}else if("SA2".equals(ability)) {
 			company.reactSpAbl2(player);
 		}
+		countTurn();
 		
 		//후처리
 		Map<String,Object> battleContext = new HashMap<String, Object>();

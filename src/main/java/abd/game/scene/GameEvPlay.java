@@ -43,6 +43,10 @@ public class GameEvPlay extends GameEvent {
 		}
 	}
 	
+	public String getCode() {
+		return playCode;
+	}
+	
 	public String getPlayType() {
 		return playType;
 	}

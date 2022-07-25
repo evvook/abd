@@ -112,4 +112,21 @@
 		WHERE PLAY_CD = #{PLAY_CD}
 		
 	</select>
+	<select id="selectBranchOfEvent" parameterType="hashmap" resultType="hashmap">
+		
+		SELECT
+			  BRANCH_CD
+			, BRANCH_METHOD
+			, Y_EVENT_CD
+			, Y_EVENT_SEQ
+			, N_EVENT_CD
+			, N_EVENT_SEQ
+			, OUT_EVENT_CD
+			, OUT_EVENT_SEQ
+		FROM BRANCH_EVENT
+		WHERE 1=1 
+		AND EVENT_CD = #{EVENT_CD} 
+		AND EVENT_SEQ = #{EVENT_SEQ}
+		
+	</select>
 </mapper>
