@@ -12,6 +12,7 @@ import abd.game.GameManager;
 
 public class GamePlaySelect implements GamePlayElement{
 	private String selectCode;
+	private String selectType;
 	private Integer numOfSelect;
 	private String selectHead;
 	private List<Map<String,String>> options;
@@ -23,6 +24,7 @@ public class GamePlaySelect implements GamePlayElement{
 		Map<String,String> selectInfo = selectList.get(0);
 		
 		selectCode = selectInfo.get("SELECT_CD");
+		selectType = selectInfo.get("S_TYPE");
 		numOfSelect = Integer.valueOf(selectInfo.get("NUM_OF_SELECT"));
 		selectHead = selectInfo.get("SELECT_HEAD");
 		
@@ -108,6 +110,19 @@ public class GamePlaySelect implements GamePlayElement{
 			if(resultContext != null)
 				resultMap.putAll(resultContext);
 		}
+		
+		//selectType이 F(flexible)인 경우 선택한 후에 제거해준다.
+		if("F".equals(selectType)) {
+			for(int i=0; i<options.size();i++) {
+				Map<String,String> option = options.get(i);
+				String optionSeq = String.valueOf(selectInfo.get("OPTION_SEQ"));
+				if(optionSeq.equals(option.get("value"))) {
+					options.remove(i);
+					break;
+				}
+			}
+		}
+		
 		return resultMap;
 	}
 }
