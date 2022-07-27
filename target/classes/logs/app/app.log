@@ -1,0 +1,520 @@
+2022-07-27 15:24:20.541[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:24:20.793[INFO ] : play
+2022-07-27 15:24:22.506[INFO ] : setup
+2022-07-27 15:24:24.179[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT 'P' CLASS_CD ,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` ,LVL.HP ,LVL.ATT ,LVL.AC ,LVL.AV ,LVL.REQD_XP 
+FROM CHARACTER_LVL LVL WHERE 1=1  {executed in 157 msec}
+2022-07-27 15:24:25.638[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT CM.CHAR_CD ,CM.CHAR_NM ,CM.CLASS_CD ,CC.MP ,CC.MIN_REPL_TERM ,CC.MAX_REPL_TERM ,CC.SP_ABL1 
+,CC.SP_ABL2 ,CC.MIN_RELIABL ,CC.MAX_RELIABL ,CL.HP ,CL.ATT ,CL.AC ,CL.AV ,CN.LINE_TXT ,CN.TYPE 
+FROM CHARACTER_MT CM JOIN CHARACTER_CMP CC ON CM.CHAR_CD = CC.CHAR_CD JOIN CHARACTER_LVL CL 
+ON CL.`LEVEL` = CM.LVL JOIN CHARACTER_LN CN ON CM.CHAR_CD = CN.CHAR_CD AND CN.`TYPE` = 'A' 
+ {executed in 154 msec}
+2022-07-27 15:24:27.067[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT SCENE_CD ,SCENE_NM FROM SCENE_GAME SG where SCENE_CD NOT IN ('S001','S002','S003') ORDER 
+BY SCENE_CD  {executed in 156 msec}
+2022-07-27 15:24:27.107[INFO ] : play
+2022-07-27 15:24:28.463[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT EVENT_CD ,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ ,E_TYPE FROM EVENT_SCENE ES WHERE SCENE_CD 
+= 'S004' ORDER BY EVENT_CD, EVENT_SEQ  {executed in 150 msec}
+2022-07-27 15:24:29.858[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT SCRIPT_CD ,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ ,SCRIPT_TXT FROM SCRIPT_EVENT SE WHERE 
+EVENT_CD = 'E005' AND EVENT_SEQ = '1' ORDER BY SCRIPT_SEQ  {executed in 153 msec}
+2022-07-27 15:24:31.250[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT PLAY_CD ,P_TYPE FROM PLAY_EVENT PE WHERE EVENT_CD = 'E005' AND EVENT_SEQ = '2'  {executed in 154 msec}
+2022-07-27 15:24:32.637[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT SP.SELECT_CD ,SP.S_TYPE ,SP.SELECT_HEAD ,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ ,OS.OPTION_TXT ,OS.RESULT_OCCURRED FROM SELECT_PLAY 
+SP JOIN OPTION_SELECT OS ON SP.SELECT_CD = OS.SELECT_CD WHERE SP.PLAY_CD = 'P003'  {executed in 153 msec}
+2022-07-27 15:34:13.311[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:34:13.583[INFO ] : play
+2022-07-27 15:34:16.898[INFO ] : setup
+2022-07-27 15:34:18.550[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT
+			 'P' CLASS_CD 
+			,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` 
+			,LVL.HP 
+			,LVL.ATT 
+			,LVL.AC
+			,LVL.AV
+			,LVL.REQD_XP 
+		FROM CHARACTER_LVL LVL
+		WHERE 1=1
+ {executed in 154 msec}
+2022-07-27 15:34:18.551[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT 'P' CLASS_CD ,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` ,LVL.HP ,LVL.ATT ,LVL.AC ,LVL.AV ,LVL.REQD_XP 
+FROM CHARACTER_LVL LVL WHERE 1=1  {executed in 155 msec}
+2022-07-27 15:34:20.006[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT
+			 CM.CHAR_CD
+			,CM.CHAR_NM
+			,CM.CLASS_CD
+			,CC.MP
+			,CC.MIN_REPL_TERM
+			,CC.MAX_REPL_TERM 
+			,CC.SP_ABL1
+			,CC.SP_ABL2
+			,CC.MIN_RELIABL
+			,CC.MAX_RELIABL
+			,CL.HP 
+			,CL.ATT
+			,CL.AC
+			,CL.AV
+			,CN.LINE_TXT
+			,CN.TYPE
+		FROM CHARACTER_MT CM 
+		JOIN CHARACTER_CMP CC 
+		ON CM.CHAR_CD = CC.CHAR_CD 
+		JOIN CHARACTER_LVL CL 
+		ON CL.`LEVEL` = CM.LVL		
+		JOIN CHARACTER_LN CN
+		ON CM.CHAR_CD  = CN.CHAR_CD
+		AND CN.`TYPE` = 'A'
+ {executed in 154 msec}
+2022-07-27 15:34:20.007[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT CM.CHAR_CD ,CM.CHAR_NM ,CM.CLASS_CD ,CC.MP ,CC.MIN_REPL_TERM ,CC.MAX_REPL_TERM ,CC.SP_ABL1 
+,CC.SP_ABL2 ,CC.MIN_RELIABL ,CC.MAX_RELIABL ,CL.HP ,CL.ATT ,CL.AC ,CL.AV ,CN.LINE_TXT ,CN.TYPE 
+FROM CHARACTER_MT CM JOIN CHARACTER_CMP CC ON CM.CHAR_CD = CC.CHAR_CD JOIN CHARACTER_LVL CL 
+ON CL.`LEVEL` = CM.LVL JOIN CHARACTER_LN CN ON CM.CHAR_CD = CN.CHAR_CD AND CN.`TYPE` = 'A' 
+ {executed in 154 msec}
+2022-07-27 15:34:21.433[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT
+			 SCENE_CD
+			,SCENE_NM
+		FROM SCENE_GAME SG
+		where SCENE_CD NOT IN ('S001','S002','S003')
+		ORDER BY SCENE_CD
+ {executed in 155 msec}
+2022-07-27 15:34:21.433[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT SCENE_CD ,SCENE_NM FROM SCENE_GAME SG where SCENE_CD NOT IN ('S001','S002','S003') ORDER 
+BY SCENE_CD  {executed in 156 msec}
+2022-07-27 15:34:21.471[INFO ] : play
+2022-07-27 15:34:22.884[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT 
+			 EVENT_CD
+			,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ 
+			,E_TYPE 
+		FROM EVENT_SCENE ES 
+		WHERE SCENE_CD = 'S004'
+		ORDER BY EVENT_CD, EVENT_SEQ
+ {executed in 156 msec}
+2022-07-27 15:34:22.884[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT EVENT_CD ,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ ,E_TYPE FROM EVENT_SCENE ES WHERE SCENE_CD 
+= 'S004' ORDER BY EVENT_CD, EVENT_SEQ  {executed in 156 msec}
+2022-07-27 15:34:24.293[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT
+			 SCRIPT_CD 
+			,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ 
+			,SCRIPT_TXT 
+		FROM SCRIPT_EVENT SE 
+		WHERE EVENT_CD = 'E005'
+		AND EVENT_SEQ = '1'
+		ORDER BY SCRIPT_SEQ
+ {executed in 155 msec}
+2022-07-27 15:34:24.293[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT SCRIPT_CD ,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ ,SCRIPT_TXT FROM SCRIPT_EVENT SE WHERE 
+EVENT_CD = 'E005' AND EVENT_SEQ = '1' ORDER BY SCRIPT_SEQ  {executed in 155 msec}
+2022-07-27 15:34:25.721[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT 
+			 PLAY_CD 
+			,P_TYPE 
+		FROM PLAY_EVENT PE 
+		WHERE EVENT_CD = 'E005'
+		AND EVENT_SEQ = '2'
+ {executed in 157 msec}
+2022-07-27 15:34:25.721[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT PLAY_CD ,P_TYPE FROM PLAY_EVENT PE WHERE EVENT_CD = 'E005' AND EVENT_SEQ = '2'  {executed in 157 msec}
+2022-07-27 15:34:27.098[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT
+			 SP.SELECT_CD 
+			,SP.S_TYPE
+			,SP.SELECT_HEAD 
+			,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+			,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ 
+			,OS.OPTION_TXT
+			,OS.RESULT_OCCURRED
+		FROM SELECT_PLAY SP 
+		JOIN OPTION_SELECT OS
+		ON SP.SELECT_CD  = OS.SELECT_CD 
+		WHERE SP.PLAY_CD = 'P003'
+ {executed in 152 msec}
+2022-07-27 15:34:27.098[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT SP.SELECT_CD ,SP.S_TYPE ,SP.SELECT_HEAD ,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ ,OS.OPTION_TXT ,OS.RESULT_OCCURRED FROM SELECT_PLAY 
+SP JOIN OPTION_SELECT OS ON SP.SELECT_CD = OS.SELECT_CD WHERE SP.PLAY_CD = 'P003'  {executed in 153 msec}
+2022-07-27 15:35:10.626[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:35:10.811[INFO ] : play
+2022-07-27 15:35:13.966[INFO ] : setup
+2022-07-27 15:35:15.601[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT
+			 'P' CLASS_CD 
+			,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` 
+			,LVL.HP 
+			,LVL.ATT 
+			,LVL.AC
+			,LVL.AV
+			,LVL.REQD_XP 
+		FROM CHARACTER_LVL LVL
+		WHERE 1=1
+ {executed in 153 msec}
+2022-07-27 15:35:15.601[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT 'P' CLASS_CD ,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` ,LVL.HP ,LVL.ATT ,LVL.AC ,LVL.AV ,LVL.REQD_XP 
+FROM CHARACTER_LVL LVL WHERE 1=1  {executed in 154 msec}
+2022-07-27 15:35:17.001[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT
+			 CM.CHAR_CD
+			,CM.CHAR_NM
+			,CM.CLASS_CD
+			,CC.MP
+			,CC.MIN_REPL_TERM
+			,CC.MAX_REPL_TERM 
+			,CC.SP_ABL1
+			,CC.SP_ABL2
+			,CC.MIN_RELIABL
+			,CC.MAX_RELIABL
+			,CL.HP 
+			,CL.ATT
+			,CL.AC
+			,CL.AV
+			,CN.LINE_TXT
+			,CN.TYPE
+		FROM CHARACTER_MT CM 
+		JOIN CHARACTER_CMP CC 
+		ON CM.CHAR_CD = CC.CHAR_CD 
+		JOIN CHARACTER_LVL CL 
+		ON CL.`LEVEL` = CM.LVL		
+		JOIN CHARACTER_LN CN
+		ON CM.CHAR_CD  = CN.CHAR_CD
+		AND CN.`TYPE` = 'A'
+ {executed in 150 msec}
+2022-07-27 15:35:17.001[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT CM.CHAR_CD ,CM.CHAR_NM ,CM.CLASS_CD ,CC.MP ,CC.MIN_REPL_TERM ,CC.MAX_REPL_TERM ,CC.SP_ABL1 
+,CC.SP_ABL2 ,CC.MIN_RELIABL ,CC.MAX_RELIABL ,CL.HP ,CL.ATT ,CL.AC ,CL.AV ,CN.LINE_TXT ,CN.TYPE 
+FROM CHARACTER_MT CM JOIN CHARACTER_CMP CC ON CM.CHAR_CD = CC.CHAR_CD JOIN CHARACTER_LVL CL 
+ON CL.`LEVEL` = CM.LVL JOIN CHARACTER_LN CN ON CM.CHAR_CD = CN.CHAR_CD AND CN.`TYPE` = 'A' 
+ {executed in 150 msec}
+2022-07-27 15:35:18.437[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT
+			 SCENE_CD
+			,SCENE_NM
+		FROM SCENE_GAME SG
+		where SCENE_CD NOT IN ('S001','S002','S003')
+		ORDER BY SCENE_CD
+ {executed in 157 msec}
+2022-07-27 15:35:18.437[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT SCENE_CD ,SCENE_NM FROM SCENE_GAME SG where SCENE_CD NOT IN ('S001','S002','S003') ORDER 
+BY SCENE_CD  {executed in 158 msec}
+2022-07-27 15:35:18.469[INFO ] : play
+2022-07-27 15:35:19.826[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT 
+			 EVENT_CD
+			,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ 
+			,E_TYPE 
+		FROM EVENT_SCENE ES 
+		WHERE SCENE_CD = 'S004'
+		ORDER BY EVENT_CD, EVENT_SEQ
+ {executed in 150 msec}
+2022-07-27 15:35:19.826[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT EVENT_CD ,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ ,E_TYPE FROM EVENT_SCENE ES WHERE SCENE_CD 
+= 'S004' ORDER BY EVENT_CD, EVENT_SEQ  {executed in 150 msec}
+2022-07-27 15:35:21.213[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT
+			 SCRIPT_CD 
+			,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ 
+			,SCRIPT_TXT 
+		FROM SCRIPT_EVENT SE 
+		WHERE EVENT_CD = 'E005'
+		AND EVENT_SEQ = '1'
+		ORDER BY SCRIPT_SEQ
+ {executed in 153 msec}
+2022-07-27 15:35:21.214[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT SCRIPT_CD ,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ ,SCRIPT_TXT FROM SCRIPT_EVENT SE WHERE 
+EVENT_CD = 'E005' AND EVENT_SEQ = '1' ORDER BY SCRIPT_SEQ  {executed in 154 msec}
+2022-07-27 15:35:22.560[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT 
+			 PLAY_CD 
+			,P_TYPE 
+		FROM PLAY_EVENT PE 
+		WHERE EVENT_CD = 'E005'
+		AND EVENT_SEQ = '2'
+ {executed in 148 msec}
+2022-07-27 15:35:22.561[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT PLAY_CD ,P_TYPE FROM PLAY_EVENT PE WHERE EVENT_CD = 'E005' AND EVENT_SEQ = '2'  {executed in 149 msec}
+2022-07-27 15:35:23.968[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT
+			 SP.SELECT_CD 
+			,SP.S_TYPE
+			,SP.SELECT_HEAD 
+			,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+			,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ 
+			,OS.OPTION_TXT
+			,OS.RESULT_OCCURRED
+		FROM SELECT_PLAY SP 
+		JOIN OPTION_SELECT OS
+		ON SP.SELECT_CD  = OS.SELECT_CD 
+		WHERE SP.PLAY_CD = 'P003'
+ {executed in 157 msec}
+2022-07-27 15:35:23.968[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT SP.SELECT_CD ,SP.S_TYPE ,SP.SELECT_HEAD ,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ ,OS.OPTION_TXT ,OS.RESULT_OCCURRED FROM SELECT_PLAY 
+SP JOIN OPTION_SELECT OS ON SP.SELECT_CD = OS.SELECT_CD WHERE SP.PLAY_CD = 'P003'  {executed in 157 msec}
+2022-07-27 15:35:47.650[INFO ] : play
+2022-07-27 15:35:49.016[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+8. SELECT 
+			 JH_CD 
+			,RESULT_TXT
+			,RESULT_OCCURRED 
+		FROM JUSTHPN_EVENT JE 
+		WHERE EVENT_CD = 'E006_1'
+		AND EVENT_SEQ = '1'
+ {executed in 151 msec}
+2022-07-27 15:35:49.016[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+8. SELECT JH_CD ,RESULT_TXT ,RESULT_OCCURRED FROM JUSTHPN_EVENT JE WHERE EVENT_CD = 'E006_1' AND 
+EVENT_SEQ = '1'  {executed in 151 msec}
+2022-07-27 15:35:52.522[INFO ] : play
+2022-07-27 15:35:53.920[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+9. SELECT
+			  BRANCH_CD
+			, BRANCH_METHOD
+			, Y_EVENT_CD
+			, Y_EVENT_SEQ
+			, N_EVENT_CD
+			, N_EVENT_SEQ
+			, OUT_EVENT_CD
+			, OUT_EVENT_SEQ
+		FROM BRANCH_EVENT
+		WHERE 1=1 
+		AND EVENT_CD = 'E006_3' 
+		AND EVENT_SEQ = '1'
+ {executed in 155 msec}
+2022-07-27 15:35:53.921[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+9. SELECT BRANCH_CD , BRANCH_METHOD , Y_EVENT_CD , Y_EVENT_SEQ , N_EVENT_CD , N_EVENT_SEQ , OUT_EVENT_CD 
+, OUT_EVENT_SEQ FROM BRANCH_EVENT WHERE 1=1 AND EVENT_CD = 'E006_3' AND EVENT_SEQ = '1'  {executed in 156 msec}
+2022-07-27 15:35:55.300[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+10. SELECT 
+			 JH_CD 
+			,RESULT_TXT
+			,RESULT_OCCURRED 
+		FROM JUSTHPN_EVENT JE 
+		WHERE EVENT_CD = 'E006_3'
+		AND EVENT_SEQ = '2'
+ {executed in 153 msec}
+2022-07-27 15:35:55.300[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+10. SELECT JH_CD ,RESULT_TXT ,RESULT_OCCURRED FROM JUSTHPN_EVENT JE WHERE EVENT_CD = 'E006_3' AND 
+EVENT_SEQ = '2'  {executed in 153 msec}
+2022-07-27 15:35:56.665[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+11. SELECT 
+			 JH_CD 
+			,RESULT_TXT
+			,RESULT_OCCURRED 
+		FROM JUSTHPN_EVENT JE 
+		WHERE EVENT_CD = 'E006_3'
+		AND EVENT_SEQ = '3'
+ {executed in 151 msec}
+2022-07-27 15:35:56.665[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+11. SELECT JH_CD ,RESULT_TXT ,RESULT_OCCURRED FROM JUSTHPN_EVENT JE WHERE EVENT_CD = 'E006_3' AND 
+EVENT_SEQ = '3'  {executed in 151 msec}
+2022-07-27 15:35:58.061[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+12. SELECT 
+			 PLAY_CD 
+			,P_TYPE 
+		FROM PLAY_EVENT PE 
+		WHERE EVENT_CD = 'E007'
+		AND EVENT_SEQ = '1'
+ {executed in 155 msec}
+2022-07-27 15:35:58.061[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+12. SELECT PLAY_CD ,P_TYPE FROM PLAY_EVENT PE WHERE EVENT_CD = 'E007' AND EVENT_SEQ = '1'  {executed in 155 msec}
+2022-07-27 15:35:59.431[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+13. SELECT 
+			 BP.BATTLE_CD 
+			,BP.MAP_CD 
+			,BP.NEXT_EVENT_CD 
+			,BP.NEXT_EVENT_SEQ 
+			,SP.PLAY_CD 
+			,SP.SELECT_ALIAS 
+			,SP.SELECT_CD
+		FROM BATTLE_PLAY BP
+		JOIN SELECT_PLAY SP
+		ON SP.SELECT_CD IN (BP.SELECT1,BP.SELECT2,BP.SELECT3,BP.SELECT4)
+		WHERE BP.PLAY_CD = 'P004'
+ {executed in 151 msec}
+2022-07-27 15:35:59.432[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+13. SELECT BP.BATTLE_CD ,BP.MAP_CD ,BP.NEXT_EVENT_CD ,BP.NEXT_EVENT_SEQ ,SP.PLAY_CD ,SP.SELECT_ALIAS 
+,SP.SELECT_CD FROM BATTLE_PLAY BP JOIN SELECT_PLAY SP ON SP.SELECT_CD IN (BP.SELECT1,BP.SELECT2,BP.SELECT3,BP.SELECT4) 
+WHERE BP.PLAY_CD = 'P004'  {executed in 151 msec}
+2022-07-27 15:36:00.791[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+14. SELECT
+			 SP.SELECT_CD 
+			,SP.S_TYPE
+			,SP.SELECT_HEAD 
+			,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+			,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ 
+			,OS.OPTION_TXT
+			,OS.RESULT_OCCURRED
+		FROM SELECT_PLAY SP 
+		JOIN OPTION_SELECT OS
+		ON SP.SELECT_CD  = OS.SELECT_CD 
+		WHERE SP.PLAY_CD = 'PB01'
+ {executed in 151 msec}
+2022-07-27 15:36:00.792[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+14. SELECT SP.SELECT_CD ,SP.S_TYPE ,SP.SELECT_HEAD ,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ ,OS.OPTION_TXT ,OS.RESULT_OCCURRED FROM SELECT_PLAY 
+SP JOIN OPTION_SELECT OS ON SP.SELECT_CD = OS.SELECT_CD WHERE SP.PLAY_CD = 'PB01'  {executed in 151 msec}
+2022-07-27 15:36:02.191[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+15. SELECT 
+			CMT.CHAR_CD 
+			,CL.FREQ 
+		FROM CHARACTER_MT CMT 
+		JOIN CHARACTER_MAP CMP
+		ON CMT.CHAR_CD = CMP.CHAR_CD
+		JOIN CHARACTER_LVL CL 
+		ON CMT.LVL = CL.`LEVEL`
+		WHERE CMP.MAP_CD = 'M01'
+ {executed in 155 msec}
+2022-07-27 15:36:02.191[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+15. SELECT CMT.CHAR_CD ,CL.FREQ FROM CHARACTER_MT CMT JOIN CHARACTER_MAP CMP ON CMT.CHAR_CD = CMP.CHAR_CD 
+JOIN CHARACTER_LVL CL ON CMT.LVL = CL.`LEVEL` WHERE CMP.MAP_CD = 'M01'  {executed in 155 msec}
+2022-07-27 15:36:03.559[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+16. SELECT 
+			 CMT.CHAR_CD
+			,CMT.CHAR_NM 
+			,CMT.CLASS_CD 
+			,CL.HP
+			,CL.ATT
+			,CL.AC
+			,CL.AV
+			,CL.XP 
+			,CL.FREQ 
+		FROM CHARACTER_MT CMT 
+		JOIN CHARACTER_MAP CMP
+		ON CMT.CHAR_CD = CMP.CHAR_CD
+		JOIN CHARACTER_LVL CL 
+		ON CMT.LVL = CL.`LEVEL`
+		WHERE CMT.CHAR_CD = 'C10'
+ {executed in 151 msec}
+2022-07-27 15:36:03.559[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+16. SELECT CMT.CHAR_CD ,CMT.CHAR_NM ,CMT.CLASS_CD ,CL.HP ,CL.ATT ,CL.AC ,CL.AV ,CL.XP ,CL.FREQ 
+FROM CHARACTER_MT CMT JOIN CHARACTER_MAP CMP ON CMT.CHAR_CD = CMP.CHAR_CD JOIN CHARACTER_LVL 
+CL ON CMT.LVL = CL.`LEVEL` WHERE CMT.CHAR_CD = 'C10'  {executed in 151 msec}
+2022-07-27 15:36:17.201[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:36:17.488[INFO ] : play
+2022-07-27 15:36:23.654[INFO ] : setup
+2022-07-27 15:36:25.296[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT
+			 'P' CLASS_CD 
+			,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` 
+			,LVL.HP 
+			,LVL.ATT 
+			,LVL.AC
+			,LVL.AV
+			,LVL.REQD_XP 
+		FROM CHARACTER_LVL LVL
+		WHERE 1=1
+ {executed in 150 msec}
+2022-07-27 15:36:25.296[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+1. SELECT 'P' CLASS_CD ,CAST(LVL.`LEVEL` AS CHAR) `LEVEL` ,LVL.HP ,LVL.ATT ,LVL.AC ,LVL.AV ,LVL.REQD_XP 
+FROM CHARACTER_LVL LVL WHERE 1=1  {executed in 151 msec}
+2022-07-27 15:36:26.753[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT
+			 CM.CHAR_CD
+			,CM.CHAR_NM
+			,CM.CLASS_CD
+			,CC.MP
+			,CC.MIN_REPL_TERM
+			,CC.MAX_REPL_TERM 
+			,CC.SP_ABL1
+			,CC.SP_ABL2
+			,CC.MIN_RELIABL
+			,CC.MAX_RELIABL
+			,CL.HP 
+			,CL.ATT
+			,CL.AC
+			,CL.AV
+			,CN.LINE_TXT
+			,CN.TYPE
+		FROM CHARACTER_MT CM 
+		JOIN CHARACTER_CMP CC 
+		ON CM.CHAR_CD = CC.CHAR_CD 
+		JOIN CHARACTER_LVL CL 
+		ON CL.`LEVEL` = CM.LVL		
+		JOIN CHARACTER_LN CN
+		ON CM.CHAR_CD  = CN.CHAR_CD
+		AND CN.`TYPE` = 'A'
+ {executed in 155 msec}
+2022-07-27 15:36:26.754[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+2. SELECT CM.CHAR_CD ,CM.CHAR_NM ,CM.CLASS_CD ,CC.MP ,CC.MIN_REPL_TERM ,CC.MAX_REPL_TERM ,CC.SP_ABL1 
+,CC.SP_ABL2 ,CC.MIN_RELIABL ,CC.MAX_RELIABL ,CL.HP ,CL.ATT ,CL.AC ,CL.AV ,CN.LINE_TXT ,CN.TYPE 
+FROM CHARACTER_MT CM JOIN CHARACTER_CMP CC ON CM.CHAR_CD = CC.CHAR_CD JOIN CHARACTER_LVL CL 
+ON CL.`LEVEL` = CM.LVL JOIN CHARACTER_LN CN ON CM.CHAR_CD = CN.CHAR_CD AND CN.`TYPE` = 'A' 
+ {executed in 155 msec}
+2022-07-27 15:36:28.126[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT
+			 SCENE_CD
+			,SCENE_NM
+		FROM SCENE_GAME SG
+		where SCENE_CD NOT IN ('S001','S002','S003')
+		ORDER BY SCENE_CD
+ {executed in 150 msec}
+2022-07-27 15:36:28.126[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+3. SELECT SCENE_CD ,SCENE_NM FROM SCENE_GAME SG where SCENE_CD NOT IN ('S001','S002','S003') ORDER 
+BY SCENE_CD  {executed in 150 msec}
+2022-07-27 15:36:28.165[INFO ] : play
+2022-07-27 15:36:29.549[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT 
+			 EVENT_CD
+			,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ 
+			,E_TYPE 
+		FROM EVENT_SCENE ES 
+		WHERE SCENE_CD = 'S004'
+		ORDER BY EVENT_CD, EVENT_SEQ
+ {executed in 152 msec}
+2022-07-27 15:36:29.549[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+4. SELECT EVENT_CD ,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ ,E_TYPE FROM EVENT_SCENE ES WHERE SCENE_CD 
+= 'S004' ORDER BY EVENT_CD, EVENT_SEQ  {executed in 152 msec}
+2022-07-27 15:36:30.989[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT
+			 SCRIPT_CD 
+			,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ 
+			,SCRIPT_TXT 
+		FROM SCRIPT_EVENT SE 
+		WHERE EVENT_CD = 'E005'
+		AND EVENT_SEQ = '1'
+		ORDER BY SCRIPT_SEQ
+ {executed in 159 msec}
+2022-07-27 15:36:30.989[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+5. SELECT SCRIPT_CD ,CAST(SCRIPT_SEQ AS CHAR) SCRIPT_SEQ ,SCRIPT_TXT FROM SCRIPT_EVENT SE WHERE 
+EVENT_CD = 'E005' AND EVENT_SEQ = '1' ORDER BY SCRIPT_SEQ  {executed in 159 msec}
+2022-07-27 15:36:32.404[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT 
+			 PLAY_CD 
+			,P_TYPE 
+		FROM PLAY_EVENT PE 
+		WHERE EVENT_CD = 'E005'
+		AND EVENT_SEQ = '2'
+ {executed in 156 msec}
+2022-07-27 15:36:32.404[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+6. SELECT PLAY_CD ,P_TYPE FROM PLAY_EVENT PE WHERE EVENT_CD = 'E005' AND EVENT_SEQ = '2'  {executed in 157 msec}
+2022-07-27 15:36:33.788[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT
+			 SP.SELECT_CD 
+			,SP.S_TYPE
+			,SP.SELECT_HEAD 
+			,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+			,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ 
+			,OS.OPTION_TXT
+			,OS.RESULT_OCCURRED
+		FROM SELECT_PLAY SP 
+		JOIN OPTION_SELECT OS
+		ON SP.SELECT_CD  = OS.SELECT_CD 
+		WHERE SP.PLAY_CD = 'P003'
+ {executed in 154 msec}
+2022-07-27 15:36:33.789[DEBUG] :  org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+7. SELECT SP.SELECT_CD ,SP.S_TYPE ,SP.SELECT_HEAD ,CAST(SP.NUM_OF_SELECT AS CHAR) NUM_OF_SELECT 
+,CAST(OS.OPTION_SEQ AS CHAR) OPTION_SEQ ,OS.OPTION_TXT ,OS.RESULT_OCCURRED FROM SELECT_PLAY 
+SP JOIN OPTION_SELECT OS ON SP.SELECT_CD = OS.SELECT_CD WHERE SP.PLAY_CD = 'P003'  {executed in 155 msec}
+2022-07-27 15:38:13.462[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:38:13.742[INFO ] : play
+2022-07-27 15:39:03.429[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:39:03.614[INFO ] : play
+2022-07-27 15:39:16.057[INFO ] : Welcom GameStart! The client locale is ko_KR.
+2022-07-27 15:39:16.213[INFO ] : play

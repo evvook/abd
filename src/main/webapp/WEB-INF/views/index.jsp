@@ -335,7 +335,40 @@
 						        	game.updateHeroStat();
 					        		game.createMonster(battle.npc);
 				             		//전투
-				 	        		game.showMessage(game.hero.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다.");
+					        		var ar = battle.player.actionResult;
+				             		var pDamage = 0;
+				             		var pActionRslt = '';
+				             		if(ar.playerResult){
+					             		for(var idx in ar.playerResult){
+					             		    if(ar.playerResult[idx] == "SUCCESS"){
+					             		        pActionRslt += '공격 성공! ';
+					             		        pDamage += Number(battle.player.att);
+					             		    }else if(ar.playerResult[idx] == "MISSED"){
+					             		        pActionRslt += '빗나감! ';
+					             		    }else if(ar.playerResult[idx] == "AVOID"){
+					             		        pActionRslt += '적 회피! ';
+					             		    }
+					             		}
+				             		}
+				             		
+				             		var eDamage = 0;
+				             		var eActionRslt = '';
+				             		if(ar.enermyResult){
+				             			var eResult = ar.enermyResult.ATTACK1;
+				             			if(eResult == "SUCCESS"){
+				             				eActionRslt += '회피 실패! ';
+				             				eDamage += Number(battle.npc.att);
+				             			}else if(eResult == "MISSED"){
+				             				eActionRslt += '빗나감! ';
+				             				
+				             			}else if(eResult == "AVOID"){
+				             				eActionRslt += '회피! ';
+				             				
+				             			}
+				             		}
+				 	        		//game.showMessage(game.hero.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다.");
+				 	        		var message = pActionRslt+pDamage+"의 데미지를 주었다. "+eActionRslt+eDamage+"의 데미지를 받았다.<br>";
+				 	        		game.showMessage(message);
 				             		
 						        	game.setMonsterStatus(battle.npc);
 						        	game.updateMonsterStat();
@@ -353,7 +386,7 @@
 			        					game.createMonster(battle.npc);
 			        					var company = battle.company;
 					            		//oo이/가 적에게 xx의 데미지를 주고, yy의 데미지를 받았다
-					            		if(company.active == "active"){
+					            		if(company.active == "도움 가능"){
 						            		var message = '"'+company.line+'"<br>';
 						            		var ar = battle.player.actionResult;
 						             		var pDamage = 0;
@@ -391,7 +424,7 @@
 						            		message += pActionRslt+company.name+"이(가) "+pDamage+"의 데미지를 주었다. "+eActionRslt+company.name+"이(가) "+eDamage+"의 데미지를 받았다.<br>";
 						            		message += company.name+" 체력: "+company.hp+"/"+company.maxHp;
 						            		game.showMessage(message);
-					            		}else if(company.active == "inactive"){
+					            		}else if(company.active == "도움 불가능"){
 					            			var message = company.name+"이(가) "+company.line;
 					            			game.showMessage(message);
 					            		}
@@ -422,7 +455,7 @@
 		        					
 		        					if(battle.selectOption == 'usedItem'){
 		        						
-		        						game.showMessage('무설탕사탕을 먹고 체력을 회복했다.');
+		        						game.showMessage(battle.selectResult);
 		        						
 			        					game.setHeroStatus(battle.player);
 			        					game.updateHeroStat();

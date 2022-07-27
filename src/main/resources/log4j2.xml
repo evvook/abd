@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <Configuration strict="true"
+		   xmlns="http://logging.apache.org/log4j/2.0/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://logging.apache.org/log4j/2.0/config https://raw.githubusercontent.com/apache/logging-log4j2/master/log4j-core/src/main/resources/Log4j-config.xsd">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %5p [%c] %m%n" />
+        </Console>
+        <RollingFile name="file" fileName="./logs/file/all.log" filePattern="./logs/file/$${date:yyyy}/$${date:MM}/all_%d{yyyyMMddHH}.log">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+			<Policies>
+			        <TimeBasedTriggeringPolicy />Rotated everyday
+			</Policies>
+        </RollingFile>
+    </Appenders>
+           
+	<Loggers> 
+		<Logger name="java.sql" level="off" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="egovframework" level="ERROR" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file"/> 
+        </Logger>
+        <Logger name="org.springframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" /> 
+            <AppenderRef ref="file"/> 
+        </Logger>
+
+
+        <Logger name="jdbc.sqltiming" level="off" additivity="false">
+
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="off" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="jdbc.sqlonly" level="info" additivity="false"> info / ERROR / DEBUG / off
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <Root level="ERROR">
+            <AppenderRef ref="console" />
+        </Root>
+	</Loggers>
+
+</Configuration> -->
+<configuration>
+
+    <appenders>
+<!--         <console name="STDOUT" target="SYSTEM_OUT">
+            <patternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n"/>
+        </console> -->
+        <console name="console" target="SYSTEM_OUT">
+            <patternLayout pattern="%d %5p [%c] %m%n" />
+        </console>
+    </appenders>
+
+    <loggers>
+	    <logger name="org.springframework" level="DEBUG" additivity="false">
+	        <appenderRef ref="console" /> 
+	    </logger> 
+        <root level="info">
+            <appenderRef ref="console"/>
+        </root>
+    </loggers>
+
+</configuration>
+
+	

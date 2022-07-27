@@ -3,11 +3,14 @@ package abd.game.character;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import abd.game.GameManager;
 import abd.game.GameSetupLoader;
+import abd.game.character.item.Candy;
+import abd.game.character.item.GameItem;
 
 public class PCharacter extends GameCharacter implements Playerable{
 	private String job;
@@ -23,6 +26,8 @@ public class PCharacter extends GameCharacter implements Playerable{
 	
 	private Map<String,Object> actionResult;
 	
+	private Map<String,LinkedList<GameItem>> items;
+	
 	public PCharacter(String charCd, String charNm, String classCd, String hp, String att, String ac, String av) {
 		// TODO Auto-generated constructor stub
 		super(charCd, charNm,classCd, hp, att, ac, av);
@@ -34,6 +39,17 @@ public class PCharacter extends GameCharacter implements Playerable{
 		removedCompany = new HashMap<String, CompCharacter>();
 		calledCompany = new HashMap<String, CompCharacter>();
 		actionResult = new HashMap<String, Object>();
+		
+		items = new HashMap<String, LinkedList<GameItem>>();
+		
+		//테스트용 코드
+		LinkedList<GameItem> candy = new LinkedList<GameItem>();
+		candy.add(new Candy());
+		candy.add(new Candy());
+		candy.add(new Candy());
+		candy.add(new Candy());
+		candy.add(new Candy());
+		items.put("candy", candy);
 	}
 	
 	public void setGameManager(GameManager manager) {
@@ -167,7 +183,15 @@ public class PCharacter extends GameCharacter implements Playerable{
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		if("candy".equals(item)) {
-			setCurrentHp(getCurrentHp()+20);
+			//setCurrentHp(getCurrentHp()+20);
+			LinkedList<GameItem> candy = items.get(item);
+			if(!candy.isEmpty()) {
+				GameItem aCandy = candy.pop();
+				aCandy.use(this);
+				resultMap.put("selectResult", "무설탕 사탕을 먹고 체력을 20회복했다.");
+			}else {
+				resultMap.put("selectResult", "무설탕 사탕이 다 떨어졌다.");
+			}
 			resultMap.put("selectOption", "usedItem");
 			resultMap.put("player", getCharacterContext());
 		}
@@ -199,13 +223,8 @@ public class PCharacter extends GameCharacter implements Playerable{
 		}
 	}
 	
-<<<<<<< HEAD
 	public Map<String,Object> getCompContext(){
 		Map<String,Object> compContext = new HashMap<String,Object>();
-=======
-	public List<Map<String,Object>> getCompContext(){
-		List<Map<String,Object>> compContext = new ArrayList<Map<String,Object>>();
->>>>>>> 5ab7d55 (ac and av)
 		for(String compKey:company.keySet()) {
 			CompCharacter comp = company.get(compKey);
 			compContext.put(comp.getName(),comp.getCharacterContext());

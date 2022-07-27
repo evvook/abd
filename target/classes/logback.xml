@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration scan="true">
     <!-- 로그 경로 변수 선언 -->
-    <property name="LOG_DIR" value="${user.home}/logs/app" />
+    <property name="LOG_DIR" value="D:/Dev/03.workspace/WebGameServerSpringVer/abd/logs/app" />
     <property name="LOG_PATH" value="${LOG_DIR}/app.log"/>
 	
     <!-- log4jdbc 옵션 설정 -->
@@ -13,21 +13,23 @@
 	
     <!-- 쿼리문 수행에 걸린 시간 로깅 -->
     <logger name="jdbc.sqltiming" level="DEBUG"/>
+    <logger name="org.springframework" level="DEBUG"/>
     
     <!-- ResultSet외 모든 JDBC 호출 정보를 로깅할지 여부   -->
     <logger name="jdbc.audit" level="OFF"/>
     
     <!-- ResultSet 포함 모든 JDBC 호출 정보를 로깅 -->
     <logger name="jdbc.resultset" level="OFF"/>
-    <logger name="jdbc.resultsettable" level="INFO"/>
+    <logger name="jdbc.resultsettable" level="DEBUG"/>
     
     <!-- use Spring default values -->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+<!--     <include resource="org/springframework/boot/logging/logback/defaults.xml"/> -->
+<!--     <include resource="log4j2.xml"/> -->
     
     <!-- 콘솔 출력 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <!-- <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%-5level] : %msg%n</pattern> -->
         </encoder>
     </appender>
     

@@ -46,20 +46,26 @@
 	</Loggers>
 
 </Configuration> -->
-<Configuration>
+<configuration>
 
-    <Appenders>
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n"/>
-        </Console>
-    </Appenders>
+    <appenders>
+<!--         <console name="STDOUT" target="SYSTEM_OUT">
+            <patternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n"/>
+        </console> -->
+        <console name="console" target="SYSTEM_OUT">
+            <patternLayout pattern="%d %5p [%c] %m%n" />
+        </console>
+    </appenders>
 
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
-    </Loggers>
+    <loggers>
+	    <logger name="org.springframework" level="DEBUG" additivity="false">
+	        <appenderRef ref="console" /> 
+	    </logger> 
+        <root level="info">
+            <appenderRef ref="console"/>
+        </root>
+    </loggers>
 
-</Configuration>
+</configuration>
 
 	
