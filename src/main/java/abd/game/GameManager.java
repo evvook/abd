@@ -117,12 +117,14 @@ public class GameManager implements GameInterface{
 	
 	@Override
 	public void goEvent() throws Exception {
+		//파라미터 없는 goEvent는 이벤트 시작을 의미
 		goEvent(null);
 	}
 	
 	@Override
 	public void goEvent(Map<String,Object> input) throws Exception {
 		
+		//씬이 끝난 경우
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
 			Map<String,String> sceneInfo = sceneInfoList.pollFirst();
@@ -146,12 +148,13 @@ public class GameManager implements GameInterface{
 					eventContext.put("sceneInfo", "intro");
 				}
 				eventContext.put("sceneStatus", "end");
-				//dayOut = true;
 			}else {
 				//더이상 씬이 없는 경우
 				//엔딩?
 			}
-		}else if(sceneEnd){
+		}
+		//씬이 끝난 것으로 가정하는 경우(강제로 이벤트 연쇄를 끊어낼 때)
+		else if(sceneEnd){
 			eventContext.put("sceneStatus", "end");
 			sceneEnd = false;
 			//담아줌
@@ -164,7 +167,9 @@ public class GameManager implements GameInterface{
 				currentScene.hasDone();
 				goEvent();
 			}
-		}else {
+		}
+		//씬의 진행
+		else {
 			
 			if(currentEvent.isDone()) {
 				currentEvent = currentScene.getNextEvent();
@@ -173,6 +178,7 @@ public class GameManager implements GameInterface{
 			Map<String,Object> resultContext = currentEvent.happened(input);
 			eventContext.putAll(resultContext);
 			
+			//현재 이벤트에서 처리가 한 번 되고나서 후처리
 			//플레이가 아니면
 			if(!"P".equals(currentEvent.getEventType())) {
 
@@ -185,7 +191,6 @@ public class GameManager implements GameInterface{
 						eventContext.remove("status");
 						//스크립트 담아주고
 						setScript(eventContext);
-						//null을 파라미터로 이벤트 호출
 						goEvent();
 						
 					}
@@ -195,9 +200,12 @@ public class GameManager implements GameInterface{
 					goEvent();
 				}
 				
-			//플레이이면	
-			}else if("P".equals(currentEvent.getEventType())) {
+			}//플레이 타입이 아닌 경우 이벤트 연쇄 발생
+			//플레이 타입이면
+			//이벤트 연쇄(재귀)인 경우 몇몇 케이스를 제외하고 이벤트 연쇄(재귀)를 멈춘다
+			else if("P".equals(currentEvent.getEventType())) {
 				
+				//케이스 #0(이벤트 연쇄 시작지점인 경우)
 				//전투 종료이면 종료 이벤트로 이동한다.
 				if("endBattle".equals(eventContext.get("play"))) {
 					Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
@@ -206,6 +214,7 @@ public class GameManager implements GameInterface{
 					setScript(eventContext);
 					goEvent();
 				}else {
+					//케이스 #1
 					//인풋이고 에프터인풋이면 리절트 텍스트 담아주고 이벤트 호출
 					if("input".equals(eventContext.get("play"))) {
 						@SuppressWarnings("unchecked")
@@ -216,8 +225,10 @@ public class GameManager implements GameInterface{
 							goEvent();
 							
 						}
+					}
+					//케이스 #2
 					//셀렉트이고 애프터셀렉트 이면 스크립트 담아주고 플레이 정보 제거
-					}else if("select".equals(eventContext.get("play"))) {
+					else if("select".equals(eventContext.get("play"))) {
 						if("afterSelect".equals(eventContext.get("status"))) {
 							eventContext.remove("play");
 							eventContext.remove("status");
@@ -225,8 +236,10 @@ public class GameManager implements GameInterface{
 							goEvent();
 							
 						}
+					}
+					//케이스 #3
 					//스크립트가 있다면 담아주고 이벤트 호출	
-					}else if(eventContext.get("script") != null){
+					else if(eventContext.get("script") != null){
 						setScript(eventContext);
 						goEvent();
 					}
@@ -235,9 +248,10 @@ public class GameManager implements GameInterface{
 					List<String> scripts = new ArrayList<String>();
 					scripts.addAll(eventScripts);
 					eventContext.put("scripts", scripts);
-				}
-			}
-		}
+					
+				}//플레이 타입에서 이벤트 연쇄를 진행하거나 끊어냄
+			}//플레이 타입이 아니거나 플레이 타입임
+		}//씬이 종료되거나 진행됨
 	}
 
 	public PCharacter getPlayer() {
@@ -331,12 +345,26 @@ public class GameManager implements GameInterface{
 	/********************************도움 공통****************************************/
 	
 	/********************************재정비선택****************************************/
-	//아이템 사용
-	public Map<String,Object> useItem(String item) throws Exception{
+	//사용할 아이템이 있는지 체크
+	public Map<String,Object> useItemCheckBattle() throws Exception{
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		pBtl.countTurn();
-		resultMap.putAll(pBtl.getBattle());
-		resultMap.putAll(player.useItem(item));
+		//플레이어가 아이템이 하나라도 있는지 체크
+		//아무 아이템이라도 있다면
+		if(player.hasAnyItem()) {
+			//아이템 선택지를 가져온다
+			Map<String,Object> itemSelectContext = pBtl.getItemSelectContext();
+			resultMap.putAll(itemSelectContext);
+		}else {
+			//없다면
+			Map<String,Object> noItemContext = pBtl.getNoItemContext();
+			resultMap.putAll(noItemContext);
+		}
+		return resultMap;
+	}
+	//아이템 사용
+	public Map<String,Object> useItemBattle(String item) throws Exception{
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		resultMap.putAll(pBtl.useItem(item));
 		return resultMap;
 	}
 	
@@ -362,9 +390,7 @@ public class GameManager implements GameInterface{
 	public Map<String,Object> dayEnd(){
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		player.decreaseMp(10);
-		//resultMap.putAll(player.getCharacterContext());
 		
-//		dayCnt++;
 		dayOut = true;
 		
 		return resultMap;
@@ -373,12 +399,6 @@ public class GameManager implements GameInterface{
 	public Map<String,Object> dayEnd(String eventCode, String eventSeq) throws Exception{
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		player.decreaseMp(10);
-		//resultMap.putAll(player.getCharacterContext());
-		
-//		if(dayCnt++ >= 5) {
-//			//특정 조건이면 가로채서 다음씬을 시작시킴
-//			currentScene.hasDone();
-//		}
 		
 		//특정 이벤트 설정
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);

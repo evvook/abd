@@ -1,5 +1,6 @@
 package abd.game.scene;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ public class GamePlayBattle implements GamePlayElement {
 	private GamePlaySelect battleHelpSelect;
 	private GamePlaySelect pullBackSelect;
 	private GamePlaySelect pullBackHelpSelect;
+
+	private GamePlaySelect useItemSelect;
 	
 	//현재 상태
 	private GamePlaySelect currentSelect;
@@ -213,6 +216,8 @@ public class GamePlayBattle implements GamePlayElement {
 					//도움받기선택
 					selectContext = pullBackHelpSelect.play(input,manager);
 					
+				}else if("useItem".equals(currentSelectName)) {
+					selectContext = useItemSelect.play(input,manager);
 				}
 				//전투선택 결과 설정
 				resultMap.putAll(selectContext);
@@ -283,7 +288,17 @@ public class GamePlayBattle implements GamePlayElement {
 			battleContext.put("selectName", currentSelectName);
 			battleContext.put("selectNext", currentSelectName);
 			battleContext.put("battleCode", getCode());
+		}else if("useItem".equals(command)) {
+			//화면이 전환되면서 선택지가 뜬다.
+			//화면으로 전달할 정보 설정
+			currentSelect = useItemSelect;
+			currentSelectName = "useItem";
+			//선택지명 설정
+			battleContext.put("selectName", currentSelectName);
+			battleContext.put("selectNext", currentSelectName);
+			battleContext.put("battleCode", getCode());
 		}
+		
 		//여기서 스테이터스가 다 덮어씌워짐. 수정할 필요 있을까?
 		battleContext.putAll(getElContext());
 		
@@ -369,6 +384,25 @@ public class GamePlayBattle implements GamePlayElement {
 		battleContext.putAll(getElContext());
 		return battleContext;
 	}
+	
+	public Map<String, Object> useItem(String item) throws Exception {
+		// TODO Auto-generated method stub
+		Map<String,Object> resultMap = player.useItem(item);
+		countTurn();
+		
+		//후처리
+		Map<String,Object> battleContext = new HashMap<String, Object>();
+		battleContext.putAll(resultMap);
+		
+		currentSelect = beforeSelect;
+		currentSelectName = beforeSelectName;
+		
+		battleContext.put("selectOption", "usedItem");
+		battleContext.put("selectNext", currentSelectName);
+		battleContext.put("battleCode", getCode());
+		battleContext.putAll(getElContext());
+		return battleContext;
+	}
 
 	public boolean isDone() {
 		// TODO Auto-generated method stub
@@ -380,5 +414,46 @@ public class GamePlayBattle implements GamePlayElement {
 		nextEventInfo.put("EVENT_CD", nextEventCode);
 		nextEventInfo.put("EVENT_SEQ", nextEventSeq);
 		return nextEventInfo;
+	}
+
+	public Map<String, Object> getItemSelectContext() throws Exception {
+		// TODO Auto-generated method stub
+		useItemSelect = new GamePlaySelect();
+		
+		Map<String,Object> selectInfo = new HashMap<String,Object>();
+		selectInfo.put("SELECT_CD", "USE_ITEM_SELECT");
+		selectInfo.put("SELECT_ALIAS", "useItem");
+		selectInfo.put("NUM_OF_SELECT", -1);
+		selectInfo.put("SELECT_HEAD", "무엇을 사용할까?");
+		
+		List<Map<String,String>> optionList = new ArrayList<Map<String,String>>();
+		Map<String,String> option1 = new HashMap<String,String>();
+		option1.put("OPTION_SEQ", "1");
+		option1.put("OPTION_TXT", "무설탕 사탕을 먹는다.");
+		option1.put("RESULT_OCCURRED", "useItemBattle#candy");
+		optionList.add(option1);
+		
+		Map<String,String> optionLast = new HashMap<String,String>();
+		optionLast.put("OPTION_SEQ", "99");
+		optionLast.put("OPTION_TXT", "취소");
+		optionLast.put("RESULT_OCCURRED", "cancelBattleSelect");
+		optionList.add(optionLast);
+		
+		selectInfo.put("OPTION_LIST", optionList);
+		
+		useItemSelect.setSelect(selectInfo);
+		selectCodes.put((String)selectInfo.get("SELECT_ALIAS"),(String)selectInfo.get("SELECT_CD"));
+			
+		return play("useItem");
+	}
+
+	public Map<String, Object> getNoItemContext() throws Exception {
+		// TODO Auto-generated method stub
+		Map<String,Object> battleContext = new HashMap<String, Object>();
+		battleContext.put("selectResult","보유한 아이템이 없습니다.");
+		battleContext.put("selectOption", "usedItem");
+		battleContext.put("battleCode", getCode());
+		battleContext.putAll(getElContext());
+		return battleContext;
 	}
 }

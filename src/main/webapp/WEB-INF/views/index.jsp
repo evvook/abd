@@ -480,6 +480,19 @@
 			        				}
 			        			}
 			        			createBattleSelect(battle.selectNext, battle);
+		        			}else if(battle.selectName == "useItem"){
+		        				
+		        				if(battle.selectOption == 'usedItem'){
+	        						
+	        						game.showMessage(battle.selectResult);
+	        						
+		        					game.setHeroStatus(battle.player);
+		        					game.updateHeroStat();
+		        					
+	        					}else if(battle.selectOption == 'cancelSelect'){
+		        					game.showMessage(' ');
+		        				}
+		        				createBattleSelect(battle.selectNext, battle);
 		        			}
 		        		}else if(battle.process == 'end'){
 		        			alert("전투 종료. 다음 이벤트로 진행 필요");
@@ -644,6 +657,11 @@
                 	var selected = {};
             		selected["SELECT_CD"] = document.querySelector("#pullBackHelpSelect").selectCode;
             		selected["OPTION_SEQ"] = document.querySelector("#pullBackHelpSelect").value;
+            		inputs["inputData"] = {selected:selected}
+            	}else if(document.querySelector("#useItemSelect")){
+                	var selected = {};
+            		selected["SELECT_CD"] = document.querySelector("#useItemSelect").selectCode;
+            		selected["OPTION_SEQ"] = document.querySelector("#useItemSelect").value;
             		inputs["inputData"] = {selected:selected}
             	}
                 ajaxRequest(inputs);

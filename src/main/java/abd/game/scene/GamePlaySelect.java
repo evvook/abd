@@ -18,6 +18,8 @@ public class GamePlaySelect implements GamePlayElement{
 	private List<Map<String,String>> options;
 	private Map<Map<String,String>,String> optionsDetail;
 	
+	public GamePlaySelect() {};
+	
 	public GamePlaySelect(Map<String, String> playInfo, GameDataLoader loader) throws Exception {
 		// TODO Auto-generated constructor stub
 		List<Map<String,String>> selectList = loader.getSelectOfPlay(playInfo);
@@ -37,6 +39,30 @@ public class GamePlaySelect implements GamePlayElement{
 			Map<String,String> optionInfo = mi.next();
 			Map<String,String> optionMap = new HashMap<String, String>();
 			//optionMap.put(optionInfo.get("OPTION_SEQ"), optionInfo.get("OPTION_TXT"));
+			optionMap.put("value", optionInfo.get("OPTION_SEQ"));
+			optionMap.put("name", optionInfo.get("OPTION_TXT"));
+			options.add(optionMap);
+			Map<String,String> key = new HashMap<String, String>();
+			key.put(selectCode, optionInfo.get("OPTION_SEQ"));
+			optionsDetail.put(key, optionInfo.get("RESULT_OCCURRED"));
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setSelect(Map<String, Object> selectInfo) {
+		selectCode = (String)selectInfo.get("SELECT_CD");
+		selectType = (String)selectInfo.get("S_TYPE");
+		numOfSelect = (Integer)selectInfo.get("NUM_OF_SELECT");
+		selectHead = (String)selectInfo.get("SELECT_HEAD");
+		
+		options = new ArrayList<Map<String,String>>();
+		optionsDetail = new HashMap<Map<String,String>, String>();
+		
+		List<Map<String,String>> optionList = (List<Map<String,String>>)selectInfo.get("OPTION_LIST");
+		Iterator<Map<String,String>> mi = optionList.iterator();
+		while(mi.hasNext()) {
+			Map<String,String> optionInfo = mi.next();
+			Map<String,String> optionMap = new HashMap<String, String>();
 			optionMap.put("value", optionInfo.get("OPTION_SEQ"));
 			optionMap.put("name", optionInfo.get("OPTION_TXT"));
 			options.add(optionMap);

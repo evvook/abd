@@ -189,11 +189,12 @@ public class PCharacter extends GameCharacter implements Playerable{
 				GameItem aCandy = candy.pop();
 				aCandy.use(this);
 				resultMap.put("selectResult", "무설탕 사탕을 먹고 체력을 20회복했다.");
-			}else {
-				resultMap.put("selectResult", "무설탕 사탕이 다 떨어졌다.");
 			}
-			resultMap.put("selectOption", "usedItem");
-			resultMap.put("player", getCharacterContext());
+//			else {
+//				resultMap.put("selectResult", "무설탕 사탕이 다 떨어졌다.");
+//			}
+//			resultMap.put("selectOption", "usedItem");
+//			resultMap.put("player", getCharacterContext());
 		}
 		return resultMap;
 	}
@@ -311,5 +312,19 @@ public class PCharacter extends GameCharacter implements Playerable{
 			CompCharacter comp = company.get(key);
 			comp.setActive();
 		}
+	}
+
+	public boolean hasAnyItem() {
+		// TODO Auto-generated method stub
+		boolean result = false;
+		
+		for(String key:items.keySet()) {
+			List<GameItem> item = items.get(key);
+			if(item.size()>0) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 }
