@@ -10,6 +10,7 @@ import java.util.Map;
 import abd.game.GameManager;
 import abd.game.GameSetupLoader;
 import abd.game.character.item.Candy;
+import abd.game.character.item.ChocoBar;
 import abd.game.character.item.GameItem;
 
 public class PCharacter extends GameCharacter implements Playerable{
@@ -49,7 +50,12 @@ public class PCharacter extends GameCharacter implements Playerable{
 		candy.add(new Candy());
 		candy.add(new Candy());
 		candy.add(new Candy());
-		items.put("candy", candy);
+		items.put(new Candy().getCode(), candy);
+		LinkedList<GameItem> chocobar = new LinkedList<GameItem>();
+		chocobar.add(new ChocoBar());
+		chocobar.add(new ChocoBar());
+		chocobar.add(new ChocoBar());
+		items.put(new ChocoBar().getCode(), chocobar);
 	}
 	
 	public void setGameManager(GameManager manager) {
@@ -182,19 +188,15 @@ public class PCharacter extends GameCharacter implements Playerable{
 	public Map<String, Object> useItem(String item) {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		if("candy".equals(item)) {
-			//setCurrentHp(getCurrentHp()+20);
-			LinkedList<GameItem> candy = items.get(item);
-			if(!candy.isEmpty()) {
-				GameItem aCandy = candy.pop();
-				aCandy.use(this);
-				resultMap.put("selectResult", "무설탕 사탕을 먹고 체력을 20회복했다.");
+		if(items.containsKey(item)) {
+			LinkedList<GameItem> gameItemList = items.get(item);
+			if(!gameItemList.isEmpty()) {
+				GameItem aItem = gameItemList.pop();
+				aItem.use(this);
+				resultMap.put("selectResult", aItem.getName()+"을(를) 먹고 체력을 "+aItem.getHealPoint()+"회복했다.");
 			}
-//			else {
-//				resultMap.put("selectResult", "무설탕 사탕이 다 떨어졌다.");
-//			}
-//			resultMap.put("selectOption", "usedItem");
-//			resultMap.put("player", getCharacterContext());
+		}else {
+			resultMap.put("selectResult", item+" 아이템이 없습니다.");
 		}
 		return resultMap;
 	}
@@ -326,5 +328,9 @@ public class PCharacter extends GameCharacter implements Playerable{
 			}
 		}
 		return result;
+	}
+	
+	public Map<String,LinkedList<GameItem>> getItems(){
+		return items;
 	}
 }

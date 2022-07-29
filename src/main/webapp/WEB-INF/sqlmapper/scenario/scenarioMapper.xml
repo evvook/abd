@@ -7,7 +7,7 @@
 			 SCENE_CD
 			,SCENE_NM
 		FROM SCENE_GAME SG
-		where SCENE_CD NOT IN ('S001','S002','S003')
+		#where SCENE_CD NOT IN ('S001','S002','S003')
 		ORDER BY SCENE_CD
 	</select>
 	<select id="selectEvents" parameterType="hashmap" resultType="hashmap">

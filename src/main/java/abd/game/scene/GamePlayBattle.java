@@ -2,6 +2,7 @@ package abd.game.scene;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import abd.game.GameManager;
 import abd.game.character.CompCharacter;
 import abd.game.character.NPCharacter;
 import abd.game.character.PCharacter;
+import abd.game.character.item.GameItem;
 
 public class GamePlayBattle implements GamePlayElement {
 	private String battleCode;
@@ -427,11 +429,21 @@ public class GamePlayBattle implements GamePlayElement {
 		selectInfo.put("SELECT_HEAD", "무엇을 사용할까?");
 		
 		List<Map<String,String>> optionList = new ArrayList<Map<String,String>>();
-		Map<String,String> option1 = new HashMap<String,String>();
-		option1.put("OPTION_SEQ", "1");
-		option1.put("OPTION_TXT", "무설탕 사탕을 먹는다.");
-		option1.put("RESULT_OCCURRED", "useItemBattle#candy");
-		optionList.add(option1);
+		
+		Map<String,LinkedList<GameItem>> items = player.getItems();
+		Integer seq = 1;
+		for(String itmeKey:items.keySet()) {
+			List<GameItem> itemList = items.get(itmeKey);
+			if(!itemList.isEmpty()) {
+				GameItem item = itemList.get(0);
+				Map<String,String> option = new HashMap<String,String>();
+				option.put("OPTION_SEQ", String.valueOf(seq++));
+				option.put("OPTION_TXT", item.getName()+"을(를) 먹는다.");
+				option.put("RESULT_OCCURRED", "useItemBattle#"+item.getCode());
+				optionList.add(option);
+			}
+		}
+		
 		
 		Map<String,String> optionLast = new HashMap<String,String>();
 		optionLast.put("OPTION_SEQ", "99");
