@@ -501,6 +501,7 @@
 		        			//전투 이탈. 전투가 아니므로 전투 프로세스가 없음
 		        			var newResult = battle;
 		        			newResult["status"] = "onGoing"
+		        			newResult["scripts"] = [];
     						afterwork(newResult);
 		        		}
 		        	}

@@ -9,6 +9,9 @@ import java.util.Map;
 import abd.game.character.CompCharacter;
 import abd.game.character.GameCharacterBuilder;
 import abd.game.character.PCharacter;
+import abd.game.character.item.Candy;
+import abd.game.character.item.ChocoBar;
+import abd.game.character.item.NoFreeSpaceException;
 import abd.game.scene.GameEvBranch;
 import abd.game.scene.GameEvent;
 import abd.game.scene.GamePlayBattle;
@@ -459,6 +462,40 @@ public class GameManager implements GameInterface{
 	
 	public void setComp(String characterCode) {
 		player.setCompany(characterCode);
+	}
+	
+	public Map<String,Object> checkSupplyB4() throws Exception {
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		//하나도 없는 경우
+		if(player.getItems().isEmpty()) {
+			//캐릭터에 아이템을 셋팅한다
+			//supplyItemsB4();
+			Map<String,Object> eventResult = evBranch.goYEvent();
+			String script = (String)eventResult.get("script");
+			eventResult.put("script",script);
+			resultMap.putAll(eventResult);
+		}
+		//있는 경우
+		else {
+			Map<String,Object> eventResult = evBranch.goNEvent();
+			String script = (String)eventResult.get("script");
+			eventResult.put("script",script);
+			resultMap.putAll(eventResult);
+		}
+		evBranch.setOutEvent();
+		return resultMap;
+	}
+	
+	public Map<String,Object> supplyItemsB4() throws Exception {
+		try {
+			player.setItem(Candy.class,5);
+			player.setItem(ChocoBar.class,3);
+			return null;
+		}catch(NoFreeSpaceException e) {
+			Map<String,Object> resultMap = new HashMap<>();
+			resultMap.put("script", e.toString());
+			return resultMap;
+		}
 	}
 	
 	public void supplyItems(String eventCode, String eventSeq) throws Exception {

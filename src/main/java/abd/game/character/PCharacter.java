@@ -1,5 +1,6 @@
 package abd.game.character;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import abd.game.GameSetupLoader;
 import abd.game.character.item.Candy;
 import abd.game.character.item.ChocoBar;
 import abd.game.character.item.GameItem;
+import abd.game.character.item.ItemBag;
 
 public class PCharacter extends GameCharacter implements Playerable{
 	private String job;
@@ -27,7 +29,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 	
 	private Map<String,Object> actionResult;
 	
-	private Map<String,LinkedList<GameItem>> items;
+	private ItemBag itemBag;
 	
 	public PCharacter(String charCd, String charNm, String classCd, String hp, String att, String ac, String av) {
 		// TODO Auto-generated constructor stub
@@ -41,21 +43,21 @@ public class PCharacter extends GameCharacter implements Playerable{
 		calledCompany = new HashMap<String, CompCharacter>();
 		actionResult = new HashMap<String, Object>();
 		
-		items = new HashMap<String, LinkedList<GameItem>>();
+		itemBag = new ItemBag();
 		
 		//테스트용 코드
-		LinkedList<GameItem> candy = new LinkedList<GameItem>();
-		candy.add(new Candy());
-		candy.add(new Candy());
-		candy.add(new Candy());
-		candy.add(new Candy());
-		candy.add(new Candy());
-		items.put(new Candy().getCode(), candy);
-		LinkedList<GameItem> chocobar = new LinkedList<GameItem>();
-		chocobar.add(new ChocoBar());
-		chocobar.add(new ChocoBar());
-		chocobar.add(new ChocoBar());
-		items.put(new ChocoBar().getCode(), chocobar);
+//		LinkedList<GameItem> candy = new LinkedList<GameItem>();
+//		candy.add(new Candy());
+//		candy.add(new Candy());
+//		candy.add(new Candy());
+//		candy.add(new Candy());
+//		candy.add(new Candy());
+//		itemBag.put(new Candy().getCode(), candy);
+//		LinkedList<GameItem> chocobar = new LinkedList<GameItem>();
+//		chocobar.add(new ChocoBar());
+//		chocobar.add(new ChocoBar());
+//		chocobar.add(new ChocoBar());
+//		itemBag.put(new ChocoBar().getCode(), chocobar);
 	}
 	
 	public void setGameManager(GameManager manager) {
@@ -188,13 +190,11 @@ public class PCharacter extends GameCharacter implements Playerable{
 	public Map<String, Object> useItem(String item) {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
-		if(items.containsKey(item)) {
-			LinkedList<GameItem> gameItemList = items.get(item);
-			if(!gameItemList.isEmpty()) {
-				GameItem aItem = gameItemList.pop();
-				aItem.use(this);
-				resultMap.put("selectResult", aItem.getName()+"을(를) 먹고 체력을 "+aItem.getHealPoint()+"회복했다.");
-			}
+		GameItem seletedItem = itemBag.popItem(item);
+		
+		if(seletedItem != null) {
+			seletedItem.use(this);
+			resultMap.put("selectResult", seletedItem.getName()+"을(를) 먹고 체력을 "+seletedItem.getHealPoint()+"회복했다.");
 		}else {
 			resultMap.put("selectResult", item+" 아이템이 없습니다.");
 		}
@@ -318,19 +318,23 @@ public class PCharacter extends GameCharacter implements Playerable{
 
 	public boolean hasAnyItem() {
 		// TODO Auto-generated method stub
-		boolean result = false;
-		
-		for(String key:items.keySet()) {
-			List<GameItem> item = items.get(key);
-			if(item.size()>0) {
-				result = true;
-				break;
-			}
-		}
-		return result;
+		return !itemBag.isEmpty();
 	}
 	
 	public Map<String,LinkedList<GameItem>> getItems(){
-		return items;
+		return itemBag.getItems();
+	}
+
+	public void setItem(Class<? extends GameItem> item, int amount) throws Exception {
+		// TODO Auto-generated method stub
+		//생성자를 만든다
+		Constructor<? extends GameItem> itemConstructor =  item.getDeclaredConstructor();
+		
+		//파라미터로 넘겨받은 갯수만큼
+		for(int i=0;i<amount;i++) {
+			//인스턴스를 생성하고 담아준다
+			GameItem newItem = itemConstructor.newInstance();
+			itemBag.push(newItem);
+		}
 	}
 }
