@@ -379,6 +379,7 @@
 			//if(game.hero.lev < battle.player.lev){
 			//	message = `레벨업! 레벨 `+ battle.player.lev+` `;
 			//}
+			var message = result.scripts.join('<br>');
 			
 			game.clearMonster();
 			game.setHeroStatus(battle.player);
@@ -460,12 +461,12 @@
    			game.createMonster(battle.npc);
 			var company = battle.company;
     		//oo이/가 적에게 xx의 데미지를 주고, yy의 데미지를 받았다
-    		if(company.active == "도움 가능"){
-        		game.showMessage(result.scripts.join("<br>"));
-    		}else if(company.active == "도움 불가능"){
-    			var message = company.name+"이(가) "+company.line;
-    			game.showMessage(message);
-    		}
+       		game.showMessage(result.scripts.join("<br>"));
+    		//if(company.active == "도움 가능"){
+    		//}else if(company.active == "도움 불가능"){
+    		//	var message = company.name+"이(가) "+company.line;
+    		//	game.showMessage(message);
+    		//}
     		game.setMonsterStatus(battle.npc);
         	game.updateMonsterStat();
         	game.setHeroStatus(battle.player);

@@ -10,6 +10,7 @@ import abd.game.Encounter;
 import abd.game.GameDataLoader;
 import abd.game.GameManager;
 import abd.game.character.CompCharacter;
+import abd.game.character.GameCharacter;
 import abd.game.character.NPCharacter;
 import abd.game.character.PCharacter;
 import abd.game.character.item.GameItem;
@@ -109,9 +110,9 @@ public class GamePlayBattle implements GamePlayElement {
 					player.increaseCompReliabl();
 					
 					//game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
-					scripts.append(npCharContext.get("name")+"을(를) 이겨"+npCharContext.get("xp")+" 경험치를 얻었다.");
+					scripts.append(npCharContext.get("name")+"을(를) 이겨"+npCharContext.get("xp")+" 경험치를 얻었다.<br>");
 					if(isPlayerLevelUp) {
-						scripts.append("레벨업! 레벨 "+player.getLevel());
+						scripts.append("레벨업! 레벨 "+player.getLevel()+"<br>");
 					}
 				}
 				
@@ -131,6 +132,12 @@ public class GamePlayBattle implements GamePlayElement {
 				if(isDone()) {
 					//다음 이벤트로 이동할 수 있는 무언가 필요
 					context.put("process", "end");
+					
+					scripts.append(npCharContext.get("name")+"을(를) 이겨"+npCharContext.get("xp")+" 경험치를 얻었다.<br>");
+					if(isPlayerLevelUp) {
+						scripts.append("레벨업! 레벨 "+player.getLevel()+"<br>");
+					}
+					scripts.append("모든 적을 쓰러트렸다.<br>");
 				}else {
 					context.put("process", "start");
 					currentSelectName = "commonBattle";
@@ -203,24 +210,21 @@ public class GamePlayBattle implements GamePlayElement {
 	@SuppressWarnings("unchecked")
 	private String makeBattleScript(Map<String,Object> aResult, String template) {
 //		Map<String,Object> aResult = player.getActionResult();
-		Map<String,String> playerResult = (Map<String,String>)aResult.get("playerResult");
-		String pResultCode1 = playerResult.get("ATTACK1");
-		String pResultCode2 = playerResult.get("ATTACK2");
-		Integer pDmg = 0;
-		if("SUCCESS".equals(pResultCode1) && "SUCCESS".equals(pResultCode2)) {
-			pDmg = player.getAtt()+player.getAtt();
-		}else if("SUCCESS".equals(pResultCode1) || "SUCCESS".equals(pResultCode2)) {
-			pDmg = player.getAtt();
+		Map<String,Object> playerResult = (Map<String,Object>)aResult.get("playerResult");
+		if(playerResult == null) {
+			return "";
 		}
 		
-		Map<String,String> enermyResult = (Map<String,String>)aResult.get("enermyResult");
+		String pResultCode1 = (String)playerResult.get("ATTACK1");
+		String pResultCode2 = (String)playerResult.get("ATTACK2");
+		Integer pDmg = (Integer)playerResult.get("DMG1")+(Integer)playerResult.get("DMG2");
+		
+		Map<String,Object> enermyResult = (Map<String,Object>)aResult.get("enermyResult");
 		String eResultCode1 = "";
 		Integer eDmg = 0;
 		if(enermyResult != null) {
-			eResultCode1 = enermyResult.get("ATTACK1");
-			if("SUCCESS".equals(eResultCode1)) {
-				eDmg = encounteredChracter.getAtt();
-			}
+			eResultCode1 = (String)enermyResult.get("ATTACK1");
+			eDmg = (Integer)enermyResult.get("DMG1");
 		}
 		//"%aResult1%!, %aResult2%!";
 		String copyFightResultPlayerScriptTemplate = new String(fightResultPlayerScriptTemplate);
@@ -435,7 +439,7 @@ public class GamePlayBattle implements GamePlayElement {
 		company = player.getCompany(characterCode);
 		company.act(encounteredChracter);
 		
-		scripts.append("\""+company.getLine()+"\""+"<br>");
+		scripts.append(company.getLine()+"<br>");
 		scripts.append(makeBattleScript(player.getActionResult(), new String(fightWihCompScriptTemplate)));
 		
 		countTurn();

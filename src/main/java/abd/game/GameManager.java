@@ -211,6 +211,11 @@ public class GameManager implements GameInterface{
 				//케이스 #0(이벤트 연쇄 시작지점인 경우)
 				//전투 종료이면 종료 이벤트로 이동한다.
 				if("endBattle".equals(eventContext.get("play"))) {
+					@SuppressWarnings("unchecked")
+					Map<String,Object> battleContext = (Map<String,Object>)eventContext.get("battle");
+					if(battleContext.get("script") != null) {
+						setScript(battleContext);
+					}
 					Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
 					eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
 					

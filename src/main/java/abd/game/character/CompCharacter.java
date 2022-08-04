@@ -89,14 +89,14 @@ public class CompCharacter extends GameCharacter {
 		pcContext.put("currentReliabl", currentReliabl.toString());
 		if(active) {
 			pcContext.put("active", "도움 가능");
-			pcContext.put("line", line);
+			pcContext.put("line", getLine());
 			//전투 진행한 동료는 비활성화 된다.
 			setInactive();
 			//턴이 지나야 활성화 됨
 			++termCnt;
 		}else {
 			pcContext.put("active", "도움 불가능");
-			pcContext.put("line", "당신을 도울 수 있는 상황이 아닙니다.");
+			pcContext.put("line", getLine());
 		}
 		
 		return pcContext;
@@ -179,7 +179,11 @@ public class CompCharacter extends GameCharacter {
 	}
 	public String getLine() {
 		// TODO Auto-generated method stub
-		return line;
+		if(active) {
+			return "\""+line+"\"";
+		}else {
+			return getName()+"이(가) 당신을 도울 수 있는 상황이 아닙니다.";
+		}
 	}
 	
 	public String getActionLine() {
