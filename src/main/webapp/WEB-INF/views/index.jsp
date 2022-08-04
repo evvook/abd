@@ -195,25 +195,20 @@
         		}
         		
 	        	if(result.event == "script"){
-	        		//game.clearInputs();
 	                game.changeScreen('game');
 	                game.clearMonster();
 	                game.updateMonsterStat();
 	        		
-			        //game.showMessage(result.script)
 	        		game.showMessage(' ');
 	        		if(result.scripts.length>0){
 	        			game.showMessage(result.scripts.join("<br>"));
 	        		}
 			        	
 	        	}else if(result.event == "justHappened"){
-	        		//game.clearInputs();
 	                game.changeScreen('game');
 	                game.clearMonster();
 	                game.updateMonsterStat();
 	        		
-			        //game.showMessage(result.script)
-
 	        		game.showMessage(' ');
 	        		if(result.scripts.length>0){
 	        			game.showMessage(result.scripts.join("<br>"));
@@ -226,13 +221,11 @@
 	        		}
 	        		
 		        	if(result.play == "select"){
-		        		//game.clearInputs();
 		        		var select = result.select;
 		        		
 		                game.changeScreen('game');
 		                game.clearMonster();
 		                game.updateMonsterStat();
-				        //game.showMessage(' ')
 				        
 		        		var divTag = document.querySelector("#message");
 				        var head = document.createElement("div");
@@ -259,7 +252,6 @@
 		        			game.changeScreen('game');
 			                game.clearMonster();
 			                game.updateMonsterStat();
-					        //game.showMessage(' ')
 					        
 					        var divTag = document.querySelector("#message");
 					        var inputTag = document.createElement("input");
@@ -274,240 +266,350 @@
 					        game.showMessage(input.resultTxt)
 		        		}
 		        	}else if(result.play == "battle"){
-		        		var battle = result.battle;
-		        		
-		        		if(battle.process == 'start'){
-		        			game.clearInputs();
-			        		game.changeScreen('battle');
+		        		if(result.battle.process == 'start'){
+		        			gameView.setState(battleStart);
+			        		gameView.setView(result);
 			        		
-			        		game.setHeroStatus(result.battle.player);
-				        	game.updateHeroStat();
-				        	game.createMonster(result.battle.npc);
-			        		game.updateMonsterStat();
-			        		
-			        		//game.showMessage(' ');
-			        		if(result.scripts.length>0){
-			        			game.showMessage(result.scripts.join("<br>"));
-			        		}
-			        		
-			        		//공통화
-			        		createBattleSelect(battle.selectName, battle);
-		        		}else if(battle.process == 'onGoing'){
-		        			if(battle.selectName == "commonBattle"){
-		        				
-		        				if(battle.battleResult == 'win'){
-		        					
-		        					//승리 메세지
-		        					game.setMonsterStatus(battle.depeatedNpc);
-		        					var message = game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
-		        					game.clearMonster();
-		        					
-		        					if(game.hero.lev < battle.player.lev){
-		        						message = `레벨업! 레벨 `+ battle.player.lev+` `;
-		        					}
-		        					game.setHeroStatus(battle.player);
-						        	game.updateHeroStat();
-						        	
-		        					//적 생성 메세지
-		        					game.createMonster(battle.npc);
-		        					message = message+`무한교 신도와 마주쳤다. `+game.monster.name+`인 것 같다!`;
-		        					game.showMessage(message);
-		        					
-		        					game.setMonsterStatus(battle.npc);
-						        	game.updateMonsterStat();
-		        					
-		        				}else if(battle.battleResult == 'defeat'){
-		        					//사망
-					        		game.setHeroStatus(battle.player);
-					        		game.updateHeroStat();
-					        		
-					        		game.clearMonster();
-					        		game.updateMonsterStat();
-					        		
-					        		game.clearInputs();
-					                game.changeScreen('game');
-					        		alert(battle.player.lev+` 레벨에서 패배. 새 주인공을 생성하세요.`);
-					                game.quit();
-		        				}else{
-			        				game.changeScreen('battle');
-					        		//캐릭터 상태 적용
-					        		game.setHeroStatus(battle.player);
-						        	game.updateHeroStat();
-					        		game.createMonster(battle.npc);
-				             		//전투
-					        		var ar = battle.player.actionResult;
-				             		var pDamage = 0;
-				             		var pActionRslt = '';
-				             		if(ar.playerResult){
-					             		for(var idx in ar.playerResult){
-					             		    if(ar.playerResult[idx] == "SUCCESS"){
-					             		        pActionRslt += '공격 성공! ';
-					             		        pDamage += Number(battle.player.att);
-					             		    }else if(ar.playerResult[idx] == "MISSED"){
-					             		        pActionRslt += '빗나감! ';
-					             		    }else if(ar.playerResult[idx] == "AVOID"){
-					             		        pActionRslt += '적 회피! ';
-					             		    }
-					             		}
-				             		}
-				             		
-				             		var eDamage = 0;
-				             		var eActionRslt = '';
-				             		if(ar.enermyResult){
-				             			var eResult = ar.enermyResult.ATTACK1;
-				             			if(eResult == "SUCCESS"){
-				             				eActionRslt += '회피 실패! ';
-				             				eDamage += Number(battle.npc.att);
-				             			}else if(eResult == "MISSED"){
-				             				eActionRslt += '빗나감! ';
-				             				
-				             			}else if(eResult == "AVOID"){
-				             				eActionRslt += '회피! ';
-				             				
-				             			}
-				             		}
-				 	        		//game.showMessage(game.hero.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다.");
-				 	        		var message = pActionRslt+pDamage+"의 데미지를 주었다. "+eActionRslt+eDamage+"의 데미지를 받았다.<br>";
-				 	        		game.showMessage(message);
-				             		
-						        	game.setMonsterStatus(battle.npc);
-						        	game.updateMonsterStat();
-						        	
-		        				}
-					        	createBattleSelect(battle.selectNext, battle);
-					        	
-		        			}else if(battle.selectName == "battleHelp"){
-		        				if(battle.selectName == battle.selectNext){
-			        				game.showMessage(' ');
-			        				
-		        				}else{
-		        					//동료와 함께 싸움
-		        					if(battle.selectOption == 'battleWithCompany'){
-			        					game.createMonster(battle.npc);
-			        					var company = battle.company;
-					            		//oo이/가 적에게 xx의 데미지를 주고, yy의 데미지를 받았다
-					            		if(company.active == "도움 가능"){
-						            		var message = '"'+company.line+'"<br>';
-						            		var ar = battle.player.actionResult;
-						             		var pDamage = 0;
-						             		var pActionRslt = '';
-						             		if(ar.playerResult){
-							             		for(var idx in ar.playerResult){
-							             		    if(ar.playerResult[idx] == "SUCCESS"){
-							             		        pActionRslt += '공격 성공! ';
-							             		        pDamage += Number(battle.company.att);
-							             		    }else if(ar.playerResult[idx] == "MISSED"){
-							             		        pActionRslt += '빗나감! ';
-							             		    }else if(ar.playerResult[idx] == "AVOID"){
-							             		        pActionRslt += '적 회피! ';
-							             		    }
-							             		}
-						             		}
-						             		
-						             		var eDamage = 0;
-						             		var eActionRslt = '';
-						             		if(ar.enermyResult){
-						             			var eResult = ar.enermyResult.ATTACK1;
-						             			if(eResult == "SUCCESS"){
-						             				eActionRslt += '회피 실패! ';
-						             				eDamage += Number(battle.npc.att);
-						             			}else if(eResult == "MISSED"){
-						             				eActionRslt += '빗나감! ';
-						             				
-						             			}else if(eResult == "AVOID"){
-						             				eActionRslt += '회피! ';
-						             				
-						             			}
-						             		}
-						            		
-						            		//message += company.name+"이(가) "+company.att+"의 데미지를 주고, "+game.monster.att+"의 데미지를 받았다. ";
-						            		message += pActionRslt+company.name+"이(가) "+pDamage+"의 데미지를 주었다. "+eActionRslt+company.name+"이(가) "+eDamage+"의 데미지를 받았다.<br>";
-						            		message += company.name+" 체력: "+company.hp+"/"+company.maxHp;
-						            		game.showMessage(message);
-					            		}else if(company.active == "도움 불가능"){
-					            			var message = company.name+"이(가) "+company.line;
-					            			game.showMessage(message);
-					            		}
-					            		game.setMonsterStatus(battle.npc);
-							        	game.updateMonsterStat();
-							        	game.setHeroStatus(battle.player);
-							        	game.updateHeroStat();
-		        					}
-		        					//취소
-		        					else if(battle.selectOption == 'cancelSelect'){
-		        						game.createMonster(battle.npc);
-		        						game.setHeroStatus(battle.player);
-							        	game.updateHeroStat();
-		        						game.setMonsterStatus(battle.npc);
-							        	game.updateMonsterStat();
-		        					}
-		        				}
-	        					createBattleSelect(battle.selectNext, battle);
-		        				
-		        			}else if(battle.selectName == "pullBack"){
-		        				
-		        				if(!battle.selectOption){
-		        					game.clearMonster();
-			        				game.updateMonsterStat();
-			        				
-			        				game.showMessage(' ');
-		        				}else{
-		        					
-		        					if(battle.selectOption == 'usedItem'){
-		        						
-		        						game.showMessage(battle.selectResult);
-		        						
-			        					game.setHeroStatus(battle.player);
-			        					game.updateHeroStat();
-			        					
-		        					}
-		        				}
-		        				createBattleSelect(battle.selectNext, battle);
-		        				
-		        			}else if(battle.selectName == "pullBackHelp"){
-
-		        				if(battle.selectName == battle.selectNext){
-				        			game.showMessage(' ');
-			        			}else{
-			        				if(battle.selectOption == 'getHelpFromCompany'){
-			        					
-			        					game.showMessage(battle.company.line);
-			        					game.setHeroStatus(battle.player);
-			        					game.updateHeroStat();
-			        					
-			        				}else if(battle.selectOption == 'cancelSelect'){
-			        					game.showMessage(' ');
-			        				}
-			        			}
-			        			createBattleSelect(battle.selectNext, battle);
-		        			}else if(battle.selectName == "useItem"){
-		        				
-		        				if(battle.selectOption == 'usedItem'){
-	        						
-	        						game.showMessage(battle.selectResult);
-	        						
-		        					game.setHeroStatus(battle.player);
-		        					game.updateHeroStat();
-		        					
-	        					}else if(battle.selectOption == 'cancelSelect'){
-		        					game.showMessage(' ');
-		        				}
-		        				createBattleSelect(battle.selectNext, battle);
-		        			}
-		        		}else if(battle.process == 'end'){
-		        			alert("전투 종료. 다음 이벤트로 진행 필요");
+		        		}else if(result.battle.process == 'onGoing'){
+		        			gameView.setState(battleOnGoing);
+		        			gameView.setView(result);
 		        			
-		        		}else if(!battle.process){
+		        		}else if(!result.battle.process){
 		        			//전투 이탈. 전투가 아니므로 전투 프로세스가 없음
-		        			var newResult = battle;
-		        			newResult["status"] = "onGoing"
-		        			newResult["scripts"] = [];
-    						afterwork(newResult);
+		        			gameView.setState(battleQuit);
+		        			gameView.setView(result);
 		        		}
 		        	}
 	        	}//event 영역
         	}//status 영역
         }
+        
+    	let gameState = {
+   			setView:function(){}
+   		};
+    		
+   		let battleStart = {};
+   		Object.setPrototypeOf(battleStart,Object.create(gameState));
+   		battleStart.setView = function(result){
+   			game.clearInputs();
+   			game.changeScreen('battle');
+   			
+   			game.setHeroStatus(result.battle.player);
+   			game.updateHeroStat();
+   			game.createMonster(result.battle.npc);
+   			game.updateMonsterStat();
+   			
+   			if(result.scripts.length>0){
+   				game.showMessage(result.scripts.join("<br>"));
+   			}
+   			
+   			createBattleSelect(result.battle.selectName, result.battle);		
+   		}
+   		
+   		let battleEnd = {};
+   		Object.setPrototypeOf(battleEnd,Object.create(gameState));
+   		battleEnd.setView = function(result){
+   			alert("전투 종료. 다음 이벤트로 진행 필요");
+   		}
+   		
+   		let battleQuit = {};
+   		Object.setPrototypeOf(battleQuit,Object.create(gameState));
+   		battleQuit.setView = function(result){
+   			var newResult = result.battle;
+			newResult["status"] = "onGoing"
+			newResult["scripts"] = [];
+			afterwork(newResult);
+   		}
+   		
+   		let battleOnGoing = {};
+   		Object.setPrototypeOf(battleOnGoing,Object.create(gameState));
+   		battleOnGoing.setView = function(result){
+   			let battle = result.battle;
+   			if(battle.selectName == "commonBattle"){
+				
+   				gameView.setState(battleCommon);
+   				gameView.setView(result);
+	        	
+			}else if(battle.selectName == "battleHelp"){
+				
+				gameView.setState(battleHelp);
+   				gameView.setView(result);
+				
+			}else if(battle.selectName == "pullBack"){
+				
+				gameView.setState(pullBack);
+   				gameView.setView(result);
+				
+			}else if(battle.selectName == "pullBackHelp"){
+				
+				gameView.setState(pullBackHelp);
+   				gameView.setView(result);
+				
+			}else if(battle.selectName == "useItem"){
+				
+				gameView.setState(useItem);
+   				gameView.setView(result);
+				
+			}
+   		}
+
+   		let battleCommon = {};
+   		Object.setPrototypeOf(battleCommon,Object.create(gameState));
+   		battleCommon.setView = function(result){
+   			if(result.battle.battleResult == 'win'){
+				gameView.setState(winBattle);
+				gameView.setView(result);
+			}else if(result.battle.battleResult == 'defeat'){
+				gameView.setState(defeatBattle);
+				gameView.setView(result);
+			}else{
+				gameView.setState(justBattle);
+				gameView.setView(result);
+			}
+        	createBattleSelect(result.battle.selectNext, result.battle);
+   		}
+   		
+   		let winBattle = {};
+   		Object.setPrototypeOf(winBattle,Object.create(gameState));
+   		winBattle.setView = function(result){
+   			var battle = result.battle;
+   			//승리 메세지
+			game.setMonsterStatus(battle.depeatedNpc);
+			var message = game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
+			game.clearMonster();
+			
+			if(game.hero.lev < battle.player.lev){
+				message = `레벨업! 레벨 `+ battle.player.lev+` `;
+			}
+			game.setHeroStatus(battle.player);
+        	game.updateHeroStat();
+        	
+			//적 생성 메세지
+			game.createMonster(battle.npc);
+			message = message+`무한교 신도와 마주쳤다. `+game.monster.name+`인 것 같다!`;
+			game.showMessage(message);
+			
+			game.setMonsterStatus(battle.npc);
+        	game.updateMonsterStat();
+   		}   		
+   		
+   		let defeatBattle = {};
+   		Object.setPrototypeOf(defeatBattle,Object.create(gameState));
+   		defeatBattle.setView = function(result){
+   			var battle = result.battle;
+   			//사망
+    		game.setHeroStatus(battle.player);
+    		game.updateHeroStat();
+    		
+    		game.clearMonster();
+    		game.updateMonsterStat();
+    		
+    		game.clearInputs();
+            game.changeScreen('game');
+    		alert(battle.player.lev+` 레벨에서 패배. 새 주인공을 생성하세요.`);
+            game.quit();
+   		}   		
+   		
+   		let justBattle = {};
+   		Object.setPrototypeOf(justBattle,Object.create(gameState));
+   		justBattle.setView = function(result){
+   			var battle = result.battle;
+   			
+   			game.changeScreen('battle');
+    		//캐릭터 상태 적용
+    		game.setHeroStatus(battle.player);
+        	game.updateHeroStat();
+    		game.createMonster(battle.npc);
+     		//전투
+    		var ar = battle.player.actionResult;
+     		var pDamage = 0;
+     		var pActionRslt = '';
+     		if(ar.playerResult){
+         		for(var idx in ar.playerResult){
+         		    if(ar.playerResult[idx] == "SUCCESS"){
+         		        pActionRslt += '공격 성공! ';
+         		        pDamage += Number(battle.player.att);
+         		    }else if(ar.playerResult[idx] == "MISSED"){
+         		        pActionRslt += '빗나감! ';
+         		    }else if(ar.playerResult[idx] == "AVOID"){
+         		        pActionRslt += '적 회피! ';
+         		    }
+         		}
+     		}
+     		
+     		var eDamage = 0;
+     		var eActionRslt = '';
+     		if(ar.enermyResult){
+     			var eResult = ar.enermyResult.ATTACK1;
+     			if(eResult == "SUCCESS"){
+     				eActionRslt += '회피 실패! ';
+     				eDamage += Number(battle.npc.att);
+     			}else if(eResult == "MISSED"){
+     				eActionRslt += '빗나감! ';
+     				
+     			}else if(eResult == "AVOID"){
+     				eActionRslt += '회피! ';
+     				
+     			}
+     		}
+        		var message = pActionRslt+pDamage+"의 데미지를 주었다. "+eActionRslt+eDamage+"의 데미지를 받았다.<br>";
+        		game.showMessage(message);
+     		
+        	game.setMonsterStatus(battle.npc);
+        	game.updateMonsterStat();
+        	
+   		}   		
+   		
+   		let battleHelp = {};
+   		Object.setPrototypeOf(battleHelp,Object.create(gameState));
+   		battleHelp.setView = function(result){
+   			var battle = result.battle;
+   			
+   			if(battle.selectName == battle.selectNext){
+				game.showMessage(' ');
+				
+			}else{
+				//동료와 함께 싸움
+				if(battle.selectOption == 'battleWithCompany'){
+					gameView.setState(battleWithCompany);
+					gameView.setView(result);
+				}
+				//취소
+				else if(battle.selectOption == 'cancelSelect'){
+					gameView.setState(battleHelpCancel);
+					gameView.setView(result);
+					
+				}
+			}
+			createBattleSelect(battle.selectNext, battle);
+   		}   		
+   		
+   		
+   		let battleWithCompany = {};
+   		Object.setPrototypeOf(battleWithCompany,Object.create(gameState));
+   		battleWithCompany.setView = function(result){
+   			var battle = result.battle;
+   			game.createMonster(battle.npc);
+			var company = battle.company;
+    		//oo이/가 적에게 xx의 데미지를 주고, yy의 데미지를 받았다
+    		if(company.active == "도움 가능"){
+        		var message = '"'+company.line+'"<br>';
+        		var ar = battle.player.actionResult;
+         		var pDamage = 0;
+         		var pActionRslt = '';
+         		if(ar.playerResult){
+             		for(var idx in ar.playerResult){
+             		    if(ar.playerResult[idx] == "SUCCESS"){
+             		        pActionRslt += '공격 성공! ';
+             		        pDamage += Number(battle.company.att);
+             		    }else if(ar.playerResult[idx] == "MISSED"){
+             		        pActionRslt += '빗나감! ';
+             		    }else if(ar.playerResult[idx] == "AVOID"){
+             		        pActionRslt += '적 회피! ';
+             		    }
+             		}
+         		}
+         		
+         		var eDamage = 0;
+         		var eActionRslt = '';
+         		if(ar.enermyResult){
+         			var eResult = ar.enermyResult.ATTACK1;
+         			if(eResult == "SUCCESS"){
+         				eActionRslt += '회피 실패! ';
+         				eDamage += Number(battle.npc.att);
+         			}else if(eResult == "MISSED"){
+         				eActionRslt += '빗나감! ';
+         				
+         			}else if(eResult == "AVOID"){
+         				eActionRslt += '회피! ';
+         				
+         			}
+         		}
+        		
+        		message += pActionRslt+company.name+"이(가) "+pDamage+"의 데미지를 주었다. "+eActionRslt+company.name+"이(가) "+eDamage+"의 데미지를 받았다.<br>";
+        		message += company.name+" 체력: "+company.hp+"/"+company.maxHp;
+        		game.showMessage(message);
+    		}else if(company.active == "도움 불가능"){
+    			var message = company.name+"이(가) "+company.line;
+    			game.showMessage(message);
+    		}
+    		game.setMonsterStatus(battle.npc);
+        	game.updateMonsterStat();
+        	game.setHeroStatus(battle.player);
+        	game.updateHeroStat();
+   		}   		
+   		
+   		let battleHelpCancel = {};
+   		Object.setPrototypeOf(battleHelpCancel,Object.create(gameState));
+   		battleHelpCancel.setView = function(result){
+   			game.createMonster(result.battle.npc);
+			game.setHeroStatus(result.battle.player);
+        	game.updateHeroStat();
+			game.setMonsterStatus(result.battle.npc);
+        	game.updateMonsterStat();
+   		}
+   		
+   		let pullBack = {};
+   		Object.setPrototypeOf(pullBack,Object.create(gameState));
+   		pullBack.setView = function(result){
+			
+   			game.clearMonster();
+			game.updateMonsterStat();
+			if(result.battle.selectResult){
+				game.showMessage(result.battle.selectResult);
+			}else{
+				game.showMessage(' ');
+			}
+			createBattleSelect(result.battle.selectNext, result.battle);
+   		}
+   		
+   		let pullBackHelp = {};
+   		Object.setPrototypeOf(pullBackHelp,Object.create(gameState));
+   		pullBackHelp.setView = function(result){
+   			var battle = result.battle;
+   			if(battle.selectName == battle.selectNext){
+    			game.showMessage(' ');
+			}else{
+				if(battle.selectOption == 'getHelpFromCompany'){
+					
+					game.showMessage(battle.company.line);
+					game.setHeroStatus(battle.player);
+					game.updateHeroStat();
+					
+				}else if(battle.selectOption == 'cancelSelect'){
+					game.showMessage(' ');
+				}
+			}
+			createBattleSelect(battle.selectNext, battle);
+   		}
+   		
+   		let useItem = {};
+   		Object.setPrototypeOf(useItem,Object.create(gameState));
+   		useItem.setView = function(result){
+   			var battle = result.battle;
+   			if(battle.selectOption == 'usedItem'){
+				
+				game.showMessage(battle.selectResult);
+				
+				game.setHeroStatus(battle.player);
+				game.updateHeroStat();
+				
+			}else if(battle.selectOption == 'cancelSelect'){
+				game.showMessage(' ');
+			}
+			createBattleSelect(battle.selectNext, battle);
+   		}
+   		
+        let gameView = {
+			setState:function(state){
+				this.state = state;
+			},
+			state:null,
+			setView:function(result){
+				this.state.setView(result);
+			}
+			
+        };
         
         function createBattleSelect(id, battle){
         	id = id+"Select";
@@ -532,6 +634,8 @@
     		div.append(select);
         }
 		
+        
+        
         class Game {
         	constructor(name) {
                 this.start(name);
@@ -571,27 +675,6 @@
 	        
 	        onGameMenuInput = (event) => {
                 event.preventDefault();
-                /*const input = event.target['menu-input'].value;
-                if(input === '1') {
-                    ajaxRequest({status:"onGoing",action:"adventure"});
-                    
-                } else if (input === '2') { //휴식
-                    ajaxRequest({status:"onGoing",action:"rest"});
-                
-                } else if (input === '9') { //다음
-                	var inputs = {status:"onGoing",action:"event"};
-                	if(document.querySelector("#playSelect")){
-	                	var selected = {};
-                		selected["SELECT_CD"] = document.querySelector("#playSelect").selectCode;
-                		selected["OPTION_SEQ"] = document.querySelector("#playSelect").value;
-                		inputs["inputData"] = {selected:selected}
-                	}
-                    ajaxRequest(inputs);
-                
-                } else if (input === '3') { //종료
-                    this.showMessage(' ');
-                    this.quit();
-                }*/
                 var inputs = {status:"onGoing",action:"event"};
             	if(document.querySelector("#playSelect")){
                 	var selected = {};
@@ -606,38 +689,6 @@
 	        
             onBattleMenuInput = (event) => {
                 event.preventDefault();
-                /*const input = event.target['battle-input'].value;
-                if(input === '1') {
-                	//ajaxRequest({status:"onGoing",action:"event",inputData:{command:'battle'}});
-                }
-                else if(input === '9'){
-                	var inputs = {status:"onGoing",action:"event"};
-                	if(document.querySelector("#battleSelect")){
-	                	var selected = {};
-                		selected["SELECT_CD"] = document.querySelector("#battleSelect").selectCode;
-                		selected["OPTION_SEQ"] = document.querySelector("#battleSelect").value;
-                		inputs["inputData"] = {selected:selected}
-                	}else if(document.querySelector("#battleHelpSelect")){
-	                	var selected = {};
-                		selected["SELECT_CD"] = document.querySelector("#battleHelpSelect").selectCode;
-                		selected["OPTION_SEQ"] = document.querySelector("#battleHelpSelect").value;
-                		inputs["inputData"] = {selected:selected}
-                	}else if(document.querySelector("#pullBackSelect")){
-	                	var selected = {};
-                		selected["SELECT_CD"] = document.querySelector("#pullBackSelect").selectCode;
-                		selected["OPTION_SEQ"] = document.querySelector("#pullBackSelect").value;
-                		inputs["inputData"] = {selected:selected}
-                	}else if(document.querySelector("#pullBackHelpSelect")){
-	                	var selected = {};
-                		selected["SELECT_CD"] = document.querySelector("#pullBackHelpSelect").selectCode;
-                		selected["OPTION_SEQ"] = document.querySelector("#pullBackHelpSelect").value;
-                		inputs["inputData"] = {selected:selected}
-                	}
-                    ajaxRequest(inputs);
-                }
-                else if (input === '2') {
-                	//ajaxRequest({status:"onGoing",action:"runAway"});
-                }*/
                 var inputs = {status:"onGoing",action:"event"};
             	if(document.querySelector("#commonBattleSelect")){
                 	var selected = {};

@@ -12,8 +12,8 @@ public class ItemBag {
 	
 	public ItemBag() {
 		items = new HashMap<String, LinkedList<GameItem>>();
-		bagSize = 50;
-		freeSpace = 50;
+		bagSize = 100;
+		freeSpace = 100;
 	}
 	
 	public void push(GameItem item) throws NoFreeSpaceException{
