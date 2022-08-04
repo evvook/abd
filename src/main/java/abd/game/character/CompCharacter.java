@@ -105,12 +105,10 @@ public class CompCharacter extends GameCharacter {
 	public void act(NPCharacter encounteredChracter) throws Exception {
 		// TODO Auto-generated method stub
 		//전투
-		if(active) {
-			player.setActionResult(this.action.act(encounteredChracter));
-			if(this.isAlive()) {
-				if(!encounteredChracter.isAlive()) {
-					player.takeExp(encounteredChracter);
-				}
+		player.setActionResult(this.action.act(encounteredChracter));
+		if(this.isAlive()) {
+			if(!encounteredChracter.isAlive()) {
+				player.takeExp(encounteredChracter);
 			}
 		}
 	}

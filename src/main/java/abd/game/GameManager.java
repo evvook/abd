@@ -38,7 +38,7 @@ public class GameManager implements GameInterface{
 	int dayCnt=1;
 	boolean dayOut = false;
 	
-	boolean sceneEnd = false;
+	boolean eventCut = false;
 	private GameEvBranch evBranch;
 	
 	public GameManager() {
@@ -156,10 +156,10 @@ public class GameManager implements GameInterface{
 				//엔딩?
 			}
 		}
-		//씬이 끝난 것으로 가정하는 경우(강제로 이벤트 연쇄를 끊어낼 때)
-		else if(sceneEnd){
+		//이벤트 연쇄를 끝냄
+		else if(eventCut){
 			eventContext.put("sceneStatus", "end");
-			sceneEnd = false;
+			eventCut = false;
 			//담아줌
 			List<String> scripts = new ArrayList<String>();
 			scripts.addAll(eventScripts);
@@ -435,7 +435,7 @@ public class GameManager implements GameInterface{
 		}
 		
 		dayOut = true;
-		sceneEnd = true;
+		eventCut = true;
 		
 		//특정 이벤트 설정
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
@@ -446,7 +446,7 @@ public class GameManager implements GameInterface{
 		player.increaseMp(25);
 		
 		dayOut = true;
-		sceneEnd = true;
+		eventCut = true;
 		
 		currentEvent = currentScene.getEvent(eventCode, eventSeq);
 	}
@@ -623,5 +623,9 @@ public class GameManager implements GameInterface{
 			comp.setArmed();
 			comp.increaseReliabl(10);
 		}
+	}
+	
+	public void cut() {
+		eventCut = true;
 	}
 }

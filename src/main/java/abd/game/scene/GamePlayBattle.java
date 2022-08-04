@@ -436,13 +436,17 @@ public class GamePlayBattle implements GamePlayElement {
 
 	public Map<String, Object> callForHelp(String characterCode) throws Exception {
 		// TODO Auto-generated method stub
-		company = player.getCompany(characterCode);
-		company.act(encounteredChracter);
-		
+		company = player.callCompany(characterCode);
+		//대사 스크립트로 설정
 		scripts.append(company.getLine()+"<br>");
-		scripts.append(makeBattleScript(player.getActionResult(), new String(fightWihCompScriptTemplate)));
-		
-		countTurn();
+		if(company.isActive()) {
+			//전투 수행
+			company.act(encounteredChracter);
+			//전투결과 스크립트로 설정
+			scripts.append(makeBattleScript(player.getActionResult(), new String(fightWihCompScriptTemplate)));
+			//턴 지남
+			countTurn();
+		}
 		
 		//일반배틀선택 선택지 보여줌
 		currentSelect = beforeSelect;
@@ -460,7 +464,7 @@ public class GamePlayBattle implements GamePlayElement {
 
 	public Map<String, Object> getHelp(String characterCode, String ability) throws Exception {
 		// TODO Auto-generated method stub
-		company = player.getCompany(characterCode);
+		company = player.callCompany(characterCode);
 		if("SA1".equals(ability)) {
 			company.reactSpAbl1(player);
 		}else if("SA2".equals(ability)) {

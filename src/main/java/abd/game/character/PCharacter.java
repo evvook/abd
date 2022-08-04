@@ -208,8 +208,13 @@ public class PCharacter extends GameCharacter implements Playerable{
 		}
 		return resultMap;
 	}
-
+	
 	public CompCharacter getCompany(String characterCode) {
+		// TODO Auto-generated method stub
+		return company.get(characterCode);
+	}
+
+	public CompCharacter callCompany(String characterCode) {
 		// TODO Auto-generated method stub
 		//호출된 동료는 별도로 담아둔다. 응답간격을 조절하기 위함
 		calledCompany.put(characterCode, company.get(characterCode));
