@@ -64,19 +64,20 @@ public class PCharacter extends GameCharacter implements Playerable{
 		this.manager = manager;
 	}
 	
-	public void takeFight(NPCharacter fighter) throws Exception {
+	public boolean takeFight(NPCharacter fighter) throws Exception {
 		//GameCharacter fighter = gm.getEncounterdChracter();
 		act(fighter);
 		if(this.isAlive()) {
 			if(!fighter.isAlive()) {
 				//상대방이 죽은 경우
 				//경험치를 획득
-				takeExp(fighter);
+				return takeExp(fighter);
 			}
 			
 		}else {
 			//플레이어가 죽은 경우
 		}
+		return false;
 	}
 	
 	public void takeCure(NPCharacter healer) {
@@ -90,12 +91,14 @@ public class PCharacter extends GameCharacter implements Playerable{
 		npc.setFreq(1);
 	}	
 	
-	public void takeExp(NonPlayerable charact) throws Exception {
+	public boolean takeExp(NonPlayerable charact) throws Exception {
 		// TODO Auto-generated method stub
 		xp += charact.getXp();
 		if(isLevelUp()) {
 			levelUp();
+			return true;
 		}
+		return false;
 	}
 
 	private boolean isLevelUp() {
@@ -133,6 +136,11 @@ public class PCharacter extends GameCharacter implements Playerable{
 		return level;
 	}
 
+	public Map<String, Object> getActionResult() {
+		// TODO Auto-generated method stub
+		return actionResult;
+	}	
+	
 	public void setLvlStatus(String level, String hp, String att, String ac, String av, String requiredXp) {
 		// TODO Auto-generated method stub
 		try {

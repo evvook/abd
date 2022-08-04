@@ -375,12 +375,12 @@
    			var battle = result.battle;
    			//승리 메세지
 			game.setMonsterStatus(battle.depeatedNpc);
-			var message = game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
-			game.clearMonster();
+			//var message = game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
+			//if(game.hero.lev < battle.player.lev){
+			//	message = `레벨업! 레벨 `+ battle.player.lev+` `;
+			//}
 			
-			if(game.hero.lev < battle.player.lev){
-				message = `레벨업! 레벨 `+ battle.player.lev+` `;
-			}
+			game.clearMonster();
 			game.setHeroStatus(battle.player);
         	game.updateHeroStat();
         	
@@ -420,40 +420,8 @@
     		game.setHeroStatus(battle.player);
         	game.updateHeroStat();
     		game.createMonster(battle.npc);
-     		//전투
-    		var ar = battle.player.actionResult;
-     		var pDamage = 0;
-     		var pActionRslt = '';
-     		if(ar.playerResult){
-         		for(var idx in ar.playerResult){
-         		    if(ar.playerResult[idx] == "SUCCESS"){
-         		        pActionRslt += '공격 성공! ';
-         		        pDamage += Number(battle.player.att);
-         		    }else if(ar.playerResult[idx] == "MISSED"){
-         		        pActionRslt += '빗나감! ';
-         		    }else if(ar.playerResult[idx] == "AVOID"){
-         		        pActionRslt += '적 회피! ';
-         		    }
-         		}
-     		}
-     		
-     		var eDamage = 0;
-     		var eActionRslt = '';
-     		if(ar.enermyResult){
-     			var eResult = ar.enermyResult.ATTACK1;
-     			if(eResult == "SUCCESS"){
-     				eActionRslt += '회피 실패! ';
-     				eDamage += Number(battle.npc.att);
-     			}else if(eResult == "MISSED"){
-     				eActionRslt += '빗나감! ';
-     				
-     			}else if(eResult == "AVOID"){
-     				eActionRslt += '회피! ';
-     				
-     			}
-     		}
-        		var message = pActionRslt+pDamage+"의 데미지를 주었다. "+eActionRslt+eDamage+"의 데미지를 받았다.<br>";
-        		game.showMessage(message);
+    		
+       		game.showMessage(result.scripts.join("<br>"));
      		
         	game.setMonsterStatus(battle.npc);
         	game.updateMonsterStat();
@@ -493,42 +461,7 @@
 			var company = battle.company;
     		//oo이/가 적에게 xx의 데미지를 주고, yy의 데미지를 받았다
     		if(company.active == "도움 가능"){
-        		var message = '"'+company.line+'"<br>';
-        		var ar = battle.player.actionResult;
-         		var pDamage = 0;
-         		var pActionRslt = '';
-         		if(ar.playerResult){
-             		for(var idx in ar.playerResult){
-             		    if(ar.playerResult[idx] == "SUCCESS"){
-             		        pActionRslt += '공격 성공! ';
-             		        pDamage += Number(battle.company.att);
-             		    }else if(ar.playerResult[idx] == "MISSED"){
-             		        pActionRslt += '빗나감! ';
-             		    }else if(ar.playerResult[idx] == "AVOID"){
-             		        pActionRslt += '적 회피! ';
-             		    }
-             		}
-         		}
-         		
-         		var eDamage = 0;
-         		var eActionRslt = '';
-         		if(ar.enermyResult){
-         			var eResult = ar.enermyResult.ATTACK1;
-         			if(eResult == "SUCCESS"){
-         				eActionRslt += '회피 실패! ';
-         				eDamage += Number(battle.npc.att);
-         			}else if(eResult == "MISSED"){
-         				eActionRslt += '빗나감! ';
-         				
-         			}else if(eResult == "AVOID"){
-         				eActionRslt += '회피! ';
-         				
-         			}
-         		}
-        		
-        		message += pActionRslt+company.name+"이(가) "+pDamage+"의 데미지를 주었다. "+eActionRslt+company.name+"이(가) "+eDamage+"의 데미지를 받았다.<br>";
-        		message += company.name+" 체력: "+company.hp+"/"+company.maxHp;
-        		game.showMessage(message);
+        		game.showMessage(result.scripts.join("<br>"));
     		}else if(company.active == "도움 불가능"){
     			var message = company.name+"이(가) "+company.line;
     			game.showMessage(message);

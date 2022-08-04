@@ -48,6 +48,15 @@ public class GamePlayBattle implements GamePlayElement {
 	
 	private boolean onGoing;
 	
+	private StringBuilder scripts;
+	
+	private static String fightScriptTemplate = "%pResult% %pDmg%의 데미지를 주었다. %eResult% %eDmg%의 데미지를 받았다.<br>";
+	private static String fightWihCompScriptTemplate = "%pResult% %compName%이(가) %pDmg%의 데미지를 주었다. %eResult% %compName%이(가) %eDmg%의 데미지를 받았다.<br>";
+	private static String fightResultPlayerScriptTemplate = "%aResult1% %aResult2%";
+	private static String fightResultEnermyScriptTemplate = "%aResult1%";
+
+	private boolean isPlayerLevelUp;
+	
 	public GamePlayBattle(Map<String, String> playInfo, GameDataLoader loader, PCharacter player) throws Exception {
 		// TODO Auto-generated constructor stub
 		this.loader = loader;
@@ -62,6 +71,7 @@ public class GamePlayBattle implements GamePlayElement {
 		
 		playCodes = new HashMap<String, String>();
 		selectCodes = new HashMap<String, String>();
+		scripts = new StringBuilder();
 		//공격한다, 동료에게 도움요청, 후퇴한다
 		for(Map<String,String>battleInfo:battleList) {
 			playCodes.put(battleInfo.get("SELECT_ALIAS"), battleInfo.get("PLAY_CD"));
@@ -97,6 +107,12 @@ public class GamePlayBattle implements GamePlayElement {
 					context.put("depeatedNpc", npCharContext);
 					
 					player.increaseCompReliabl();
+					
+					//game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
+					scripts.append(npCharContext.get("name")+"을(를) 이겨"+npCharContext.get("xp")+" 경험치를 얻었다.");
+					if(isPlayerLevelUp) {
+						scripts.append("레벨업! 레벨 "+player.getLevel());
+					}
 				}
 				
 			}else if(!player.isAlive()){
@@ -141,6 +157,9 @@ public class GamePlayBattle implements GamePlayElement {
 		//전투 선택지 설정
 		context.put("select", currentSelect.getElContext());
 		context.put("selectCode", currentSelect.getCode());
+		
+		context.put("script", scripts.toString());
+		scripts.delete(0, scripts.length());
 			
 		return context;
 	}
@@ -171,12 +190,79 @@ public class GamePlayBattle implements GamePlayElement {
 				encounter.clearCharacter();
 				
 			}else if("battle".equals(actionCommand)) {
-				player.takeFight(encounteredChracter);
+				isPlayerLevelUp = player.takeFight(encounteredChracter);
+				scripts.append(makeBattleScript(player.getActionResult(), new String(fightScriptTemplate)));
+				
 				countTurn();
 			}
 		}else {
 			encounter.clearCharacter();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private String makeBattleScript(Map<String,Object> aResult, String template) {
+//		Map<String,Object> aResult = player.getActionResult();
+		Map<String,String> playerResult = (Map<String,String>)aResult.get("playerResult");
+		String pResultCode1 = playerResult.get("ATTACK1");
+		String pResultCode2 = playerResult.get("ATTACK2");
+		Integer pDmg = 0;
+		if("SUCCESS".equals(pResultCode1) && "SUCCESS".equals(pResultCode2)) {
+			pDmg = player.getAtt()+player.getAtt();
+		}else if("SUCCESS".equals(pResultCode1) || "SUCCESS".equals(pResultCode2)) {
+			pDmg = player.getAtt();
+		}
+		
+		Map<String,String> enermyResult = (Map<String,String>)aResult.get("enermyResult");
+		String eResultCode1 = "";
+		Integer eDmg = 0;
+		if(enermyResult != null) {
+			eResultCode1 = enermyResult.get("ATTACK1");
+			if("SUCCESS".equals(eResultCode1)) {
+				eDmg = encounteredChracter.getAtt();
+			}
+		}
+		//"%aResult1%!, %aResult2%!";
+		String copyFightResultPlayerScriptTemplate = new String(fightResultPlayerScriptTemplate);
+		copyFightResultPlayerScriptTemplate = copyFightResultPlayerScriptTemplate.replace("%aResult1%", getPlayerResult(pResultCode1));
+		copyFightResultPlayerScriptTemplate = copyFightResultPlayerScriptTemplate.replace("%aResult2%", getPlayerResult(pResultCode2));
+		template = template.replace("%pResult%", copyFightResultPlayerScriptTemplate);
+		
+		String copyFightResultEnermyScriptTemplate = new String(fightResultEnermyScriptTemplate);
+		copyFightResultEnermyScriptTemplate = copyFightResultEnermyScriptTemplate.replace("%aResult1%", getEnermyResult(eResultCode1));
+		template = template.replace("%eResult%", copyFightResultEnermyScriptTemplate);
+		template = template.replace("%pDmg%", pDmg.toString());
+		template = template.replace("%eDmg%", eDmg.toString());
+		
+		if(company != null) {
+			template = template.replace("%compName%", company.getName());
+		}
+		
+		return template;
+	}
+	
+	private String getPlayerResult(String code) {
+		String result = null;
+		if("SUCCESS".equals(code)) {
+			result = "공격 성공!";
+		}else if("MISSED".equals(code)) {
+			result = "빗나감!";
+		}else if("AVOID".equals(code)) {
+			result = "적 회피!";
+		}
+		return result;
+	}
+	
+	private String getEnermyResult(String code) {
+		String result = "";
+		if("SUCCESS".equals(code)) {
+			result = "회피 실패!";
+		}else if("MISSED".equals(code)) {
+			result = "빗나감!";
+		}else if("AVOID".equals(code)) {
+			result = "회피 성공!";
+		}
+		return result;
 	}
 
 	public void countTurn() {
@@ -348,6 +434,9 @@ public class GamePlayBattle implements GamePlayElement {
 		// TODO Auto-generated method stub
 		company = player.getCompany(characterCode);
 		company.act(encounteredChracter);
+		
+		scripts.append("\""+company.getLine()+"\""+"<br>");
+		scripts.append(makeBattleScript(player.getActionResult(), new String(fightWihCompScriptTemplate)));
 		
 		countTurn();
 		

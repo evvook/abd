@@ -246,6 +246,13 @@ public class GameManager implements GameInterface{
 						setScript(eventContext);
 						goEvent();
 					}
+					else if("battle".equals(eventContext.get("play"))) {
+						@SuppressWarnings("unchecked")
+						Map<String,Object> battleContext = (Map<String,Object>)eventContext.get("battle");
+						if(battleContext.get("script") != null) {
+							setScript(battleContext);
+						}
+					}
 					
 					//스크립트 담아주고 이벤트 더이상 호출하지 않음
 					List<String> scripts = new ArrayList<String>();
