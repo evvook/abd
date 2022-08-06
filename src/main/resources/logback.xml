@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
     <!-- 로그 경로 변수 선언 -->
-    <!-- <property name="LOG_DIR" value="D:/Dev/03.workspace/WebGameServerSpringVer/abd/logs/app" /> -->
-    <property name="LOG_DIR" value="/home/ec2-user/abd/logs/app" />
+    <property name="LOG_DIR" value="D:/Dev/03.workspace/WebGameServerSpringVer/abd/logs/app" />
+    <!-- <property name="LOG_DIR" value="/home/ec2-user/abd/logs/app" /> -->
     <property name="LOG_PATH" value="${LOG_DIR}/app.log"/>
 	
     <!-- log4jdbc 옵션 설정 -->

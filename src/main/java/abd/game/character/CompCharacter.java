@@ -26,6 +26,7 @@ public class CompCharacter extends GameCharacter {
 	
 	private Integer currentReliabl;
 	private Integer maxReliabl;
+	private Integer minReliabl;
 	
 	private PCharacter player;
 	
@@ -37,7 +38,7 @@ public class CompCharacter extends GameCharacter {
 		super(charCd, charNm, classCd, hp, att, ac, av);
 		// TODO Auto-generated constructor stub
 		//기본은 활성화 상태
-		active = true;
+		active = false;
 		termCnt = 0;
 		
 		this.lines = new HashMap<String, List<String>>();
@@ -57,10 +58,20 @@ public class CompCharacter extends GameCharacter {
 	
 	public void setActive() {
 		active = true;
+		termCnt = 0;
 	}
 	
 	public void setInactive() {
 		active = false;
+		termCnt = 0;
+	}
+	
+	public void initInactive() {
+		if(currentReliabl>=minReliabl) {
+			setActive();
+		}else {
+			setInactive();
+		}
 	}
 	
 	public Integer getSpAbl1() {
@@ -87,13 +98,15 @@ public class CompCharacter extends GameCharacter {
 		pcContext.put("mp", getCurrentMp().toString());
 		pcContext.put("att", getAtt().toString());
 		pcContext.put("currentReliabl", currentReliabl.toString());
+		pcContext.put("currentReplTerm", currentReplTerm.toString());
+		pcContext.put("leftReplTerm", String.valueOf(currentReplTerm-termCnt));
 		if(active) {
 			pcContext.put("active", "도움 가능");
 			pcContext.put("line", getLine());
 			//전투 진행한 동료는 비활성화 된다.
-			setInactive();
+			//setInactive();
 			//턴이 지나야 활성화 됨
-			++termCnt;
+			//++termCnt;
 		}else {
 			pcContext.put("active", "도움 불가능");
 			pcContext.put("line", getLine());
@@ -111,6 +124,8 @@ public class CompCharacter extends GameCharacter {
 				player.takeExp(encounteredChracter);
 			}
 		}
+		setInactive();
+//		++termCnt;
 	}
 	
 	public void reactSpAbl1(PCharacter player) {
@@ -129,9 +144,9 @@ public class CompCharacter extends GameCharacter {
 		this.minReplTerm = Integer.valueOf(minReplTerm);
 		this.maxReplTerm = Integer.valueOf(maxReplTerm);
 		this.currentReplTerm = Integer.valueOf(maxReplTerm);
-//		this.minReliab = Integer.valueOf(minReliab);
+		this.minReliabl = Integer.valueOf(minReliabl);
 		this.maxReliabl = Integer.valueOf(maxReliabl);
-		this.currentReliabl = Integer.valueOf(minReliabl);
+		this.currentReliabl = 0;
 		
 		//특수능력치가 있다면, 설정
 		if("".equals(spAbl1) || spAbl1 == null) {
@@ -180,7 +195,7 @@ public class CompCharacter extends GameCharacter {
 		if(active) {
 			return "\""+line+"\"";
 		}else {
-			return getName()+"이(가) 당신을 도울 수 있는 상황이 아닙니다.";
+			return getName()+"이(가) 당신을 도울 수 있는 상황이 아닙니다.("+String.valueOf(currentReplTerm-termCnt)+"턴 남음)";
 		}
 	}
 	
@@ -191,16 +206,27 @@ public class CompCharacter extends GameCharacter {
 
 	public void countTurn() {
 		// TODO Auto-generated method stub
-		++termCnt;
-		if(currentReplTerm <= termCnt) {
-			setActive();
-			termCnt = 0;
+		if(!active) {
+			++termCnt;
+			if(currentReplTerm <= termCnt) {
+				setActive();
+				termCnt = 0;
+			}
 		}
 	}
 
 	public void increaseReliabl(Integer reliabl) {
 		// TODO Auto-generated method stub
 		currentReliabl = currentReliabl + reliabl;
+		
+		//현재 친밀도에 따라 응답간격 변화
+		Integer dReliabl = Math.round(currentReliabl/((maxReliabl - minReliabl)/10));//곱하는 녀석
+		Double dRepl = (double)(maxReplTerm - minReplTerm)/10;//곱해질 녀석
+		currentReplTerm = maxReplTerm - (int) Math.round(Math.round(dReliabl*dRepl));
+		
+		if(currentReliabl>=minReliabl) {
+			setActive();
+		}
 		if(currentReliabl > maxReliabl) {
 			currentReliabl = maxReliabl;
 		}

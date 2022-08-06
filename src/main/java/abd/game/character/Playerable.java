@@ -4,7 +4,7 @@ public interface Playerable {
 	
 	public void act(NPCharacter other);
 	
-	public boolean takeFight(NPCharacter npc) throws Exception;
+	public void takeFight(NPCharacter npc) throws Exception;
 	
 	public void takeCure(NPCharacter npc);
 	

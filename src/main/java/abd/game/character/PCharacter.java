@@ -64,20 +64,19 @@ public class PCharacter extends GameCharacter implements Playerable{
 		this.manager = manager;
 	}
 	
-	public boolean takeFight(NPCharacter fighter) throws Exception {
+	public void takeFight(NPCharacter fighter) throws Exception {
 		//GameCharacter fighter = gm.getEncounterdChracter();
 		act(fighter);
 		if(this.isAlive()) {
 			if(!fighter.isAlive()) {
 				//상대방이 죽은 경우
 				//경험치를 획득
-				return takeExp(fighter);
+				takeExp(fighter);
 			}
 			
 		}else {
 			//플레이어가 죽은 경우
 		}
-		return false;
 	}
 	
 	public void takeCure(NPCharacter healer) {
@@ -91,14 +90,12 @@ public class PCharacter extends GameCharacter implements Playerable{
 		npc.setFreq(1);
 	}	
 	
-	public boolean takeExp(NonPlayerable charact) throws Exception {
+	public void takeExp(NonPlayerable charact) throws Exception {
 		// TODO Auto-generated method stub
 		xp += charact.getXp();
 		if(isLevelUp()) {
 			levelUp();
-			return true;
 		}
-		return false;
 	}
 
 	private boolean isLevelUp() {
@@ -250,13 +247,13 @@ public class PCharacter extends GameCharacter implements Playerable{
 
 	public void countTurn() {
 		// TODO Auto-generated method stub
-		Map<String,CompCharacter> calledCompCopy = new HashMap<String, CompCharacter>();
-		calledCompCopy.putAll(calledCompany);
+		Map<String,CompCharacter> compCopy = new HashMap<String, CompCharacter>();
+		compCopy.putAll(company);
 		
-		for(String key:calledCompCopy.keySet()) {
-			CompCharacter comp = calledCompCopy.get(key);
+		for(String key:compCopy.keySet()) {
+			CompCharacter comp = compCopy.get(key);
 			comp.countTurn();
-			if(comp.isActive()) {
+			if(comp.isActive() && calledCompany.containsKey(key)) {
 				calledCompany.remove(key);
 			}
 		}
@@ -325,7 +322,7 @@ public class PCharacter extends GameCharacter implements Playerable{
 		// TODO Auto-generated method stub
 		for(String key:company.keySet()) {
 			CompCharacter comp = company.get(key);
-			comp.setActive();
+			comp.initInactive();
 		}
 	}
 

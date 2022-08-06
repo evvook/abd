@@ -1,13 +1,10 @@
 package abd.game;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GameContainer {
 	public static Map<String,Game> gameContainer = new HashMap<String,Game>();
-	public static List<String> serverRootContainer = new ArrayList<String>();
 	
 	public static void putGame(String key,Game controller) {
 		System.out.println(key);

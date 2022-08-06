@@ -58,6 +58,9 @@ public class GamePlayBattle implements GamePlayElement {
 
 	private boolean isPlayerLevelUp;
 	
+	private Integer initHp;
+	private Integer initLvl;
+	
 	public GamePlayBattle(Map<String, String> playInfo, GameDataLoader loader, PCharacter player) throws Exception {
 		// TODO Auto-generated constructor stub
 		this.loader = loader;
@@ -87,7 +90,10 @@ public class GamePlayBattle implements GamePlayElement {
 		//전투 준비
 		encounter = new Encounter();
 		initBattle();
+		
 		player.initCompActive();
+		initHp = player.getCurrentHp();
+		initLvl = player.getLevel();
 	}
 
 	@Override
@@ -107,12 +113,11 @@ public class GamePlayBattle implements GamePlayElement {
 					context.put("battleResult", "win");
 					context.put("depeatedNpc", npCharContext);
 					
-					player.increaseCompReliabl();
-					
 					//game.monster.name+"을/를 이겨 "+game.monster.xp+" 경험치를 얻었다. ";
 					scripts.append(npCharContext.get("name")+"을(를) 이겨"+npCharContext.get("xp")+" 경험치를 얻었다.<br>");
 					if(isPlayerLevelUp) {
 						scripts.append("레벨업! 레벨 "+player.getLevel()+"<br>");
+						isPlayerLevelUp = false;
 					}
 				}
 				
@@ -136,8 +141,11 @@ public class GamePlayBattle implements GamePlayElement {
 					scripts.append(npCharContext.get("name")+"을(를) 이겨"+npCharContext.get("xp")+" 경험치를 얻었다.<br>");
 					if(isPlayerLevelUp) {
 						scripts.append("레벨업! 레벨 "+player.getLevel()+"<br>");
+						isPlayerLevelUp = false;
 					}
 					scripts.append("모든 적을 쓰러트렸다.<br>");
+					//전투가 승리로 끝나면 모든 동료 신뢰도 10증가
+					player.increaseCompReliabl();
 				}else {
 					context.put("process", "start");
 					currentSelectName = "commonBattle";
@@ -197,7 +205,12 @@ public class GamePlayBattle implements GamePlayElement {
 				encounter.clearCharacter();
 				
 			}else if("battle".equals(actionCommand)) {
-				isPlayerLevelUp = player.takeFight(encounteredChracter);
+				player.takeFight(encounteredChracter);
+				if(initLvl < player.getLevel()) {
+					isPlayerLevelUp = true;
+					initHp = player.getCurrentHp();
+					initLvl = player.getLevel();
+				}
 				scripts.append(makeBattleScript(player.getActionResult(), new String(fightScriptTemplate)));
 				
 				countTurn();
@@ -442,6 +455,11 @@ public class GamePlayBattle implements GamePlayElement {
 		if(company.isActive()) {
 			//전투 수행
 			company.act(encounteredChracter);
+			if(initLvl < player.getLevel()) {
+				isPlayerLevelUp = true;
+				initHp = player.getCurrentHp();
+				initLvl = player.getLevel();
+			}
 			//전투결과 스크립트로 설정
 			scripts.append(makeBattleScript(player.getActionResult(), new String(fightWihCompScriptTemplate)));
 			//턴 지남
@@ -564,5 +582,10 @@ public class GamePlayBattle implements GamePlayElement {
 		battleContext.put("battleCode", getCode());
 		battleContext.putAll(getElContext());
 		return battleContext;
+	}
+
+	public Integer getInitHp() {
+		// TODO Auto-generated method stub
+		return initHp;
 	}
 }

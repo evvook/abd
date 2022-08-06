@@ -7,7 +7,6 @@
 			 SCENE_CD
 			,SCENE_NM
 		FROM SCENE_GAME SG
-		
 		#WHERE SCENE_CD NOT IN ('S001','S002','S003')
 		ORDER BY SCENE_CD
 	</select>

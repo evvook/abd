@@ -104,14 +104,14 @@ public class GameManager implements GameInterface{
 		return context;
 	}
 	
-	public void setScript(Map<String,Object> resultMap) {
+	private void setScript(Map<String,Object> resultMap) {
 		String script = (String)resultMap.remove("script");
 		if(script != null) {
 			setScript(script);
 		}
 	}
 	
-	public void setScript(String script) {
+	private void setScript(String script) {
 		String[] scripts = script.split("<br>");
 		for(String s:scripts) {
 			eventScripts.add(s);
@@ -251,7 +251,9 @@ public class GameManager implements GameInterface{
 						setScript(eventContext);
 						goEvent();
 					}
-					else if("battle".equals(eventContext.get("play"))) {
+					
+					//전투 중 발생한 스크립트 담아줌. 이벤트 호출하지 않음
+					if("battle".equals(eventContext.get("play"))) {
 						@SuppressWarnings("unchecked")
 						Map<String,Object> battleContext = (Map<String,Object>)eventContext.get("battle");
 						if(battleContext.get("script") != null) {
@@ -627,5 +629,19 @@ public class GameManager implements GameInterface{
 	
 	public void cut() {
 		eventCut = true;
+	}
+	
+	public Map<String,Object> mpOfbattleResult(String resultTxt){
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		Integer iHp = pBtl.getInitHp();
+		Integer cHp = player.getCurrentHp();
+		Integer dHp = iHp - cHp;
+		Integer hRates = Math.round((dHp*100/iHp));
+		Integer dMp = (player.getMp()*(hRates))/100;
+		player.decreaseMp(dMp);
+		resultTxt = resultTxt.replace("%minus_hp%", dHp.toString());
+		resultTxt = resultTxt.replace("%minus_mp%", dMp.toString());
+		resultMap.put("script", resultTxt);
+		return resultMap;
 	}
 }
