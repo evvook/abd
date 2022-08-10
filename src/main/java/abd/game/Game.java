@@ -1,14 +1,23 @@
 package abd.game;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Game {
 	private GameInterface gameInterface;
 	private GameDataLoader loader;
+	private static int MAX_SLEEP = 600;
+	private int sleep_count;
+//	private boolean awake;
 	
 	public Game(GameInterface gameInterface) {
 		// TODO Auto-generated constructor stub
 		this.gameInterface = gameInterface;
+		
+		sleep_count = 0;
+		selfMonitoring();
+//		awake = true;
 	}
 	
 	public void setGameDataLoader(GameDataLoader loader) {
@@ -16,6 +25,8 @@ public class Game {
 	}
 	
 	public Map<String,Object> run(Map<String,Object> input) throws Exception {
+		sleep_count = 0;
+		
 		Map<String,Object> gameContext = null;
 		String status = (String)input.get("status");
 		String action = (String)input.get("action");
@@ -51,6 +62,7 @@ public class Game {
 	}
 
 	public Map<String, Object> setup(GameSetupLoader setupLoader, Map<String, Object> input) throws Exception {
+		sleep_count = 0;
 		// TODO Auto-generated method stub
 		Map<String,Object> gameContext = null;
 		gameInterface.createPlayerCharacter(setupLoader, (String)input.get("name"));
@@ -61,7 +73,25 @@ public class Game {
 	}
 
 	public Map<String, Object> getCharStat() {
+		sleep_count = 0;
 		// TODO Auto-generated method stub
 		return gameInterface.getCharStat();
+	}
+	
+	public void selfMonitoring(){
+		Game game = this;
+		Timer timer = new Timer();
+		TimerTask tTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				sleep_count++;
+				if(sleep_count==MAX_SLEEP) {
+					GameContainer.remove(game);
+				}
+			}
+		};
+		timer.schedule(tTask, 1000, 1000);
 	}
 }

@@ -20,12 +20,13 @@ public class GameContainer {
 	public static boolean isExists(Game value) {
 		return gameContainer.containsValue(value);
 	}
+	
 	public static void remove(Game game) {
 		// TODO Auto-generated method stub
 		for(String key:gameContainer.keySet()) {
 			if(game.equals(gameContainer.get(key))) {
 				gameContainer.remove(key);
-				System.out.println("컨트롤러 삭제");
+				System.out.println("컨트롤러 삭제. 컨트롤러 사이즈 : "+gameContainer.size());
 				break;
 			}
 		}
