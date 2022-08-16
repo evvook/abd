@@ -122,6 +122,7 @@ public class GamePlayBattle implements GamePlayElement {
 			}else if(!player.isAlive()){
 				//지거나
 				context.put("battleResult", "defeat");
+				onGoing = false;
 				//사망 씬으로 이동할 수 있는 무언가 필요
 			}else {
 				context.put("npc", npCharContext);
@@ -144,7 +145,9 @@ public class GamePlayBattle implements GamePlayElement {
 					scripts.append("모든 적을 쓰러트렸다.<br>");
 					//전투가 승리로 끝나면 모든 동료 신뢰도 10증가
 					player.increaseCompReliabl();
-				}else {
+				}else if("defeat".equals(context.get("battleResult"))){
+					context.put("process", "end");
+				}else{
 					context.put("process", "start");
 					currentSelectName = "commonBattle";
 					context.put("selectName", currentSelectName);
@@ -441,6 +444,8 @@ public class GamePlayBattle implements GamePlayElement {
 		currentSelect = battleSelect;
 		//조우 초기화
 		setEncounterdChracter(loader);
+		
+		player.initCompActive();
 		
 		onGoing = false;
 	}

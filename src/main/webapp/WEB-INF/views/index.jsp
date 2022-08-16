@@ -200,7 +200,7 @@
 	                game.updateMonsterStat();
 	        		
 	        		game.showMessage(' ');
-	        		if(result.scripts.length>0){
+	        		if(result.scripts && result.scripts.length>0){
 	        			game.showMessage(result.scripts.join("<br>"));
 	        		}
 			        	
@@ -210,13 +210,13 @@
 	                game.updateMonsterStat();
 	        		
 	        		game.showMessage(' ');
-	        		if(result.scripts.length>0){
+	        		if(result.scripts && result.scripts.length>0){
 	        			game.showMessage(result.scripts.join("<br>"));
 	        		}
 			        	
 	        	}else if(result.event == "play"){
 	        		game.showMessage(' ');
-	        		if(result.scripts.length>0){
+	        		if(result.scripts && result.scripts.length>0){
 	        			game.showMessage(result.scripts.join("<br>"));
 	        		}
 	        		
@@ -299,7 +299,7 @@
    			game.createMonster(result.battle.npc);
    			game.updateMonsterStat();
    			
-   			if(result.scripts.length>0){
+   			if(result.scripts && result.scripts.length>0){
    				game.showMessage(result.scripts.join("<br>"));
    			}
    			

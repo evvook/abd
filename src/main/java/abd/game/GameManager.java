@@ -1,10 +1,13 @@
 package abd.game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.script.Script;
 
 import abd.game.character.GameCharacterBuilder;
 import abd.game.character.PCharacter;
@@ -17,6 +20,7 @@ public class GameManager implements GameInterface{
 	private Map<String,Map<String,String>> lvlData;
 	//씬
 	private LinkedList<Map<String,String>> sceneInfoList;
+	private LinkedList<Map<String,String>> pastSceneInfoList;
 	private GameScene currentScene;
 	//이벤트
 	private GameEvent currentEvent;
@@ -32,11 +36,21 @@ public class GameManager implements GameInterface{
 	boolean dayOut = false;
 	boolean eventCut = false;
 	
+	GameStatus rpgBattle;
+	GameStatus visualNovel;
+	GameStatus currentStatus;
+	
 	public GameManager() {
 		eventContext = new HashMap<String, Object>();
 		sceneInfoList = new LinkedList<Map<String,String>>();
+		pastSceneInfoList = new LinkedList<Map<String,String>>();
+		
 		lvlData = new HashMap<String, Map<String,String>>();
 		eventScripts = new ArrayList<String>();
+		
+		rpgBattle = new GameStatusRpgBattle(this);
+		visualNovel = new GameStatusVisualNovel(this);
+		currentStatus = visualNovel;
 	}
 	
 	@Override
@@ -68,7 +82,9 @@ public class GameManager implements GameInterface{
 	public void startSceneLoad(GameDataLoader loader) throws Exception {
 		// TODO Auto-generated method stub
 		this.loader = loader;
-		currentScene = new GameScene(sceneInfoList.pollFirst(),loader,this);
+		Map<String,String> sceneInfo = sceneInfoList.pollFirst();
+		pastSceneInfoList.add(sceneInfo);
+		currentScene = new GameScene(sceneInfo,loader,this);
 		currentEvent = currentScene.getEvent();
 	}
 
@@ -95,14 +111,14 @@ public class GameManager implements GameInterface{
 		return context;
 	}
 	
-	private void setScript(Map<String,Object> resultMap) {
+	public void setScript(Map<String,Object> resultMap) {
 		String script = (String)resultMap.remove("script");
 		if(script != null) {
 			setScript(script);
 		}
 	}
 	
-	private void setScript(String script) {
+	public void setScript(String script) {
 		String[] scripts = script.split("<br>");
 		for(String s:scripts) {
 			eventScripts.add(s);
@@ -121,7 +137,9 @@ public class GameManager implements GameInterface{
 		//씬이 끝난 경우
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
+			String beforeSceneCode = currentScene.getSceneCode();
 			Map<String,String> sceneInfo = sceneInfoList.pollFirst();
+			pastSceneInfoList.add(sceneInfo);
 			if(sceneInfo != null) {
 				currentScene = new GameScene(sceneInfo,loader,this);
 				currentEvent = currentScene.getEvent();
@@ -137,7 +155,7 @@ public class GameManager implements GameInterface{
 				eventContext.remove("battle");
 				eventContext.remove("play");
 				
-				if(dayCnt == 7) {
+				if(dayCnt == 7 || "S003".equals(beforeSceneCode)) {//7일째 이거나 인트로이면
 					eventContext.put("sceneInfo", "intro");
 				}
 				eventContext.put("sceneStatus", "end");
@@ -167,102 +185,8 @@ public class GameManager implements GameInterface{
 			if(currentEvent.isDone()) {
 				currentEvent = currentScene.getNextEvent();
 			}
-			
-			Map<String,Object> resultContext = currentEvent.happened(input);
-			eventContext.putAll(resultContext);
-			
-			//현재 이벤트에서 처리가 한 번 되고나서 후처리
-			//플레이가 아니면
-			if(!"P".equals(currentEvent.getEventType())) {
-
-				//직전 이벤트가 플레이고 셀렉트일때
-				if("select".equals(eventContext.get("play"))) {
-					//Map<String,String> rSelect = (Map<String,String>)eventContext.get("select");
-					if("afterSelect".equals(eventContext.get("status"))) {
-						//플레이 정보는 삭제하고
-						eventContext.remove("play");
-						eventContext.remove("status");
-						//스크립트 담아주고
-						setScript(eventContext);
-						goEvent();
-						
-					}
-				//스크립트가 있다면 담아주고 이벤트 호출
-				}else if(eventContext.get("script") != null) {
-					setScript(eventContext);
-					goEvent();
-				}
-				
-			}//플레이 타입이 아닌 경우 이벤트 연쇄 발생
-			//플레이 타입이면
-			//이벤트 연쇄(재귀)인 경우 몇몇 케이스를 제외하고 이벤트 연쇄(재귀)를 멈춘다
-			else if("P".equals(currentEvent.getEventType())) {
-				
-				//케이스 #0(이벤트 연쇄 시작지점인 경우)
-				//전투 종료이면 종료 이벤트로 이동한다.
-				if("endBattle".equals(eventContext.get("play"))) {
-					@SuppressWarnings("unchecked")
-					Map<String,Object> battleContext = (Map<String,Object>)eventContext.get("battle");
-					if(battleContext.get("script") != null) {
-						setScript(battleContext);
-					}
-//					Map<String,String> battleNextEventInfo = pBtl.getNextEventInfo();
-//					eventContext = goSpecificEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
-					GameEvPlay evPlay = (GameEvPlay)currentEvent;
-					Map<String,String> battleNextEventInfo = evPlay.getBattlesNextEventInfo();
-					currentEvent.hasDone();
-					currentEvent = currentScene.getEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
-					eventContext = currentEvent.happened();
-					
-					setScript(eventContext);
-					goEvent();
-				}else {
-					//케이스 #1
-					//인풋이고 에프터인풋이면 리절트 텍스트 담아주고 이벤트 호출
-					if("input".equals(eventContext.get("play"))) {
-						@SuppressWarnings("unchecked")
-						Map<String,String> rInput = (Map<String,String>)eventContext.get("input");
-						if("afterInput".equals(rInput.get("status"))) {
-							eventContext.remove("input");
-							setScript(rInput.get("resultTxt"));
-							goEvent();
-							
-						}
-					}
-					//케이스 #2
-					//셀렉트이고 애프터셀렉트 이면 스크립트 담아주고 플레이 정보 제거
-					else if("select".equals(eventContext.get("play"))) {
-						if("afterSelect".equals(eventContext.get("status"))) {
-							eventContext.remove("play");
-							eventContext.remove("status");
-							setScript(eventContext);
-							goEvent();
-							
-						}
-					}
-					//케이스 #3
-					//스크립트가 있다면 담아주고 이벤트 호출	
-					else if(eventContext.get("script") != null){
-						setScript(eventContext);
-						goEvent();
-					}
-					
-					//전투 중 발생한 스크립트 담아줌. 이벤트 호출하지 않음
-					if("battle".equals(eventContext.get("play"))) {
-						@SuppressWarnings("unchecked")
-						Map<String,Object> battleContext = (Map<String,Object>)eventContext.get("battle");
-						if(battleContext.get("script") != null) {
-							setScript(battleContext);
-						}
-					}
-					
-					//스크립트 담아주고 이벤트 더이상 호출하지 않음
-					List<String> scripts = new ArrayList<String>();
-					scripts.addAll(eventScripts);
-					eventContext.put("scripts", scripts);
-					
-				}//플레이 타입에서 이벤트 연쇄를 진행하거나 끊어냄
-			}//플레이 타입이 아니거나 플레이 타입임
+			//상태패턴 적용
+			currentStatus.go(input);
 		}//씬이 종료되거나 진행됨
 	}
 
@@ -319,5 +243,124 @@ public class GameManager implements GameInterface{
 	public void playerLevelUp() throws Exception {
 		Map<String,String> lvlDataInfo = lvlData.get(String.valueOf(player.getLevel()+1));
 		player.setLvlStatus(lvlDataInfo);
+	}
+
+	//게임 스태이터스에서 사용하는 메서드들
+	public Object getCurrentEventChildType() {
+		// TODO Auto-generated method stub
+		return currentEvent.getchildType();
+	}
+
+	public void switchCurrentStatus() {
+		// TODO Auto-generated method stub
+		if(currentStatus.equals(rpgBattle)) {
+			currentStatus = visualNovel;
+		}else if(currentStatus.equals(visualNovel)) {
+			currentStatus = rpgBattle;
+		}
+	}
+
+	public void playCurrentStatus(Map<String, Object> input) throws Exception {
+		// TODO Auto-generated method stub
+		currentStatus.go(input);
 	}	
+	
+	public void setEventContext(Map<String,Object> resultContext) {
+		eventContext.putAll(resultContext);
+	}
+
+	public Object getCurrentEventType() {
+		// TODO Auto-generated method stub
+		return currentEvent.getEventType();
+	}
+
+	public List<String> getEventScripts() {
+		// TODO Auto-generated method stub
+		return eventScripts;
+	}
+
+	public Object getPlayInEventContext() {
+		// TODO Auto-generated method stub
+		return eventContext.get("play");
+	}
+	
+	public Object getBattleInEventContext() {
+		// TODO Auto-generated method stub
+		return eventContext.get("battle");
+	}
+	
+	public Object getStatusInEventContext() {
+		// TODO Auto-generated method stub
+		return eventContext.get("status");
+	}
+	public Object getScriptInEventContext() {
+		// TODO Auto-generated method stub
+		return eventContext.get("script");
+	}
+
+	public Object getInputInEventContext() {
+		// TODO Auto-generated method stub
+		return eventContext.get("input");
+	}	
+
+	public void putEventContext(String key, Object context) {
+		// TODO Auto-generated method stub
+		eventContext.put(key, context);
+	}
+
+	public void setScriptEventContext() {
+		// TODO Auto-generated method stub
+		setScript(eventContext);
+	}
+
+	public void removeEventContext(List<String> removeKeys) {
+		// TODO Auto-generated method stub
+		for(String key:removeKeys) {
+			eventContext.remove(key);
+		}
+	}
+
+	public void goBattleNextEvent() throws Exception {
+		// TODO Auto-generated method stub
+		GameEvPlay evPlay = (GameEvPlay)currentEvent;
+		Map<String,String> battleNextEventInfo = evPlay.getBattlesNextEventInfo();
+		currentEvent.hasDone();
+		currentEvent = currentScene.getEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
+		eventContext = currentEvent.happened();
+	}
+
+	public void goBackIntro() throws Exception {
+		// TODO Auto-generated method stub
+		eventScripts.clear();
+		eventContext.clear();
+		
+		LinkedList<Map<String,String>>pastSceneInfoListCopy = new LinkedList<Map<String,String>>();
+		pastSceneInfoListCopy.addAll(pastSceneInfoList);
+		
+		for(Map<String,String> sceneInfo :pastSceneInfoList) {
+			if("S003".equals(sceneInfo.get("SCENE_CD"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
+				sceneInfoList.addAll(0, pastSceneInfoListCopy);
+				startSceneLoad(loader);
+				break;
+			}else {
+				pastSceneInfoListCopy.pollFirst();
+			}
+		}
+	}
+	
+	public void goToIntro() throws Exception {
+		// TODO Auto-generated method stub
+		
+		LinkedList<Map<String,String>>sceneInfoListCopy = new LinkedList<Map<String,String>>();
+		sceneInfoListCopy.addAll(sceneInfoList);
+		
+		for(Map<String,String> sceneInfo :sceneInfoListCopy) {
+			if("S003".equals(sceneInfo.get("SCENE_CD"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
+				startSceneLoad(loader);
+				break;
+			}else {
+				pastSceneInfoList.add(sceneInfoList.pollFirst());
+			}
+		}
+	}
 }
