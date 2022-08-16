@@ -11,16 +11,18 @@ public class GameEvPlay extends GameEvent {
 	private String playCode;
 	private String playType;
 	private GamePlayElement pEl;
-	GamePlayBattle pBtl;
+	private GamePlayBattle pBtl;
 	
 //	private GameDataLoader loader;
-	private GameManager manager;
+//	private GameManager manager;
+	private GameEventCallback callback;
 
 	public GameEvPlay(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, GameManager manager) throws Exception {
 		super(eventInfo, loader, scene, manager.getPlayer());
 		// TODO Auto-generated constructor stub
 //		this.loader = loader;
-		this.manager = manager;
+//		this.manager = manager;
+		this.callback = scene.getEventCallBack();
 		
 		//플레이는 하나씩만 존재
 		List<Map<String,String>> playList = loader.getPlayOfEvent(eventInfo);
@@ -38,7 +40,8 @@ public class GameEvPlay extends GameEvent {
 			
 		}else if("B".equals(playType)){
 			pBtl = new GamePlayBattle(playInfo,loader,manager.getPlayer());
-			manager.setBattle(pBtl);
+//			manager.setBattle(pBtl);
+			scene.getEventCallBack().setPlayBattle(pBtl);
 			pEl = pBtl;
 		}
 	}
@@ -99,19 +102,19 @@ public class GameEvPlay extends GameEvent {
 		
 		if("S".equals(playType)) {
 			//셀렉트 결과는 이벤트 등이 될 수 있으므로 그냥 통째로 받는다.
-			playContext = pEl.play(input,manager);
+			playContext = pEl.play(input,callback);
 			resultMap.put("play", "select");
 			resultMap.putAll(playContext);
 			
 		}else if("I".equals(playType)) {
 			//입력임을 명시해준다.
-			playContext = pEl.play(input,manager);
+			playContext = pEl.play(input,callback);
 			resultMap.put("play", "input");
 			resultMap.put("input", playContext);
 			hasDone();
 		}else if("B".equals(playType)) {
 			//선택의 결과를 가져온다
-			playContext = pEl.play(input,manager);
+			playContext = pEl.play(input,callback);
 			//선택의 결과에서 프로세스를 가지고 전투 종료인지 전투 진행인지 체크
 			if("end".equals(playContext.get("process"))) {
 				resultMap.put("play", "endBattle");
@@ -123,5 +126,10 @@ public class GameEvPlay extends GameEvent {
 			
 		}
 		return resultMap;
+	}
+
+	public Map<String, String> getBattlesNextEventInfo() {
+		// TODO Auto-generated method stub
+		return pBtl.getNextEventInfo();
 	}
 }

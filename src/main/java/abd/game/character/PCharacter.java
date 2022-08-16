@@ -10,8 +10,6 @@ import java.util.Map;
 
 import abd.game.GameManager;
 import abd.game.GameSetupLoader;
-import abd.game.character.item.Candy;
-import abd.game.character.item.ChocoBar;
 import abd.game.character.item.GameItem;
 import abd.game.character.item.ItemBag;
 

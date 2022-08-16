@@ -1,4 +1,4 @@
-package abd.game;
+package abd.game.scene.battle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import abd.game.GameDataLoader;
 import abd.game.character.CountTurnObserver;
 import abd.game.character.GameCharacterBuilder;
 import abd.game.character.NPCharacter;
@@ -95,29 +96,6 @@ public class Encounter {
 		// TODO Auto-generated method stub
 		character.setEncounter(false);
 		character = null;
-	}
-
-	public NPCharacter encounterHealer(List<Map<String, String>> healerList, GameDataLoader loader) throws Exception {
-		// TODO Auto-generated method stub
-		//힐러 중 랜덤으로 뽑아서 셋팅
-		
-		//2. 캐릭터 코드 리스트를 반복하며 풀 생성(빈도수에 맞게 추가로 코드 add)
-		List<String> charPool = new ArrayList<String>();
-		for(Map<String,String> codeMap:healerList) {
-			int freq = Integer.valueOf(codeMap.get("FREQ"));
-			for(int i=0; i<freq; i++) {
-				charPool.add(codeMap.get("CHAR_CD"));
-			}
-		}
-		//3. 리스트 크기에서 랜덤하게 인덱스 뽑음
-		int idx = (int) (Math.random() * charPool.size());
-		//4. 인덱스에 해당하는 캐릭터 생성
-		String code = charPool.get(idx);
-		Map<String,String> paramMap = new HashMap<String, String>();
-		paramMap.put("CHAR_CD", code);
-		List<Map<String,String>> npcList = loader.getNPCharacterInfo(paramMap);
-		List<Map<String,String>> characterLines = loader.getCharacterLine(paramMap);
-		return GameCharacterBuilder.getNPCharacterInstance(npcList.get(0), characterLines);
 	}
 
 	public void countTurn() {

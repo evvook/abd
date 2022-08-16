@@ -9,7 +9,6 @@ public class Game {
 	private GameDataLoader loader;
 	private static int MAX_SLEEP = 600;
 	private int sleep_count;
-//	private boolean awake;
 	
 	public Game(GameInterface gameInterface) {
 		// TODO Auto-generated constructor stub
@@ -17,7 +16,6 @@ public class Game {
 		
 		sleep_count = 0;
 		selfMonitoring();
-//		awake = true;
 	}
 	
 	public void setGameDataLoader(GameDataLoader loader) {
@@ -35,7 +33,6 @@ public class Game {
 		
 		//시작이면
 		if("start".equals(status)) {
-			//gameInterface.createPlayerCharacter(loader, (String)input.get("name"));
 			gameInterface.startSceneLoad(loader);
 			gameInterface.goEvent();
 			gameContext= gameInterface.getGameContext();

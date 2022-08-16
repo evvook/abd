@@ -20,12 +20,12 @@ public class GameEvBranch extends GameEvent {
 	private String outEventCode;
 	private String outEventSeq;
 
-	private GameManager manager;
+	private GameEventCallback callback;
 	
 	public GameEvBranch(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, GameManager manager) throws Exception {
 		super(eventInfo, loader, scene, manager.getPlayer());
 		// TODO Auto-generated constructor stub
-		this.manager = manager;
+		this.callback = scene.getEventCallBack();
 		
 		List<Map<String,String>> brList = loader.getBranchOfEvent(eventInfo);
 		Map<String,String> brInfo = brList.get(0);
@@ -54,7 +54,7 @@ public class GameEvBranch extends GameEvent {
 		String methodName = methodInfo[0];
 		
 		if(methodName != null && !"".equals(methodName)) {
-			Object instance = manager;
+			Object instance = callback;
 			Class<?> clazz = instance.getClass();
 
 			Method method = null;
@@ -120,7 +120,7 @@ public class GameEvBranch extends GameEvent {
 		String methodName = methodInfo[0];
 		
 		if(methodName != null && !"".equals(methodName)) {
-			Object instance = manager;
+			Object instance = callback;
 			Class<?> clazz = instance.getClass();
 
 			Method method = null;
@@ -161,27 +161,27 @@ public class GameEvBranch extends GameEvent {
 
 	public Map<String, Object> goYEvent() throws Exception {
 		// TODO Auto-generated method stub
-		return manager.goSpecificEvent(yEventCode, yEventSeq);
+		return callback.goSpecificEvent(yEventCode, yEventSeq);
 	}
 
 	public Map<String, Object> goNEvent() throws Exception {
 		// TODO Auto-generated method stub
-		return manager.goSpecificEvent(nEventCode, nEventSeq);
+		return callback.goSpecificEvent(nEventCode, nEventSeq);
 	}
 
 	public Map<String, Object> goYEvent(String param) throws Exception {
 		// TODO Auto-generated method stub
-		return manager.goSpecificEvent(yEventCode, yEventSeq, param);
+		return callback.goSpecificEvent(yEventCode, yEventSeq, param);
 	}
 
 	public Map<String, Object> goNEvent(String param) throws Exception {
 		// TODO Auto-generated method stub
-		return manager.goSpecificEvent(nEventCode, nEventSeq, param);
+		return callback.goSpecificEvent(nEventCode, nEventSeq, param);
 	}
 
 	public void setOutEvent() throws Exception {
 		// TODO Auto-generated method stub
-		manager.setSpecificEvent(outEventCode, outEventSeq);
+		callback.setSpecificEvent(outEventCode, outEventSeq);
 	}
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import abd.game.GameDataLoader;
-import abd.game.GameManager;
 
 public class GamePlayInput implements GamePlayElement {
 	private String inputCode;
@@ -41,7 +40,7 @@ public class GamePlayInput implements GamePlayElement {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> play(Map<String, Object> input, GameManager manager) throws Exception {
+	public Map<String, Object> play(Map<String, Object> input, GameEventCallback callback) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("status", "afterInput");
@@ -51,7 +50,7 @@ public class GamePlayInput implements GamePlayElement {
 		String methodName = resultOccurred;
 		
 		if(methodName != null && !"".equals(methodName)) {
-			Object instance = manager;
+			Object instance = callback;
 			Class<?> clazz = instance.getClass();
 
 			Method method = null;

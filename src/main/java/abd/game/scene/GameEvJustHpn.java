@@ -14,12 +14,13 @@ public class GameEvJustHpn extends GameEvent {
 	private String resultTxt;
 	private String resultOccurred;
 	
-	private GameManager manager;
+//	private GameManager manager;
+	private GameEventCallback callback;
 
 	public GameEvJustHpn(Map<String, String> eventInfo, GameDataLoader loader, GameScene scene, GameManager manager) throws Exception {
 		super(eventInfo, loader, scene, manager.getPlayer());
 		// TODO Auto-generated constructor stub
-		this.manager = manager;
+		this.callback = scene.getEventCallBack();
 		
 		List<Map<String,String>> jhList = loader.getJustHpnOfEvent(eventInfo);
 		Map<String,String> jhInfo = jhList.get(0);
@@ -49,7 +50,7 @@ public class GameEvJustHpn extends GameEvent {
 		String methodName = methodInfo[0];
 		
 		if(methodName != null && !"".equals(methodName)) {
-			Object instance = manager;
+			Object instance = callback;
 			Class<?> clazz = instance.getClass();
 
 			Method method = null;
@@ -118,7 +119,7 @@ public class GameEvJustHpn extends GameEvent {
 		String methodName = methodInfo[0];
 		
 		if(methodName != null && !"".equals(methodName)) {
-			Object instance = manager;
+			Object instance = callback;
 			Class<?> clazz = instance.getClass();
 
 			Method method = null;

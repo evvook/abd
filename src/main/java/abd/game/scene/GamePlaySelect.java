@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import abd.game.GameDataLoader;
-import abd.game.GameManager;
 
 public class GamePlaySelect implements GamePlayElement{
 	private String selectCode;
@@ -92,7 +91,7 @@ public class GamePlaySelect implements GamePlayElement{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> play(Map<String, Object> input, GameManager manager) throws Exception {
+	public Map<String, Object> play(Map<String, Object> input, GameEventCallback callback) throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("status", "afterSelect");
@@ -111,7 +110,7 @@ public class GamePlaySelect implements GamePlayElement{
 		String methodName = resultOccurred.split("#")[0];
 		
 		if(methodName != null && !"".equals(methodName)) {
-			Object instance = manager;
+			Object instance = callback;
 			Class<?> clazz = instance.getClass();
 
 			Method method = null;

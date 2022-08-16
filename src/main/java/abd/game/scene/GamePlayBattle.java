@@ -6,14 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import abd.game.Encounter;
 import abd.game.GameDataLoader;
-import abd.game.GameManager;
 import abd.game.character.CompCharacter;
-import abd.game.character.GameCharacter;
 import abd.game.character.NPCharacter;
 import abd.game.character.PCharacter;
 import abd.game.character.item.GameItem;
+import abd.game.scene.battle.Encounter;
 
 public class GamePlayBattle implements GamePlayElement {
 	private String battleCode;
@@ -290,7 +288,7 @@ public class GamePlayBattle implements GamePlayElement {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> play(Map<String, Object> input, GameManager manager) throws Exception {
+	public Map<String, Object> play(Map<String, Object> input, GameEventCallback callback) throws Exception {
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		Map<String,String> selectInfo =(Map<String,String>)input.get("selected");
 		
@@ -307,22 +305,22 @@ public class GamePlayBattle implements GamePlayElement {
 				
 				if("commonBattle".equals(currentSelectName)) {
 					//일반전투선택
-					selectContext = battleSelect.play(input,manager);
+					selectContext = battleSelect.play(input,callback);
 					
 				}else if("battleHelp".equals(currentSelectName)) {
 					//도움요청선택
-					selectContext = battleHelpSelect.play(input,manager);
+					selectContext = battleHelpSelect.play(input,callback);
 					
 				}else if("pullBack".equals(currentSelectName)) {
 					//재정비선택
-					selectContext = pullBackSelect.play(input,manager);
+					selectContext = pullBackSelect.play(input,callback);
 					
 				}else if("pullBackHelp".equals(currentSelectName)) {
 					//도움받기선택
-					selectContext = pullBackHelpSelect.play(input,manager);
+					selectContext = pullBackHelpSelect.play(input,callback);
 					
 				}else if("useItem".equals(currentSelectName)) {
-					selectContext = useItemSelect.play(input,manager);
+					selectContext = useItemSelect.play(input,callback);
 				}
 				//전투선택 결과 설정
 				resultMap.putAll(selectContext);

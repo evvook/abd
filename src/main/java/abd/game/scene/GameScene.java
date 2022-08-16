@@ -21,6 +21,8 @@ public class GameScene {
 	GameDataLoader loader;
 	GameManager manager;
 	
+	GameEventCallback callback;
+	
 	public GameScene(Map<String, String> map, GameDataLoader loader, GameManager manager) throws Exception {
 		// TODO Auto-generated constructor stub
 		sceneCode = map.get("SCENE_CD");
@@ -28,6 +30,8 @@ public class GameScene {
 		
 		this.loader = loader;
 		this.manager = manager;
+		
+		this.callback = new GameEventCallback(manager);
 		
 		events = new HashMap<String, GameEvent>();
 		eventInfo = new LinkedList<GameEventVO>();
@@ -74,7 +78,8 @@ public class GameScene {
 					
 				}else if("B".equals(eventInfo.get("E_TYPE"))) {
 					event = new GameEvBranch(eventInfo,loader,this,manager);
-					manager.setBranch((GameEvBranch)event);
+//					manager.setBranch((GameEvBranch)event);
+					callback.setEventBranch((GameEvBranch)event);
 					
 				}
 				if(!events.isEmpty()) {
@@ -136,7 +141,8 @@ public class GameScene {
 						
 						//브랜치인 경우 매니저에 설정된 브랜치 변경
 						if("B".equals(selectedEvent.getEventType())) {
-							manager.setBranch((GameEvBranch)selectedEvent);
+//							manager.setBranch((GameEvBranch)selectedEvent);
+							callback.setEventBranch((GameEvBranch)selectedEvent);
 						}
 						idxOfEvents = i;
 					}
@@ -176,6 +182,11 @@ public class GameScene {
 		if(eventCode.equals(lastEventCode) && eventSeq.equals(lastEventSeq)) {
 			hasDone();
 		}
+	}
+
+	public GameEventCallback getEventCallBack() {
+		// TODO Auto-generated method stub
+		return callback;
 	}
 
 }
