@@ -345,4 +345,36 @@ public class PCharacter extends GameCharacter implements Playerable{
 			itemBag.push(newItem);
 		}
 	}
+
+	public void reset(Map<String,String> levelInfo) {
+		// TODO Auto-generated method stub
+		setLvlStatus(levelInfo);
+		alive = true;
+		armed = false;
+		
+		for(String key:company.keySet()) {
+			CompCharacter comp = company.get(key);
+			comp.alive = true;
+			comp.currentHp = maxHp;
+			comp.armed = false;
+			comp.initReliabl();
+			
+			if("C03".equals(comp.getCode())) {
+				comp.increaseReliabl(10);
+				
+			}else if("C04".equals(comp.getCode())) {
+				comp.increaseReliabl(10);
+				
+			}else if("C05".equals(comp.getCode())) {
+				comp.increaseReliabl(10);
+				
+			}else if("C08".equals(comp.getCode())) {
+				comp.increaseReliabl(10);
+				
+			}else if("C09".equals(comp.getCode())) {
+				comp.increaseReliabl(20);
+				
+			}
+		}
+	}
 }

@@ -69,6 +69,7 @@
 	        <br/><br/>서명하시겠습니까?</div>
 	    <input id="name-input" placeholder="성명"/>
 	    <button id="start">서명</button>
+	    <button id="intro">인트로로 가기</button>
 	    <h5>* 대사 스포일러가 있습니다.</h5>
 	</form>
 	<div id="screen">
@@ -187,7 +188,7 @@
         	if(result.status == 'setup'){
 	        	game.createHero(result.player);
 	        	
-	        	ajaxRequest({status:"start"});
+	        	ajaxRequest({status:"start",action:result.action});
         	}else if(result.status == "start" || result.status == "onGoing"){
         		console.log(result);
         		if(result.sceneStatus == 'end'){
@@ -571,15 +572,15 @@
         
         
         class Game {
-        	constructor(name) {
-                this.start(name);
+        	constructor(name,action) {
+                this.start(name,action);
             }
-	        start(name) {
+	        start(name,action) {
 	            $gameMenu.addEventListener('submit', this.onGameMenuInput);
 	            $battleMenu.addEventListener('submit', this.onBattleMenuInput);
 	            this.changeScreen('game');
 	            //서버와 통신으로 플레이어 캐릭터 정보 설정 및 게임상태 받아오기
-	            ajaxRequest({status:"setup",name:name},'/abd/gameSetup')
+	            ajaxRequest({status:"setup",name:name,action:action},'/abd/gameSetup')
 	        }
 	        changeScreen(screen) {
 	            if(screen === 'start') {
@@ -781,7 +782,7 @@
         $startScreen.addEventListener('submit', (event) => {
         	event.preventDefault();
             const name = event.target['name-input'].value;
-            game = new Game(name);
+            game = new Game(name,event.submitter.id);
         });
 	</script>
 </body>

@@ -44,12 +44,13 @@ public class GameStatusRpgBattle implements GameStatus{
 				manager.setScript(battleContext);
 			}
 			
+			//패배한 경우 인트로로 돌아감
 			if("defeat".equals(battleContext.get("battleResult"))) {
 				manager.goBackIntro();
-				manager.switchCurrentStatus();
-				manager.playCurrentStatus(null);
 				return;
-			}else {
+			}
+			//승리한 경우 전투후 이벤트 실행
+			else {
 				manager.goBattleNextEvent();
 				manager.setScriptEventContext();
 				manager.goEvent();

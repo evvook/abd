@@ -11,9 +11,11 @@ public interface GameInterface {
 	
 	public void startSceneLoad(GameDataLoader loader) throws Exception;
 
-	void goEvent() throws Exception;
+	public void goEvent() throws Exception;
 
-	void goEvent(Map<String, Object> input) throws Exception;
+	public void goEvent(Map<String, Object> input) throws Exception;
 
 	public Map<String, Object> getCharStat();
+	
+	public void goToIntro() throws Exception;
 }

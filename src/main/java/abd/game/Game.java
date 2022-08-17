@@ -34,7 +34,11 @@ public class Game {
 		//시작이면
 		if("start".equals(status)) {
 			gameInterface.startSceneLoad(loader);
-			gameInterface.goEvent();
+			if("intro".equals(action)) {
+				gameInterface.goToIntro();
+			}else {
+				gameInterface.goEvent();
+			}
 			gameContext= gameInterface.getGameContext();
 			gameContext.put("status", "onGoing");
 			
@@ -65,7 +69,9 @@ public class Game {
 		gameInterface.createPlayerCharacter(setupLoader, (String)input.get("name"));
 		gameInterface.setupScenesInfo(setupLoader);
 		gameContext= gameInterface.getGameContext();
-		gameContext.put("status", "setup");
+		gameContext.put("status", (String)input.get("status"));
+		gameContext.put("action", (String)input.get("action"));
+		
 		return gameContext;
 	}
 

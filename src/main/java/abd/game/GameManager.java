@@ -1,13 +1,10 @@
 package abd.game;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.logging.log4j.core.script.Script;
 
 import abd.game.character.GameCharacterBuilder;
 import abd.game.character.PCharacter;
@@ -331,8 +328,10 @@ public class GameManager implements GameInterface{
 
 	public void goBackIntro() throws Exception {
 		// TODO Auto-generated method stub
-		eventScripts.clear();
 		eventContext.clear();
+		setScript("당신은 죽었습니다.<br><br>.<br><br>.<br><br>.<br><br>");
+
+		player.reset(lvlData.get("1"));
 		
 		LinkedList<Map<String,String>>pastSceneInfoListCopy = new LinkedList<Map<String,String>>();
 		pastSceneInfoListCopy.addAll(pastSceneInfoList);
@@ -341,6 +340,7 @@ public class GameManager implements GameInterface{
 			if("S003".equals(sceneInfo.get("SCENE_CD"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
 				sceneInfoList.addAll(0, pastSceneInfoListCopy);
 				startSceneLoad(loader);
+				goEvent();
 				break;
 			}else {
 				pastSceneInfoListCopy.pollFirst();
@@ -350,6 +350,7 @@ public class GameManager implements GameInterface{
 	
 	public void goToIntro() throws Exception {
 		// TODO Auto-generated method stub
+		player.reset(lvlData.get("1"));
 		
 		LinkedList<Map<String,String>>sceneInfoListCopy = new LinkedList<Map<String,String>>();
 		sceneInfoListCopy.addAll(sceneInfoList);
@@ -357,6 +358,7 @@ public class GameManager implements GameInterface{
 		for(Map<String,String> sceneInfo :sceneInfoListCopy) {
 			if("S003".equals(sceneInfo.get("SCENE_CD"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
 				startSceneLoad(loader);
+				goEvent();
 				break;
 			}else {
 				pastSceneInfoList.add(sceneInfoList.pollFirst());

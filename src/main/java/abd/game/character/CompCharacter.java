@@ -231,4 +231,10 @@ public class CompCharacter extends GameCharacter {
 			currentReliabl = maxReliabl;
 		}
 	}
+
+	public void initReliabl() {
+		// TODO Auto-generated method stub
+		currentReliabl = 0;
+		currentReplTerm = maxReplTerm;
+	}
 }
