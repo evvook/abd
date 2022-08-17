@@ -329,7 +329,7 @@ public class GameManager implements GameInterface{
 	public void goBackIntro() throws Exception {
 		// TODO Auto-generated method stub
 		eventContext.clear();
-		setScript("당신은 죽었습니다.<br><br>.<br><br>.<br><br>.<br><br>");
+		setScript("나는 죽었다.<br><br>.<br><br>.<br><br>.<br><br>");
 
 		player.reset(lvlData.get("1"));
 		

@@ -25,9 +25,10 @@ public class GameContainer {
 		// TODO Auto-generated method stub
 		for(String key:gameContainer.keySet()) {
 			if(game.equals(gameContainer.get(key))) {
-				gameContainer.remove(key);
+				Game removedGame = gameContainer.remove(key);
+				removedGame.clear();
 				System.out.println("컨트롤러 삭제. 컨트롤러 사이즈 : "+gameContainer.size());
-				break;
+				return;
 			}
 		}
 	}

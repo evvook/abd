@@ -97,4 +97,10 @@ public class Game {
 		};
 		timer.schedule(tTask, 1000, 1000);
 	}
+
+	public void clear() {
+		// TODO Auto-generated method stub
+		gameInterface = null;
+		loader = null;
+	}
 }
