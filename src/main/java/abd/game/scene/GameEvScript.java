@@ -25,7 +25,7 @@ public class GameEvScript extends GameEvent {
 	}
 
 	@Override
-	public Map<String, Object> happened() {
+	public Map<String, Object> happened() throws Exception {
 		// TODO Auto-generated method stub
 		Map<String,Object> resultMap = new HashMap<String, Object>();
 		//이벤트 스크립트인 걸 명시해준다.
@@ -55,7 +55,7 @@ public class GameEvScript extends GameEvent {
 	}
 
 	@Override
-	public Map<String, Object> happened(Map<String, Object> input) {
+	public Map<String, Object> happened(Map<String, Object> input) throws Exception {
 		// TODO Auto-generated method stub
 		if(input == null) {
 			return happened();

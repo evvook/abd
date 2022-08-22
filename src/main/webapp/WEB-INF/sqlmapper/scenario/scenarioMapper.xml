@@ -6,18 +6,29 @@
 		SELECT
 			 SCENE_CD
 			,SCENE_NM
+			,(
+				SELECT
+					CASE WHEN ES.SCENE_CD = SG.SCENE_CD THEN 'Y' ELSE 'N' END 
+				FROM EVENT_SCENE ES 
+				JOIN TAG_EVENT TE 
+				ON ES.EVENT_CD = TE.EVENT_CD 
+				AND ES.EVENT_SEQ = TE.EVENT_SEQ 
+				WHERE 1=1 
+				AND TE.TAG = 'INTRO'
+			) AS IS_INTRO			
 		FROM SCENE_GAME SG
 		#WHERE SCENE_CD NOT IN ('S001','S002')
 		ORDER BY SCENE_CD
 	</select>
 	<select id="selectEvents" parameterType="hashmap" resultType="hashmap">
 		SELECT 
-			 EVENT_CD
-			,CAST(EVENT_SEQ AS CHAR) EVENT_SEQ 
-			,E_TYPE 
+			 ES.EVENT_CD
+			,CAST(ES.EVENT_SEQ AS CHAR) EVENT_SEQ 
+			,ES.E_TYPE 
+			,(SELECT CAST(COUNT(*) AS CHAR) FROM TAG_EVENT WHERE EVENT_CD = ES.EVENT_CD AND EVENT_SEQ = ES.EVENT_SEQ) AS CNT_TAG
 		FROM EVENT_SCENE ES 
-		WHERE SCENE_CD = #{SCENE_CD}
-		ORDER BY EVENT_CD, EVENT_SEQ 
+		WHERE ES.SCENE_CD = #{SCENE_CD}
+		ORDER BY ES.EVENT_CD, ES.EVENT_SEQ 
 	</select>
 	<select id="selectScripts" parameterType="hashmap" resultType="hashmap">
 		SELECT
@@ -124,6 +135,18 @@
 			, OUT_EVENT_CD
 			, OUT_EVENT_SEQ
 		FROM BRANCH_EVENT
+		WHERE 1=1 
+		AND EVENT_CD = #{EVENT_CD} 
+		AND EVENT_SEQ = #{EVENT_SEQ}
+		
+	</select>
+	<select id="selectTagOfEvent" parameterType="hashmap" resultType="hashmap">
+		
+		SELECT
+			  TAG
+			 ,TAG_TYPE
+			 ,RESULT_OCCURRED
+		FROM TAG_EVENT
 		WHERE 1=1 
 		AND EVENT_CD = #{EVENT_CD} 
 		AND EVENT_SEQ = #{EVENT_SEQ}

@@ -133,4 +133,10 @@ public class PlayServiceImpl implements PlayService, GameDataLoader{
 		return scenarioDAO.selectBranchOfEvent(paramMap);
 	}
 
+	@Override
+	public List<Map<String, String>> getTagOfEvent(Map<String, String> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return scenarioDAO.selectTagOfEvent(paramMap);
+	}
+
 }

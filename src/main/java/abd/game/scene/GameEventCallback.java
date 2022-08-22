@@ -165,9 +165,7 @@ public class GameEventCallback {
 				player.increaseMp(Integer.valueOf(mp));
 			}
 		}
-		
 		manager.setDayOut();
-		manager.setEventCut();
 		
 		//특정 이벤트 설정
 		manager.setEvent(eventCode, eventSeq);
@@ -176,9 +174,7 @@ public class GameEventCallback {
 	public void mentalCare(String eventCode, String eventSeq) throws Exception {
 		//특정 이벤트 설정
 		player.increaseMp(25);
-		
 		manager.setDayOut();
-		manager.setEventCut();
 		
 		manager.setEvent(eventCode, eventSeq);
 	}
@@ -335,6 +331,18 @@ public class GameEventCallback {
 		resultTxt = resultTxt.replace("%minus_hp%", dHp.toString());
 		resultTxt = resultTxt.replace("%minus_mp%", dMp.toString());
 		resultMap.put("script", resultTxt);
+		return resultMap;
+	}
+	
+	public void setIntro() {
+		Map<String,Object> contextMap = new HashMap<String,Object>();
+		contextMap.put("sceneInfo", "intro");
+		manager.setEventContext(contextMap);
+	}
+	
+	public Map<String,Object> notEnd(){
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("AFTER_OVER", "FALSE");
 		return resultMap;
 	}
 }

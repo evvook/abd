@@ -130,4 +130,15 @@ public class ScenarioDAO {
 		}
 		return sqlSessionTemplate.selectList(Namespace+".selectBranchOfEvent",paramMap);
 	}
+
+	public List<Map<String, String>> selectTagOfEvent(Map<String, String> paramMap) {
+		// TODO Auto-generated method stub
+		Map<String,String> paramMapCopy = new HashMap<String, String>();
+		paramMapCopy.putAll(paramMap);
+		
+		for(String key:paramMapCopy.keySet()) {
+			paramMap.remove(key,"");
+		}
+		return sqlSessionTemplate.selectList(Namespace+".selectTagOfEvent",paramMap);
+	}
 }

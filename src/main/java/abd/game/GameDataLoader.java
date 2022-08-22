@@ -35,4 +35,6 @@ public interface GameDataLoader {
 	public List<Map<String, String>> getInputOfPlay(Map<String, String> playInfo) throws Exception;
 
 	public List<Map<String, String>> getBranchOfEvent(Map<String, String> eventInfo) throws Exception;
+
+	public List<Map<String, String>> getTagOfEvent(Map<String, String> eventInfo) throws Exception;
 }

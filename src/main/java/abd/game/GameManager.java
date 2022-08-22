@@ -134,28 +134,28 @@ public class GameManager implements GameInterface{
 		//씬이 끝난 경우
 		if(currentScene.isDone()) {
 			//다음 씬으로 이동
-			String beforeSceneCode = currentScene.getSceneCode();
 			Map<String,String> sceneInfo = sceneInfoList.pollFirst();
 			pastSceneInfoList.add(sceneInfo);
 			if(sceneInfo != null) {
-				currentScene = new GameScene(sceneInfo,loader,this);
-				currentEvent = currentScene.getEvent();
+//				if(dayCnt == 7 || "S003".equals(beforeSceneCode)) {//7일째 이거나 인트로이면
+//					eventContext.put("sceneInfo", "intro");
+//				}
+				//플레이와 관련된 데이터를 클리어를 해줌
+				eventContext.remove("play");
+				eventContext.remove("select");
+				eventContext.remove("input");
+				eventContext.remove("battle");
 				
 				//담아줌
 				List<String> scripts = new ArrayList<String>();
 				scripts.addAll(eventScripts);
 				eventContext.put("scripts", scripts);
-				
-				//뭔가 클리어를 해줌
-				eventContext.remove("select");
-				eventContext.remove("input");
-				eventContext.remove("battle");
-				eventContext.remove("play");
-				
-				if(dayCnt == 7 || "S003".equals(beforeSceneCode)) {//7일째 이거나 인트로이면
-					eventContext.put("sceneInfo", "intro");
-				}
 				eventContext.put("sceneStatus", "end");
+				
+				//새로운 씬과 이벤트를 설정
+				currentScene = new GameScene(sceneInfo,loader,this);
+				currentEvent = currentScene.getEvent();
+				
 			}else {
 				//더이상 씬이 없는 경우
 				//엔딩?
@@ -201,7 +201,7 @@ public class GameManager implements GameInterface{
 	}
 	
 	
-	public void currentEventDone() {
+	public void currentEventDone() throws Exception {
 		// TODO Auto-generated method stub
 		currentEvent.hasDone();
 	}
@@ -218,12 +218,12 @@ public class GameManager implements GameInterface{
 	
 	public Map<String, Object> currnetEventHappened() throws Exception {
 		// TODO Auto-generated method stub
-		return currentEvent.happened();
+		return currentEvent.somethingHappened();
 	}
 
 	public Map<String, Object> currnetEventHappened(Map<String, Object> paramMap) throws Exception {
 		// TODO Auto-generated method stub
-		return currentEvent.happened(paramMap);
+		return currentEvent.somethingHappened(paramMap);
 	}
 	
 
@@ -323,7 +323,7 @@ public class GameManager implements GameInterface{
 		Map<String,String> battleNextEventInfo = evPlay.getBattlesNextEventInfo();
 		currentEvent.hasDone();
 		currentEvent = currentScene.getEvent(battleNextEventInfo.get("EVENT_CD"), battleNextEventInfo.get("EVENT_SEQ"));
-		eventContext = currentEvent.happened();
+		eventContext = currentEvent.somethingHappened();
 	}
 
 	public void goBackIntro() throws Exception {
@@ -337,7 +337,7 @@ public class GameManager implements GameInterface{
 		pastSceneInfoListCopy.addAll(pastSceneInfoList);
 		
 		for(Map<String,String> sceneInfo :pastSceneInfoList) {
-			if("S003".equals(sceneInfo.get("SCENE_CD"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
+			if("Y".equals(sceneInfo.get("IS_INTRO"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
 				sceneInfoList.addAll(0, pastSceneInfoListCopy);
 				startSceneLoad(loader);
 				goEvent();
@@ -356,7 +356,7 @@ public class GameManager implements GameInterface{
 		sceneInfoListCopy.addAll(sceneInfoList);
 		
 		for(Map<String,String> sceneInfo :sceneInfoListCopy) {
-			if("S003".equals(sceneInfo.get("SCENE_CD"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
+			if("Y".equals(sceneInfo.get("IS_INTRO"))) {//인트로 씬을 찾아 시작 씬으로 삼는다.
 				startSceneLoad(loader);
 				goEvent();
 				break;

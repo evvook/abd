@@ -40,7 +40,9 @@ public class GameScene {
 		List<Map<String,String>> eventInfoList = loader.getEventsOfScene(map);
 		
 		for(Map<String,String> eventInfo:eventInfoList) {
-			GameEventVO eVo = new GameEventVO(eventInfo.get("EVENT_CD"), eventInfo.get("EVENT_SEQ"), eventInfo.get("E_TYPE"));
+			GameEventVO eVo = new GameEventVO(eventInfo.get("EVENT_CD"), eventInfo.get("EVENT_SEQ"));
+			eVo.setEventType(eventInfo.get("E_TYPE"));
+			eVo.setEventTagCnt(eventInfo.get("CNT_TAG"));
 			this.eventInfo.add(eVo);
 			//첫 번째 이벤트 만들기
 			if(events.isEmpty()) {
@@ -66,6 +68,7 @@ public class GameScene {
 				eventInfo.put("EVENT_CD", eventVo.getEventCode());
 				eventInfo.put("EVENT_SEQ", eventVo.getEventSeq());
 				eventInfo.put("E_TYPE", eventVo.getEventType());
+				eventInfo.put("CNT_TAG", eventVo.getEventTagCnt());
 				
 				if("S".equals(eventInfo.get("E_TYPE"))) {
 					event = new GameEvScript(eventInfo,loader, this, manager.getPlayer());
